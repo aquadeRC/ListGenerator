@@ -18,15 +18,14 @@ public:
     explicit Kernel(QObject *parent = nullptr);
     ~Kernel() = default;
 
-    Q_INVOKABLE QList<QMap<QString, QString>> getModelUrzedy();
-    Q_INVOKABLE QStringList getModelInwestycje();
-    Q_INVOKABLE QList<QMap<QString, QString>> getModelArchitekci();
-    Q_INVOKABLE QStringList getModelSpraw();
+    Q_INVOKABLE AbstractAppModel* getModelUrzedy();
+    Q_INVOKABLE AbstractAppModel* getModelInwestycje();
+    Q_INVOKABLE AbstractAppModel* getModelArchitekci();
+    Q_INVOKABLE AbstractAppModel* getModelInwestor();
 
 signals:
 
 private:
-    void init();
     DataWraperManager m_DataWrapperManager;
 };
 

@@ -4,8 +4,23 @@
 using namespace Modele_Danych;
 
 UrzadDataModel::UrzadDataModel(QObject *parent)
-    : QAbstractListModel(parent)
+    : AbstractAppModel(parent)
 {}
+
+
+void UrzadDataModel::initData(const  QList<QMap<QString, QString>> &data)
+{
+    if(data.isEmpty() == false)
+    {
+        m_urzadData = data;
+    }
+}
+
+
+QList<QMap<QString, QString>> UrzadDataModel::getData() const
+{
+    return m_urzadData;
+}
 
 int UrzadDataModel::rowCount(const QModelIndex &parent) const
 {
@@ -14,7 +29,7 @@ int UrzadDataModel::rowCount(const QModelIndex &parent) const
     if (parent.isValid())
         return 0;
 
-    return m_userData.length();
+    return m_urzadData.length();
 }
 
 QVariant UrzadDataModel::data(const QModelIndex &index, int role) const
@@ -29,33 +44,33 @@ QVariant UrzadDataModel::data(const QModelIndex &index, int role) const
 
         switch (role) {
         case ID:
-            return m_userData[row].m_kod;
+            return m_urzadData[row]["Kod_TERYT"];
         case Nazwa:
-            return m_userData[row].m_nazwa;
+            return m_urzadData[row]["nazwa_urzedu"];
         case Nazwa_Samorzadu:
-            return m_userData[row].m_nazwa_samorządu;
+            return m_urzadData[row]["nazwa_samorządu"];
         case Wojewodztwo:
-            return m_userData[row].m_województwo;
+            return m_urzadData[row]["Województwo"];
         case Powiat:
-            return m_userData[row].m_powiat;
+            return m_urzadData[row]["Powiat"];
         case Miejscowosc:
-            return m_userData[row].m_miejscowość;
+            return m_urzadData[row]["miejscowość"];
         case Kod_Pocztowy:
-            return m_userData[row].m_kod_pocztowy;
+            return m_urzadData[row]["Kod pocztowy"];
         case Poczta:
-            return m_userData[row].m_poczta;
+            return m_urzadData[row]["poczta"];
         case Ulica:
-            return m_userData[row].m_ulica;
+            return m_urzadData[row]["Ulica"];
         case Nr_Domu:
-            return m_userData[row].m_nr_domu;
+            return m_urzadData[row]["Nr domu"];
         case Kierunkowy:
-            return m_userData[row].m_kierunkowy;
+            return m_urzadData[row]["telefon kierunkowy"];
         case Telefon:
-            return m_userData[row].m_telefon;
+            return m_urzadData[row]["telefon"];
         case Telefon2:
-            return m_userData[row].m_telefon2;
+            return m_urzadData[row]["telefon 2"];
         case Email:
-            return m_userData[row].m_email;
+            return m_urzadData[row]["email"];
         }
 
         return QVariant();
@@ -70,20 +85,20 @@ bool UrzadDataModel::setData(const QModelIndex &index, const QVariant &value, in
 
     QStringList newData = value.toString().split("#");
 
-    m_userData[row].m_kod = newData[0];
-    m_userData[row].m_nazwa = newData[1];
-    m_userData[row].m_nazwa_samorządu = newData[2];
-    m_userData[row].m_województwo = newData[3];
-    m_userData[row].m_powiat = newData[4];
-    m_userData[row].m_miejscowość = newData[5];
-    m_userData[row].m_kod_pocztowy = newData[6];
-    m_userData[row].m_poczta = newData[7];
-    m_userData[row].m_ulica = newData[8];
-    m_userData[row].m_nr_domu = newData[9];
-    m_userData[row].m_kierunkowy = newData[10];
-    m_userData[row].m_telefon = newData[11];
-    m_userData[row].m_telefon2 = newData[12];
-    m_userData[row].m_email = newData[13];
+    m_urzadData[row]["Kod_TERYT"] = newData[0];
+    m_urzadData[row]["nazwa_urzedu"] = newData[1];
+    m_urzadData[row]["nazwa_samorządu"] = newData[2];
+    m_urzadData[row]["Województwo"] = newData[3];
+    m_urzadData[row]["Powiat"] = newData[4];
+    m_urzadData[row]["miejscowość"] = newData[5];
+    m_urzadData[row]["Kod pocztowy"] = newData[6];
+    m_urzadData[row]["poczta"] = newData[7];
+    m_urzadData[row]["Ulica"] = newData[8];
+    m_urzadData[row]["Nr domu"] = newData[9];
+    m_urzadData[row]["telefon kierunkowy"] = newData[10];
+    m_urzadData[row]["telefon"] = newData[11];
+    m_urzadData[row]["telefon 2"] = newData[12];
+    m_urzadData[row]["email"] = newData[13];
 
     emit dataChanged(index, index);
     return true;
@@ -117,9 +132,4 @@ QHash<int, QByteArray> UrzadDataModel::roleNames() const
 
     };
     return mapping;
-}
-
-void UrzadDataModel::readData()
-{
-
 }

@@ -6,6 +6,8 @@ Rectangle {
     id: leftPanel
 
     required property AbstractItemModel architekciModel
+    required property AbstractItemModel urzedyModel
+
     color: mainTheme.background_color
 
     ColumnLayout {
@@ -36,7 +38,7 @@ Rectangle {
             fieldText: "Urząd"
             width: 253
             height: 58
-            comboModel: UrzadModel {}
+            comboModel: leftPanel.urzedyModel
             backendProp: backend2.urzad
         }
         ComboField {

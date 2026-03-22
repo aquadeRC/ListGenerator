@@ -4,18 +4,8 @@
 #include <QJsonDocument>
 
 ArchitektDataWrapper::ArchitektDataWrapper()
-    : IDataWrapper()
+    : IDataWrapper(DATA_TYPES::ARCHITEKT_DATA, "ArchitektData.json")
 {}
-
-QString ArchitektDataWrapper::getDataFile() const
-{
-    return m_dataFile;
-}
-
-DATA_TYPES ArchitektDataWrapper::getType()
-{
-    return m_type;
-}
 
  QList<QMap<QString, QString>> ArchitektDataWrapper::read(const QJsonObject &json)const
 {
@@ -27,7 +17,6 @@ DATA_TYPES ArchitektDataWrapper::getType()
          for (const QJsonValue &user : users)
              data.append(readData(user.toObject()));
      }
-
      return data;
 }
 

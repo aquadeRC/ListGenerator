@@ -6,34 +6,25 @@ Kernel::Kernel(QObject *parent)
     : QObject{parent},
     m_DataWrapperManager {DataWraperManager(this)}
 {
-    init();
 }
 
-QStringList Kernel::getModelInwestycje()
+AbstractAppModel* Kernel::getModelInwestycje()
 {
-    return QStringList(); //getData
+   return m_DataWrapperManager.getModel(DATA_TYPES::INWESTYCJE_DATA);
 }
 
-QList<QMap<QString, QString>> Kernel::getModelUrzedy()
+AbstractAppModel* Kernel::getModelUrzedy()
 {
-return m_pimp->m_urzedy.get();
+    return m_DataWrapperManager.getModel(DATA_TYPES::URZEDY_DATA);
 }
 
-QList<QMap<QString, QString>> Kernel::getModelArchitekci()
+AbstractAppModel* Kernel::getModelArchitekci()
 {
-    return m_pimp->m_architekci.get();
+    return m_DataWrapperManager.getModel(DATA_TYPES::ARCHITEKT_DATA);
 }
 
-
-QStringList Kernel::getModelSpraw()
+AbstractAppModel* Kernel::getModelInwestor()
 {
-return QStringList();
+     return m_DataWrapperManager.getModel(DATA_TYPES::INWESTOR_DATA);
 }
 
-void Kernel::init()
-{
- auto archData = m_pimp->m_architektWraper->getData();
-
-    qDebug() << archData.length();
-m_pimp->m_architekci->initData(archData);
-}

@@ -14,7 +14,9 @@ ApplicationWindow {
     color: "#F7F8FA"
 
     required property Kernel backEnd
-    required property AbstractItemModel archModel
+    property AbstractItemModel archModel: backEnd.getModelArchitekci()
+    property AbstractItemModel urzadModel: backEnd.getModelUrzedy()
+
     property double headerHight: 79
     property double leftPanelW: 297
 
@@ -54,6 +56,7 @@ ApplicationWindow {
         anchors.top: toolBar.bottom
         anchors.left: root.left
         architekciModel: root.archModel
+        urzedyModel:root.urzadModel
     }
 
     Settings {

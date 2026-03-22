@@ -1,13 +1,13 @@
 #ifndef URZADDATAMODEL_H
 #define URZADDATAMODEL_H
 
+#include "AbstractAppModel.h"
 #include <QAbstractListModel>
 #include <QModelIndex>
 #include <QVariant>
-#include "DataTypes/UrzadData.h"
 
 namespace Modele_Danych {
-class UrzadDataModel : public QAbstractListModel
+class UrzadDataModel : public AbstractAppModel
 {
     Q_OBJECT
 public:
@@ -29,6 +29,8 @@ public:
     };
     explicit UrzadDataModel(QObject *parent = nullptr);
 
+    void initData(const QList<QMap<QString, QString>>&data) override;
+    QList<QMap<QString, QString>> getData() const;
 
     // Basic functionality:
     int rowCount(const QModelIndex &parent = QModelIndex()) const override;
@@ -42,8 +44,7 @@ public:
     QHash<int, QByteArray> roleNames() const override;
 
 private:
-    void readData();
-    QList<UrzadData> m_userData;
+    QList<QMap<QString, QString>> m_urzadData;
 
 };
 }

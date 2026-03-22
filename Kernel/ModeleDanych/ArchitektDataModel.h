@@ -1,13 +1,14 @@
 #ifndef ARCHITEKTDATAMODEL_H
 #define ARCHITEKTDATAMODEL_H
 
+#include "AbstractAppModel.h"
 #include <QAbstractListModel>
 #include <QModelIndex>
 #include <QVariant>
 #include <QtQml>
 
 //namespace Modele_Danych {
-class ArchitektDataModel : public QAbstractListModel
+class ArchitektDataModel : public AbstractAppModel
 {
     Q_OBJECT
 public:
@@ -19,7 +20,7 @@ public:
 
     explicit ArchitektDataModel(QObject *parent = nullptr);
 
-    void initData(const QList<QMap<QString, QString>>&data);
+    void initData(const QList<QMap<QString, QString>>&data) override;
     QList<QMap<QString, QString>> getData() const;
 
     int rowCount(const QModelIndex &parent = QModelIndex()) const override;

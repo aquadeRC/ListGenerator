@@ -10,7 +10,7 @@ int main(int argc, char *argv[])
     app.setApplicationName("PismoGenerator");
 
     Kernel appKernel;
-    ArchitektDataModel *archModel = appKernel.getModelArchitekci();
+  //  ArchitektDataModel *archModel = appKernel.getModelArchitekci();
    // QStringListModel archModel;
    // archModel.setStringList(appKernel.getListaArchitekci());
 
@@ -29,8 +29,8 @@ int main(int argc, char *argv[])
 
 
     engine.setInitialProperties({
-        {"backEnd", QVariant::fromValue(&appKernel)},
-        {"archModel", QVariant::fromValue(archModel)},
+        {"backEnd", QVariant::fromValue(&appKernel)}
+     //   {"archModel", QVariant::fromValue(archModel)},
     });
     engine.loadFromModule("ListGenerator", "Main");
 

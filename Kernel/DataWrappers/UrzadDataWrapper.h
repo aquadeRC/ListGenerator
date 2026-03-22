@@ -1,15 +1,15 @@
-#ifndef ARCHITEKTDATAWRAPPER_H
-#define ARCHITEKTDATAWRAPPER_H
+#ifndef URZADDATAWRAPPER_H
+#define URZADDATAWRAPPER_H
 
 #include "IDataWrapper.h"
 
-class ArchitektDataWrapper : public IDataWrapper
+class UrzadDataWrapper : public IDataWrapper
 {
 public:
-    explicit ArchitektDataWrapper();
+    explicit UrzadDataWrapper();
     QList<QMap<QString, QString>> read(const QJsonObject &json) const override;
 protected:
     QMap<QString, QString> readData(const QJsonObject &json) const override;
 };
 
-#endif // ARCHITEKTDATAWRAPPER_H
+#endif // URZADDATAWRAPPER_H

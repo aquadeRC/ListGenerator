@@ -3,7 +3,7 @@
 //using namespace Modele_Danych;
 
 ArchitektDataModel::ArchitektDataModel(QObject *parent)
-    : QAbstractListModel(parent)
+    : AbstractAppModel(parent)
 {}
 
 void ArchitektDataModel::initData(const  QList<QMap<QString, QString>> &data)

@@ -4,14 +4,16 @@
 #include <QObject>
 #include <QAbstractListModel>
 #include "KernelCommon.h"
+#include "ModeleDanych/AbstractAppModel.h"
 #include "DataWrappers/IDataWrapper.h"
 
+/*
 struct DataObject{
 public:
     DATA_TYPES m_type;
-    std::shared_ptr<QAbstractListModel> m_model;
-    QList<QMap<QString, QString>> m_data;
-};
+    std::shared_ptr<AbstractAppModel> m_model;
+   // QList<QMap<QString, QString>> m_data;
+};*/
 
 class DataWraperManager: public QObject
 {
@@ -19,16 +21,17 @@ class DataWraperManager: public QObject
 public:  
 
     explicit DataWraperManager(QObject *parent = nullptr);
-    QList<QMap<QString, QString>> getData(DATA_TYPES aType);
+    //QList<QMap<QString, QString>> getData(DATA_TYPES aType);
+    AbstractAppModel* getModel(DATA_TYPES aType);
 
 private :
     void createDataModels();
     QList<QMap<QString, QString>> loadData(const IDataWrapper& aWrapper);
 
     QString m_dataDir{"/Kernel/Data/"};
-    QMap<DATA_TYPES, QList<QMap<QString, QString>>> m_data;
-    QList<std::shared_ptr<IDataWrapper>> m_wrappers;
-    QList<DataObject> m_dataModels;
+    //QMap<DATA_TYPES, QList<QMap<QString, QString>>> m_data;
+   // QList<std::shared_ptr<IDataWrapper>> m_wrappers;
+    QMap<DATA_TYPES, std::shared_ptr<AbstractAppModel>> m_dataModels;
 };
 
 #endif // DATAWRAPPERMANAGER_H

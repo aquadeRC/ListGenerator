@@ -10,42 +10,44 @@
 #include <QList>
 
 #include "DataWrappers/ArchitektDataWrapper.h"
+#include "DataWrappers/UrzadDataWrapper.h"
+
 #include "ModeleDanych/ArchitektDataModel.h"
+#include "ModeleDanych/UrzadDataModel.h"
 
 
 DataWraperManager::DataWraperManager(QObject *parent)
     : QObject{parent}
 {
     createDataModels();
-    loadData();
 }
 
-QList<QMap<QString, QString>>  DataWraperManager::getData(DATA_TYPES aType)
+AbstractAppModel* DataWraperManager::getModel(DATA_TYPES aType)
 {
-    if(m_data.contains(aType))
+    if(m_dataModels.contains(aType))
     {
-        return m_data[aType];
+        return m_dataModels[aType].get();
     }
     else
     {
-        return QList<QMap<QString, QString>> {};
+        return nullptr;
     }
 }
 
 void DataWraperManager::createDataModels()
 {
-   // m_wrappers.append(std::make_shared<ArchitektDataWrapper>());
-
     ArchitektDataWrapper archWrapper = ArchitektDataWrapper();
-
-    DataObject architekData;
-    architekData.m_type = archWrapper.getType();
-    architekData.m_data = loadData(archWrapper);
-    architekData.m_model = std::make_shared<ArchitektDataModel>(this);
-    architekData.m_model->initData(architekData.m_data);
+    DATA_TYPES archType = archWrapper.getType();
+    auto archData = loadData(archWrapper);
+    m_dataModels[archType]= std::make_shared<ArchitektDataModel>(this);
+    m_dataModels[archType]->initData(archData);
 
 
-    m_dataModels.append(architekData);
+    UrzadDataWrapper urzadWrapper = UrzadDataWrapper();
+    DATA_TYPES urzadType = urzadWrapper.getType();
+    auto urzadData = loadData(urzadWrapper);
+    m_dataModels[urzadType]= std::make_shared<Modele_Danych::UrzadDataModel>(this);
+    m_dataModels[urzadType]->initData(urzadData);
 }
 
 
@@ -53,46 +55,27 @@ QList<QMap<QString, QString>> DataWraperManager::loadData(const IDataWrapper& aW
     {
     QDir dir;
 
-        QString dataFile = aWrapper.getDataFile();
-        QFile file(dir.absolutePath() + m_dataDir + dataFile );
-        if (!file.open(QIODevice::ReadOnly))
+    QString dataFile = aWrapper.getDataFile();
+    QFile file(dir.absolutePath() + m_dataDir + dataFile );
+    if (!file.open(QIODevice::ReadOnly))
         {
-            QString message = QString("Nie mogę otworzyć pliku %1").arg(dataFile);
+           QFileInfo info(file);
+            QString message = QString("Nie mogę otworzyć pliku %1").arg(info.absoluteFilePath() );
             qWarning(message.toStdString().c_str());
+
             return QList<QMap<QString, QString>>{};
         }
 
-        QByteArray loadData = file.readAll();
-        file.close();
+    QByteArray loadData = file.readAll();
+    file.close();
 
-        QJsonParseError perror;
-        QJsonDocument loadDoc(QJsonDocument::fromJson(loadData,&perror));
-
-        return aWrapper.read(loadDoc.object());
-/*
-    for(const auto& wrapper: m_wrappers )
+    QJsonParseError perror;
+    QJsonDocument loadDoc(QJsonDocument::fromJson(loadData,&perror));
+    if(perror.error != QJsonParseError::NoError)
     {
-        QString dataFile = wrapper->getDataFile();
-        QFile file(dir.absolutePath() + m_dataDir + dataFile );
-        if (!file.open(QIODevice::ReadOnly))
-            {
-                QString message = QString("Nie mogę otworzyć pliku %1").arg(dataFile);
-                qWarning(message.toStdString().c_str());
-                return;
-            }
-
-        QByteArray loadData = file.readAll();
-        file.close();
-
-        QJsonParseError perror;
-        QJsonDocument loadDoc(QJsonDocument::fromJson(loadData,&perror));
-
-        auto data = wrapper->read(loadDoc.object());
-        if(data.isEmpty() == false)
-        {
-            m_data[wrapper->getType()]= data;
-        }
+        qWarning(perror.errorString().toStdString().c_str());
     }
-*/
+
+    return aWrapper.read(loadDoc.object());
 }
 

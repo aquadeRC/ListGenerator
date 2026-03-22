@@ -21,11 +21,16 @@ qt_add_qml_module(${PROJECT_NAME}
 		DataWrappers/ArchitektDataWrapper.h 
 		DataWrappers/ArchitektDataWrapper.cpp
 		DataWrappers/IDataWrapper.h
+		SOURCES ModeleDanych/AbstractAppModel.h
+		SOURCES DataWrappers/UrzadDataWrapper.h DataWrappers/UrzadDataWrapper.cpp
 
 )
 qt_add_resources(${PROJECT_NAME} "data"
         PREFIX "/data"
-	FILES Data/ArchitektData.json)
+	FILES
+	Data/ArchitektData.json
+	Data/UrzedyData.json
+    )
 
 target_link_libraries(${PROJECT_NAME}
     PRIVATE Qt6::Quick
