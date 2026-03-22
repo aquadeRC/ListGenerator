@@ -1,0 +1,12 @@
+#ifndef MODELEDANYCH_GLOBAL_H
+#define MODELEDANYCH_GLOBAL_H
+
+#include <QtCore/qglobal.h>
+
+#if defined(MODELEDANYCH_LIBRARY)
+#define MODELEDANYCH_EXPORT Q_DECL_EXPORT
+#else
+#define MODELEDANYCH_EXPORT Q_DECL_IMPORT
+#endif
+
+#endif // MODELEDANYCH_GLOBAL_H

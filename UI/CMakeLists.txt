@@ -1,0 +1,23 @@
+project(LG_GUI VERSION 0.1 LANGUAGES CXX)
+
+qt_add_qml_module(${PROJECT_NAME}
+    STATIC
+    URI LG_GUI
+       QML_FILES AppTheme.qml
+		QML_FILES AppToolBar.qml
+		QML_FILES ComboField.qml
+		QML_FILES Combo.qml
+		QML_FILES Footer.qml
+		QML_FILES IconButton.qml
+		QML_FILES LeftPanel.qml
+		QML_FILES ThemeSwitch.qml
+		QML_FILES ArchitektModel.qml
+		QML_FILES InwestorModel.qml
+		QML_FILES InwestycjaModel.qml
+		QML_FILES UrzadModel.qml
+
+	RESOURCES icons/ksiezyc.svg icons/sloneczko.svg icons/ustawienia.svg
+)
+
+
+target_link_libraries(${PROJECT_NAME} PRIVATE Qt6::Quick)

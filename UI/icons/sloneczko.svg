@@ -1,0 +1,134 @@
+<?xml version="1.0" encoding="UTF-8" standalone="no"?>
+<!-- Created with Inkscape (http://www.inkscape.org/) -->
+
+<svg
+   width="32"
+   height="32"
+   viewBox="0 0 32 32"
+   version="1.1"
+   id="svg1"
+   inkscape:version="1.4.2 (ebf0e94, 2025-05-08)"
+   sodipodi:docname="sloneczko.svg"
+   xmlns:inkscape="http://www.inkscape.org/namespaces/inkscape"
+   xmlns:sodipodi="http://sodipodi.sourceforge.net/DTD/sodipodi-0.dtd"
+   xmlns="http://www.w3.org/2000/svg"
+   xmlns:svg="http://www.w3.org/2000/svg">
+  <sodipodi:namedview
+     id="namedview1"
+     pagecolor="#ffffff"
+     bordercolor="#000000"
+     borderopacity="0.25"
+     inkscape:showpageshadow="2"
+     inkscape:pageopacity="0.0"
+     inkscape:pagecheckerboard="0"
+     inkscape:deskcolor="#d1d1d1"
+     inkscape:document-units="px"
+     inkscape:zoom="17.081048"
+     inkscape:cx="23.417767"
+     inkscape:cy="15.660631"
+     inkscape:window-width="1920"
+     inkscape:window-height="991"
+     inkscape:window-x="-9"
+     inkscape:window-y="-9"
+     inkscape:window-maximized="1"
+     inkscape:current-layer="layer1" />
+  <defs
+     id="defs1" />
+  <g
+     inkscape:label="Warstwa 1"
+     inkscape:groupmode="layer"
+     id="layer1">
+    <ellipse
+       style="fill:#000000;stroke:#28220b;stroke-width:0.263414"
+       id="path1"
+       cx="16"
+       cy="16"
+       rx="7.3682928"
+       ry="7.3682933" />
+    <rect
+       style="fill:#000000;stroke:#28220b;stroke-width:0.245669"
+       id="rect1"
+       width="2.690815"
+       height="7.0789132"
+       x="14.654593"
+       y="0.74514878"
+       ry="1.3247089" />
+    <rect
+       style="fill:#000000;stroke:#28220b;stroke-width:0.245669"
+       id="rect2"
+       width="2.690815"
+       height="7.0789132"
+       x="14.796696"
+       y="-31.207775"
+       ry="1.3247089"
+       inkscape:transform-center-x="-11.792133"
+       inkscape:transform-center-y="-0.019075105"
+       transform="rotate(89.706169)" />
+    <rect
+       style="fill:#000000;stroke:#28220b;stroke-width:0.245669"
+       id="rect3"
+       width="2.690815"
+       height="7.0789132"
+       x="-17.21418"
+       y="-31.483208"
+       ry="1.3247089"
+       inkscape:transform-center-x="-0.014051599"
+       inkscape:transform-center-y="11.79214"
+       transform="rotate(179.73057)" />
+    <rect
+       style="fill:#000000;stroke:#28220b;stroke-width:0.245669"
+       id="rect4"
+       width="2.690815"
+       height="7.0789132"
+       x="-17.448061"
+       y="0.55891109"
+       ry="1.3247089"
+       inkscape:transform-center-x="11.792145"
+       inkscape:transform-center-y="0.0084890009"
+       transform="rotate(-90.242405)" />
+    <rect
+       style="fill:#000000;stroke:#28220b;stroke-width:0.245669"
+       id="rect5"
+       width="2.690815"
+       height="7.0789132"
+       x="-1.5402454"
+       y="7.319756"
+       ry="1.3247089"
+       inkscape:transform-center-x="8.3652158"
+       inkscape:transform-center-y="-8.3113129"
+       transform="rotate(-45.386352)" />
+    <rect
+       style="fill:#000000;stroke:#28220b;stroke-width:0.245669"
+       id="rect6"
+       width="2.690815"
+       height="7.0789132"
+       x="21.348276"
+       y="-15.435217"
+       ry="1.3247089"
+       inkscape:transform-center-x="-8.4359023"
+       inkscape:transform-center-y="-8.2395581"
+       transform="rotate(45.473437)" />
+    <rect
+       style="fill:#000000;stroke:#28220b;stroke-width:0.245669"
+       id="rect7"
+       width="2.690815"
+       height="7.0789132"
+       x="-1.1272361"
+       y="-37.983364"
+       ry="1.3247089"
+       inkscape:transform-center-x="-8.3433667"
+       inkscape:transform-center-y="8.3332471"
+       transform="rotate(134.76407)" />
+    <rect
+       style="fill:#000000;stroke:#28220b;stroke-width:0.245669"
+       id="rect8"
+       width="2.690815"
+       height="7.0789132"
+       x="-23.955606"
+       y="-15.535662"
+       ry="1.3247089"
+       inkscape:transform-center-x="8.3231647"
+       inkscape:transform-center-y="8.3534253"
+       transform="rotate(-135.30513)" />
+  </g>
+</svg>

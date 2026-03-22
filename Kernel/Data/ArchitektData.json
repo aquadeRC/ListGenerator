@@ -1,0 +1,14 @@
+{
+    "architek":[
+        {
+           "nazwa":"Katarzyna Chmara",
+           "telefon":"692-449-443",
+           "email":"kch@hamerski.pl"
+        },
+        {
+            "nazwa":"Marcin Hamerski",
+            "telefon":"600-011-427",
+            "email":"m@hamerski.pl"
+        }
+]
+}
