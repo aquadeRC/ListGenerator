@@ -6,7 +6,7 @@
 #include "KernelCommon.h"
 #include "ModeleDanych/AbstractAppModel.h"
 #include "DataWrappers/IDataWrapper.h"
-
+#include <memory>
 /*
 struct DataObject{
 public:
@@ -21,17 +21,16 @@ class DataWraperManager: public QObject
 public:  
 
     explicit DataWraperManager(QObject *parent = nullptr);
-    //QList<QMap<QString, QString>> getData(DATA_TYPES aType);
     AbstractAppModel* getModel(DATA_TYPES aType);
+
+protected:
+    struct DataWraperManagerImpl;
 
 private :
     void createDataModels();
     QList<QMap<QString, QString>> loadData(const IDataWrapper& aWrapper);
 
-    QString m_dataDir{"/Kernel/Data/"};
-    //QMap<DATA_TYPES, QList<QMap<QString, QString>>> m_data;
-   // QList<std::shared_ptr<IDataWrapper>> m_wrappers;
-    QMap<DATA_TYPES, std::shared_ptr<AbstractAppModel>> m_dataModels;
+    std::shared_ptr<DataWraperManagerImpl> m_Impl;
 };
 
 #endif // DATAWRAPPERMANAGER_H

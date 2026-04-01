@@ -16,17 +16,31 @@
 #include "ModeleDanych/UrzadDataModel.h"
 
 
+
+struct DataWraperManager::DataWraperManagerImpl
+{
+    DataWraperManagerImpl()
+    {
+
+    }
+
+    QString m_dataDir{"/Kernel/Data/"};
+    QMap<DATA_TYPES, std::shared_ptr<AbstractAppModel>> m_dataModels;
+
+};
+
 DataWraperManager::DataWraperManager(QObject *parent)
     : QObject{parent}
 {
+    m_Impl.reset(new DataWraperManagerImpl());
     createDataModels();
 }
 
 AbstractAppModel* DataWraperManager::getModel(DATA_TYPES aType)
 {
-    if(m_dataModels.contains(aType))
+    if(m_Impl->m_dataModels.contains(aType))
     {
-        return m_dataModels[aType].get();
+        return m_Impl->m_dataModels[aType].get();
     }
     else
     {
@@ -39,15 +53,17 @@ void DataWraperManager::createDataModels()
     ArchitektDataWrapper archWrapper = ArchitektDataWrapper();
     DATA_TYPES archType = archWrapper.getType();
     auto archData = loadData(archWrapper);
-    m_dataModels[archType]= std::make_shared<ArchitektDataModel>(this);
-    m_dataModels[archType]->initData(archData);
+
+    m_Impl->m_dataModels[archType]= std::make_shared<ArchitektDataModel>(this);
+    m_Impl->m_dataModels[archType]->initData(archData);
 
 
     UrzadDataWrapper urzadWrapper = UrzadDataWrapper();
     DATA_TYPES urzadType = urzadWrapper.getType();
     auto urzadData = loadData(urzadWrapper);
-    m_dataModels[urzadType]= std::make_shared<Modele_Danych::UrzadDataModel>(this);
-    m_dataModels[urzadType]->initData(urzadData);
+
+    m_Impl->m_dataModels[urzadType]= std::make_shared<Modele_Danych::UrzadDataModel>(this);
+    m_Impl->m_dataModels[urzadType]->initData(urzadData);
 }
 
 
@@ -56,7 +72,7 @@ QList<QMap<QString, QString>> DataWraperManager::loadData(const IDataWrapper& aW
     QDir dir;
 
     QString dataFile = aWrapper.getDataFile();
-    QFile file(dir.absolutePath() + m_dataDir + dataFile );
+    QFile file(dir.absolutePath() + m_Impl->m_dataDir + dataFile );
     if (!file.open(QIODevice::ReadOnly))
         {
            QFileInfo info(file);

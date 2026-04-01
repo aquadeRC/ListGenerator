@@ -25,6 +25,7 @@ public:
 
 signals:
 
+
 private:
     DataWraperManager m_DataWrapperManager;
 };
