@@ -5,6 +5,7 @@ project(ListGenerator VERSION 0.1 LANGUAGES CXX)
 set(CMAKE_CXX_STANDARD_REQUIRED ON)
 
 find_package(Qt6 REQUIRED COMPONENTS Quick)
+find_package(Qt6 REQUIRED COMPONENTS NetworkAuth)
 
 qt_standard_project_setup(REQUIRES 6.10)
 
@@ -47,7 +48,7 @@ target_include_directories(app${PROJECT_NAME}
     )
 
 target_link_libraries(app${PROJECT_NAME}
-    PRIVATE Qt6::Quick
+    PRIVATE Qt6::Quick Qt6::NetworkAuth
     LG_GUI
     Kernel
 )

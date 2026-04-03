@@ -19,5 +19,12 @@ qt_add_qml_module(${PROJECT_NAME}
 	RESOURCES icons/ksiezyc.svg icons/sloneczko.svg icons/ustawienia.svg
 )
 
+add_custom_target(copy_Icons_data
+        COMMAND ${CMAKE_COMMAND} -E copy_directory_if_different
+	"${CMAKE_CURRENT_SOURCE_DIR}/icons/"
+	"${CMAKE_CURRENT_BINARY_DIR}/icons"
+    COMMENT "Copying users data"
+)
+add_dependencies(${PROJECT_NAME} copy_Icons_data)
 
 target_link_libraries(${PROJECT_NAME} PRIVATE Qt6::Quick)

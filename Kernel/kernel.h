@@ -6,6 +6,7 @@
 #include <QQmlEngine>
 #include <QStringList>
 #include "DataWrapperManager.h"
+#include "googlesso.h"
 
 using namespace std;
 
@@ -22,12 +23,16 @@ public:
     Q_INVOKABLE AbstractAppModel* getModelInwestycje();
     Q_INVOKABLE AbstractAppModel* getModelArchitekci();
     Q_INVOKABLE AbstractAppModel* getModelInwestor();
+    Q_INVOKABLE void authenticate();
+
+    Q_INVOKABLE void getProjects();
 
 signals:
 
 
 private:
     DataWraperManager m_DataWrapperManager;
+    GoogleSSO m_googleWrapper;
 };
 
 #endif // KERNEL_H

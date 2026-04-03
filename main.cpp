@@ -15,6 +15,7 @@ int main(int argc, char *argv[])
    // archModel.setStringList(appKernel.getListaArchitekci());
 
 
+    //appKernel.getProjects();
 
     QQmlApplicationEngine engine;
     engine.addImportPath(QString("%1/Kernel").arg(QGuiApplication::applicationDirPath()));

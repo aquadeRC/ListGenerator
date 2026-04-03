@@ -18,6 +18,15 @@ Rectangle {
         anchors.horizontalCenter: leftPanel.horizontalCenter
 
         ComboField {
+            id: projektF
+            fieldText: "Projekt"
+            width: 253
+            height: 58
+            comboModel: InwestycjaModel {}
+            backendProp: backend2.inwestycja
+        }
+
+        ComboField {
             id: inwestycjaF
             fieldText: "Inwestycja"
             width: 253
@@ -62,6 +71,10 @@ Rectangle {
             id: generujBT
             buttonName: qsTr("Generuj")
             iconPath: "icons/ustawienia.svg"
+
+            onClicked: {
+                backEnd.getProjects();
+            }
         }
     }
 }

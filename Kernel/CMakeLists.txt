@@ -2,6 +2,7 @@ cmake_minimum_required(VERSION 3.16)
 project(Kernel VERSION 0.1 LANGUAGES CXX)
 
 set(CMAKE_AUTORCC ON)
+find_package(Qt6 REQUIRED COMPONENTS NetworkAuth)
 
 #add_subdirectory(ModeleDanych)
 qt_add_qml_module(${PROJECT_NAME}
@@ -23,6 +24,8 @@ qt_add_qml_module(${PROJECT_NAME}
 		DataWrappers/IDataWrapper.h
 		SOURCES ModeleDanych/AbstractAppModel.h
 		SOURCES DataWrappers/UrzadDataWrapper.h DataWrappers/UrzadDataWrapper.cpp
+		SOURCES
+		SOURCES googlesso.h googlesso.cpp
 
 )
 qt_add_resources(${PROJECT_NAME} "data"
@@ -32,6 +35,16 @@ qt_add_resources(${PROJECT_NAME} "data"
 	Data/UrzedyData.json
     )
 
+
+
 target_link_libraries(${PROJECT_NAME}
-    PRIVATE Qt6::Quick
+    PRIVATE Qt6::Quick Qt6::NetworkAuth
     )
+
+add_custom_target(copy_data
+        COMMAND ${CMAKE_COMMAND} -E copy_directory_if_different
+	"${CMAKE_CURRENT_SOURCE_DIR}/Data/"
+	"${CMAKE_CURRENT_BINARY_DIR}/Data"
+    COMMENT "Copying users data"
+)
+add_dependencies(${PROJECT_NAME} copy_data)

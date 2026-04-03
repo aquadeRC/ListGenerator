@@ -1,11 +1,15 @@
 #include "kernel.h"
 #include "KernelCommon.h"
 
+#include<QNetworkReply>
+
 
 Kernel::Kernel(QObject *parent)
     : QObject{parent},
-    m_DataWrapperManager {DataWraperManager(this)}
+    m_DataWrapperManager {DataWraperManager(this)},
+    m_googleWrapper{GoogleSSO(this)}
 {
+    authenticate();
 }
 
 AbstractAppModel* Kernel::getModelInwestycje()
@@ -28,3 +32,33 @@ AbstractAppModel* Kernel::getModelInwestor()
      return m_DataWrapperManager.getModel(DATA_TYPES::INWESTOR_DATA);
 }
 
+
+ void Kernel::authenticate()
+{
+     m_googleWrapper.authenticate();
+}
+
+void Kernel::getProjects()
+{
+    std::optional<QJsonArray> result = m_googleWrapper.getSheetValues("Projekty");
+
+    QList<QStringList> projects;
+
+    if(result.has_value())
+    {
+        qDebug() << "rows in sheet:";
+        for(const auto &arr: result.value())
+        {
+            const QJsonArray row = arr.toArray();
+            QStringList projekt;
+            for(const auto& rowValue:row)
+            {
+                QString val = rowValue.toString();
+                projekt.append(val);
+
+            }
+            projects.append(projekt);
+        }
+    qDebug() << projects;
+    }
+}

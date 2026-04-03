@@ -56,7 +56,7 @@ ApplicationWindow {
         anchors.top: toolBar.bottom
         anchors.left: root.left
         architekciModel: root.archModel
-        urzedyModel:root.urzadModel
+        urzedyModel: root.urzadModel
     }
 
     Settings {
