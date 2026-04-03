@@ -38,6 +38,12 @@ AbstractAppModel* Kernel::getModelInwestor()
      m_googleWrapper.authenticate();
 }
 
+
+void Kernel::getDataFromGoogle()
+{
+    getProjects();
+}
+
 void Kernel::getProjects()
 {
     std::optional<QJsonArray> result = m_googleWrapper.getSheetValues("Projekty");

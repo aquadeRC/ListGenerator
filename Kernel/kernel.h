@@ -27,6 +27,8 @@ public:
 
     Q_INVOKABLE void getProjects();
 
+    Q_INVOKABLE void getDataFromGoogle();
+
 signals:
 
 

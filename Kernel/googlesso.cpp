@@ -7,15 +7,8 @@
 #include <QDesktopServices>
 #include <QtNetworkAuth>
 
-// Get these from https://console.developers.google.com/apis/credentials
-#define CLIENT_ID "318197049534-ag95mu1j6cdcj16q1s0bsmrgv2jkpudm.apps.googleusercontent.com"
-#define CLIENT_SECRET "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"
-#define AUTH_URI "https://accounts.google.com/o/oauth2/auth"
-#define TOKEN_URI "https://oauth2.googleapis.com/token"
-#define REDIRECT_URI "http://localhost" // "http://127.0.0.1:1234/"
 
 #define SAMPLE_SPREADSHEET_ID "1g1S-g0OqpXYvv0SxqhUCo-JUIF3hshegyjcByQbeI9I"
-#define SAMPLE_RANGE_NAME "Projekty!A2:J2"
 
 GoogleSSO::GoogleSSO(QObject *parent)
     : QObject(parent),
@@ -24,6 +17,7 @@ GoogleSSO::GoogleSSO(QObject *parent)
     m_google = new QOAuth2AuthorizationCodeFlow(this);
     m_networkManager = new QNetworkAccessManager(this);
     m_restManager = new QRestAccessManager(m_networkManager, this);
+    m_sheetFactory = QNetworkRequestFactory(m_sheetsEndPoint);
 
     init();
 }
@@ -33,14 +27,16 @@ GoogleSSO::~GoogleSSO() {
 }
 
 void GoogleSSO::init(){
-    m_google->setScope("https://www.googleapis.com/auth/spreadsheets.readonly");
+    m_google->setScope(m_scope);
 
-    m_sheetFactory = QNetworkRequestFactory({"https://sheets.googleapis.com/v4"});
-
+   // connect(m_networkManager,
+     //       SIGNAL(sslErrors(QNetworkReply*, const QList<QSslError> &)), this,
+       //     SLOT(slotSSLErrorHandler(QNetworkReply*, const QList<QSslError> &)));
 
     connect(m_networkManager,
-            SIGNAL(sslErrors(QNetworkReply*, const QList<QSslError> &)), this,
-            SLOT(slotSSLErrorHandler(QNetworkReply*, const QList<QSslError> &)));
+            &QNetworkAccessManager::sslErrors, this,
+            &GoogleSSO::slotSSLErrorHandler
+            );
 
     connect(m_google,
             &QOAuth2AuthorizationCodeFlow::authorizeWithBrowser,
@@ -62,17 +58,16 @@ void GoogleSSO::init(){
                 m_sheetFactory.setBearerToken(m_google->token().toLatin1());
             });
 
-    const QUrl authUri(AUTH_URI);
-    const auto clientId = CLIENT_ID;
-    const QUrl tokenUri(TOKEN_URI);
-    const auto clientSecret(CLIENT_SECRET);
-    const QUrl redirectUri(REDIRECT_URI);
+    const QUrl authUri(m_credentials.m_auth_uri);
+    const QUrl tokenUri(m_credentials.m_token_uri);
+    const QUrl redirectUri(m_credentials.m_redirect_uri);
+
     const auto port = static_cast<quint16>(redirectUri.port());
 
     m_google->setAuthorizationUrl(authUri);
-    m_google->setClientIdentifier(clientId);
+    m_google->setClientIdentifier(m_credentials.m_client_id);
     m_google->setTokenUrl(tokenUri);
-    m_google->setClientIdentifierSharedKey(clientSecret);
+    m_google->setClientIdentifierSharedKey(m_credentials.m_client_secret);
 
     m_google->setModifyParametersFunction(
         [&](QAbstractOAuth::Stage stage, QMultiMap<QString, QVariant> *parameters) {
@@ -82,9 +77,8 @@ void GoogleSSO::init(){
             }
         });
 
-
-    QOAuthHttpServerReplyHandler* replyHandler = new QOAuthHttpServerReplyHandler(port, this);
-    m_google->setReplyHandler(replyHandler);
+    m_replyHandler = new QOAuthHttpServerReplyHandler(port, this);
+    m_google->setReplyHandler(m_replyHandler);
 
     connect(m_google,
             &QOAuth2AuthorizationCodeFlow::granted,
@@ -293,4 +287,51 @@ void GoogleSSO::slotSetErrorMessage(const QString & anError)
     m_errorMessage = anError;
 
     emit signalError(m_errorMessage);
+}
+
+bool GoogleSSO::readCredentials()
+{
+    QDir dir;
+    QFile file(dir.absolutePath() + m_credentialsFile );
+    if (!file.open(QIODevice::ReadOnly))
+    {
+        QFileInfo info(file);
+        QString message = QString("Nie mogę otworzyć pliku %1").arg(info.absoluteFilePath() );
+        qWarning(message.toStdString().c_str());
+
+        return false;
+    }
+
+    QByteArray loadData = file.readAll();
+    file.close();
+
+    QJsonParseError perror;
+    QJsonDocument loadDoc(QJsonDocument::fromJson(loadData,&perror));
+    if(perror.error != QJsonParseError::NoError)
+    {
+        qWarning(perror.errorString().toStdString().c_str());
+    }
+
+    QJsonObject credObj = loadDoc.object();
+    if (const QJsonValue v = credObj["installed"]; v.isObject()) {
+        const QJsonObject credData = v.toObject();
+
+        if (const QJsonValue v = credData["client_id"]; v.isString())
+            m_credentials.m_client_id = v.toString();
+        if (const QJsonValue v = credData["project_id"]; v.isString())
+            m_credentials.m_project_id= v.toString();
+        if (const QJsonValue v = credData["auth_uri"]; v.isString())
+            m_credentials.m_auth_uri = v.toString();
+        if (const QJsonValue v = credData["token_uri"]; v.isString())
+            m_credentials.m_token_uri = v.toString();
+        if (const QJsonValue v = credData["auth_provider_x509_cert_url"]; v.isString())
+            m_credentials.m_token_provider = v.toString();
+        if (const QJsonValue v = credData["client_secret"]; v.isString())
+            m_credentials.m_client_secret = v.toString();
+        if (const QJsonValue v = credData["redirect_uris"]; v.isString())
+            m_credentials.m_redirect_uri = v.toString();
+
+        return true;
+    }
+    return false;
 }

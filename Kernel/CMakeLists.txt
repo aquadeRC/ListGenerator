@@ -26,6 +26,7 @@ qt_add_qml_module(${PROJECT_NAME}
 		SOURCES DataWrappers/UrzadDataWrapper.h DataWrappers/UrzadDataWrapper.cpp
 		SOURCES
 		SOURCES googlesso.h googlesso.cpp
+		SOURCES DataTypes/CredentialsData.h
 
 )
 qt_add_resources(${PROJECT_NAME} "data"

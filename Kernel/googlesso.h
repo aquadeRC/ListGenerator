@@ -8,6 +8,9 @@
 #include <QNetworkRequestFactory>
 #include <QNetworkAccessManager>
 #include <QRestAccessManager>
+#include <QOAuthHttpServerReplyHandler>
+
+#include "DataTypes/CredentialsData.h"
 
 class GoogleSSO : public QObject
 {
@@ -53,21 +56,30 @@ signals:
 
 protected slots:
     void slotSSLErrorHandler(QNetworkReply* aReplay,
-                            const QList<QSslError> & anErrorList);
+                             const QList<QSslError> & anErrorList);
 
 private:
     void init();
     std::optional<QJsonObject> getReplay(const QString& aUrl);
 
+    bool readCredentials();
+
     QPointer<QOAuth2AuthorizationCodeFlow> m_google {nullptr};
     QPointer<QNetworkAccessManager> m_networkManager {nullptr};
     QPointer<QRestAccessManager> m_restManager {nullptr};
+    QPointer<QOAuthHttpServerReplyHandler> m_replyHandler {nullptr};
+
 
     QNetworkRequestFactory m_sheetFactory {};
     QNetworkReply::NetworkError m_neworkReplyError {QNetworkReply::NoError};
     QString m_activeToken {};
     QString m_errorMessage {};
+    QString m_scope {"https://www.googleapis.com/auth/spreadsheets.readonly"};
+    QString m_sheetsEndPoint {"https://sheets.googleapis.com/v4"};
+    QString m_credentialsFile{"credentials.json"};
     bool m_isAuthenticated {false};
+
+    Modele_Danych::CredentialsData m_credentials{};
 };
 
 #endif // GOOGLESSO_H
