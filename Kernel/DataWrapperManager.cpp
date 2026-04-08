@@ -9,11 +9,12 @@
 #include <QJsonDocument>
 #include <QList>
 
-#include "DataWrappers/ArchitektDataWrapper.h"
 #include "DataWrappers/UrzadDataWrapper.h"
 
 #include "ModeleDanych/ArchitektDataModel.h"
 #include "ModeleDanych/UrzadDataModel.h"
+#include "ModeleDanych/InwestorzyModel.h"
+#include "ModeleDanych/ProjektModel.h"
 
 
 
@@ -26,7 +27,6 @@ struct DataWraperManager::DataWraperManagerImpl
 
     QString m_dataDir{"/Kernel/Data/"};
     QMap<DATA_TYPES, std::shared_ptr<AbstractAppModel>> m_dataModels;
-
 };
 
 DataWraperManager::DataWraperManager(QObject *parent)
@@ -50,12 +50,14 @@ AbstractAppModel* DataWraperManager::getModel(DATA_TYPES aType)
 
 void DataWraperManager::createDataModels()
 {
+    /*
     ArchitektDataWrapper archWrapper = ArchitektDataWrapper();
     DATA_TYPES archType = archWrapper.getType();
     auto archData = loadData(archWrapper);
 
     m_Impl->m_dataModels[archType]= std::make_shared<ArchitektDataModel>(this);
     m_Impl->m_dataModels[archType]->initData(archData);
+    */
 
 
     UrzadDataWrapper urzadWrapper = UrzadDataWrapper();
@@ -67,7 +69,38 @@ void DataWraperManager::createDataModels()
 }
 
 
-QList<QMap<QString, QString>> DataWraperManager::loadData(const IDataWrapper& aWrapper)
+void DataWraperManager::addSheetModel(DATA_TYPES aType, QList<QStringList> aData)
+{
+    switch(aType)
+    {
+    case DATA_TYPES::ARCHITEKT_DATA:
+        {
+        m_Impl->m_dataModels[aType]= std::make_shared<ArchitektDataModel>(this);
+        m_Impl->m_dataModels[aType]->initData(aData);
+
+        break;
+        }
+    case DATA_TYPES::PROJEKTY_DATA:
+        {
+        m_Impl->m_dataModels[aType]= std::make_shared<ProjektModel>(this);
+        m_Impl->m_dataModels[aType]->initData(aData);
+
+        break;
+        }
+    case DATA_TYPES::INWESTOR_DATA:
+        {
+        m_Impl->m_dataModels[aType]= std::make_shared<InwestorzyModel>(this);
+        m_Impl->m_dataModels[aType]->initData(aData);
+
+        break;
+        }
+    default:
+        {
+        }
+    }
+}
+
+QList<QStringList> DataWraperManager::loadData(const IDataWrapper& aWrapper)
     {
     QDir dir;
 
@@ -79,7 +112,7 @@ QList<QMap<QString, QString>> DataWraperManager::loadData(const IDataWrapper& aW
             QString message = QString("Nie mogę otworzyć pliku %1").arg(info.absoluteFilePath() );
             qWarning(message.toStdString().c_str());
 
-            return QList<QMap<QString, QString>>{};
+            return QList<QStringList>{};
         }
 
     QByteArray loadData = file.readAll();
@@ -95,3 +128,16 @@ QList<QMap<QString, QString>> DataWraperManager::loadData(const IDataWrapper& aW
     return aWrapper.read(loadDoc.object());
 }
 
+
+void DataWraperManager::dumpData()
+{
+    QMapIterator<DATA_TYPES, std::shared_ptr<AbstractAppModel>> modelsIt(m_Impl->m_dataModels);
+    while (modelsIt.hasNext())
+    {
+        modelsIt.next();
+        auto model = modelsIt.value();
+        model->dumpData();
+    }
+
+
+}

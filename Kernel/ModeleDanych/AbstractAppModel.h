@@ -12,12 +12,14 @@ public:
         : QAbstractListModel(parent)
     {}
 
-    virtual void initData(const QList<QMap<QString, QString>>&data) =0;
+    virtual void initData(const QList<QStringList>&data) =0;
 
     // Basic functionality:
     int rowCount(const QModelIndex &parent = QModelIndex()) const =0;
 
     QVariant data(const QModelIndex &index, int role = Qt::DisplayRole) const =0;
+
+    virtual void dumpData() =0;
 };
 
 #endif // ABSTRACTAPPMODEL_H

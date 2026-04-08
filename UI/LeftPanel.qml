@@ -73,7 +73,7 @@ Rectangle {
             iconPath: "icons/ustawienia.svg"
 
             onClicked: {
-                backEnd.getProjects();
+                backEnd.getDataFromGoogle();
             }
         }
     }

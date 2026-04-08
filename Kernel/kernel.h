@@ -26,6 +26,9 @@ public:
     Q_INVOKABLE void authenticate();
 
     Q_INVOKABLE void getProjects();
+    Q_INVOKABLE void getInwestorzy();
+    Q_INVOKABLE void getArchitekci();
+    Q_INVOKABLE void getUrzedy();
 
     Q_INVOKABLE void getDataFromGoogle();
 

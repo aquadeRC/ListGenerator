@@ -6,7 +6,7 @@ ArchitektDataModel::ArchitektDataModel(QObject *parent)
     : AbstractAppModel(parent)
 {}
 
-void ArchitektDataModel::initData(const  QList<QMap<QString, QString>> &data)
+void ArchitektDataModel::initData(const  QList<QStringList> &data)
 {
     if(data.isEmpty() == false)
     {
@@ -14,7 +14,7 @@ void ArchitektDataModel::initData(const  QList<QMap<QString, QString>> &data)
     }
 }
 
- QList<QMap<QString, QString>> ArchitektDataModel::getData() const
+ QList<QStringList> ArchitektDataModel::getData() const
 {
     return m_architektData;
 }
@@ -38,12 +38,14 @@ QVariant ArchitektDataModel::data(const QModelIndex &index, int role) const
     int row = index.row();
 
     switch (role) {
+    case ID:
+        return m_architektData[row].at(0);
     case Nazwa:
-        return m_architektData[row]["nazwa"];
+        return m_architektData[row].at(1);
     case Telefon:
-        return m_architektData[row]["telefon"];
+        return m_architektData[row].at(2);
     case Email:
-        return m_architektData[row]["email"];
+        return m_architektData[row].at(3);
     }
 
     return QVariant();
@@ -58,9 +60,10 @@ bool ArchitektDataModel::setData(const QModelIndex &index, const QVariant &value
 
     QStringList newData = value.toString().split("#");
 
-    m_architektData[row]["nazwa"] = newData[0];
-    m_architektData[row]["telefon"] = newData[1];
-    m_architektData[row]["email"] = newData[2];
+    m_architektData[row][0] = newData[0];
+    m_architektData[row][1] = newData[1];
+    m_architektData[row][2] = newData[2];
+    m_architektData[row][3] = newData[3];
 
     emit dataChanged(index, index);
     return true;
@@ -78,10 +81,21 @@ QHash<int, QByteArray> ArchitektDataModel::roleNames() const
 {
     QHash<int, QByteArray> mapping {
 
+        {ArchitektRoles::ID, "achitektId"},
         {ArchitektRoles::Nazwa, "nazwa"},
         {ArchitektRoles::Telefon, "telefon"},
         {ArchitektRoles::Email, "email"}
 
     };
     return mapping;
+}
+
+ void ArchitektDataModel::dumpData()
+{
+    qDebug() << "ArchitektDataModel";
+    QListIterator<QStringList> it(m_architektData);
+    while(it.hasNext())
+        {
+        qDebug() << it.next() ;
+        }
 }

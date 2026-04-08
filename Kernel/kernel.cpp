@@ -9,7 +9,11 @@ Kernel::Kernel(QObject *parent)
     m_DataWrapperManager {DataWraperManager(this)},
     m_googleWrapper{GoogleSSO(this)}
 {
-    authenticate();
+    bool result = m_googleWrapper.init();
+    if(result)
+    {
+    //  authenticate();
+    }
 }
 
 AbstractAppModel* Kernel::getModelInwestycje()
@@ -42,6 +46,11 @@ AbstractAppModel* Kernel::getModelInwestor()
 void Kernel::getDataFromGoogle()
 {
     getProjects();
+    getInwestorzy();
+    getArchitekci();
+    getUrzedy();
+
+    m_DataWrapperManager.dumpData();
 }
 
 void Kernel::getProjects()
@@ -52,7 +61,6 @@ void Kernel::getProjects()
 
     if(result.has_value())
     {
-        qDebug() << "rows in sheet:";
         for(const auto &arr: result.value())
         {
             const QJsonArray row = arr.toArray();
@@ -61,10 +69,69 @@ void Kernel::getProjects()
             {
                 QString val = rowValue.toString();
                 projekt.append(val);
-
             }
             projects.append(projekt);
         }
-    qDebug() << projects;
+
     }
+     projects.removeAt(0);
+     projects.removeAt(0);
+
+     m_DataWrapperManager.addSheetModel(DATA_TYPES::PROJEKTY_DATA, projects);
+}
+
+void Kernel::getInwestorzy()
+{
+    std::optional<QJsonArray> result = m_googleWrapper.getSheetValues("Inwestorzy");
+
+    QList<QStringList> inwestorzy;
+
+    if(result.has_value())
+    {
+        for(const auto &arr: result.value())
+        {
+            const QJsonArray row = arr.toArray();
+            QStringList inwestor;
+            for(const auto& rowValue:row)
+            {
+                QString val = rowValue.toString();
+                inwestor.append(val);
+            }
+
+            inwestorzy.append(inwestor);
+        }
+    }
+    inwestorzy.removeAt(0);
+
+    m_DataWrapperManager.addSheetModel(DATA_TYPES::INWESTOR_DATA, inwestorzy);
+}
+
+void Kernel::getArchitekci()
+{
+    std::optional<QJsonArray> result = m_googleWrapper.getSheetValues("Architekci");
+
+    QList<QStringList> architekci;
+
+    if(result.has_value())
+    {
+        for(const auto &arr: result.value())
+        {
+            const QJsonArray row = arr.toArray();
+            QStringList architekt;
+            for(const auto& rowValue:row)
+            {
+                QString val = rowValue.toString();
+                architekt.append(val);
+            }
+            architekci.append(architekt);
+        }
+    }
+    architekci.removeAt(0);
+
+    m_DataWrapperManager.addSheetModel(DATA_TYPES::ARCHITEKT_DATA, architekci);
+}
+
+void Kernel::getUrzedy()
+{
+
 }

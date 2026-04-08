@@ -7,9 +7,9 @@ UrzadDataWrapper::UrzadDataWrapper()
     : IDataWrapper(DATA_TYPES::URZEDY_DATA , "UrzedyData.json") {}
 
 
-QList<QMap<QString, QString> > UrzadDataWrapper::read(const QJsonObject &json) const
+QList<QStringList > UrzadDataWrapper::read(const QJsonObject &json) const
 {
-    QList<QMap<QString, QString>> data;
+    QList<QStringList> data;
 
     if (const QJsonValue v = json["urzad"]; v.isArray()) {
         const QJsonArray users = v.toArray();
@@ -17,43 +17,56 @@ QList<QMap<QString, QString> > UrzadDataWrapper::read(const QJsonObject &json) c
         for (const QJsonValue &user : users)
             data.append(readData(user.toObject()));
     }
-
     return data;
 }
 
-
-QMap<QString, QString> UrzadDataWrapper::readData(const QJsonObject &json) const
+QStringList UrzadDataWrapper::readData(const QJsonObject &json) const
 {
-    QMap<QString, QString> result;
-    if (const QJsonValue v = json["Kod_TERYT"]; v.isString())
-        result["Kod_TERYT"] = v.toString();
+    QStringList result(14);
+    if (const QJsonValue v = json["Kod_TERYT"]; v.isDouble())
+        result[0] = QString::number(v.toInt());
     if (const QJsonValue v = json["nazwa_samorządu"]; v.isString())
-        result["nazwa_samorządu"]= v.toString();
+        result[1]= v.toString();
     if (const QJsonValue v = json["Województwo"]; v.isString())
-        result["Województwo"] = v.toString();
+        result[2] = v.toString();
     if (const QJsonValue v = json["Powiat"]; v.isString())
-        result["Powiat"] = v.toString();
+        result[3] = v.toString();
     if (const QJsonValue v = json["nazwa_urzędu_JST"]; v.isString())
-        result["nazwa_urzędu_JST"] = v.toString();
+        result[4] = v.toString();
     if (const QJsonValue v = json["miejscowość"]; v.isString())
-        result["miejscowość"] = v.toString();
+        result[5] = v.toString();
     if (const QJsonValue v = json["Kod pocztowy"]; v.isString())
-        result["Kod pocztowy"] = v.toString();
+        result[6] = v.toString();
     if (const QJsonValue v = json["poczta"]; v.isString())
-        result["poczta"] = v.toString();
+        result[7] = v.toString();
     if (const QJsonValue v = json["Ulica"]; v.isString())
-        result["Ulica"] = v.toString();
+        result[8] = v.toString();
+
     if (const QJsonValue v = json["Nr domu"]; v.isString())
-        result["Nr domu"] = v.toString();
-    if (const QJsonValue v = json["telefon kierunkowy"]; v.isString())
-        result["telefon kierunkowy"] = v.toString();
+        result[9] = v.toString();
+    else if (const QJsonValue v = json["Nr domu"]; v.isDouble())
+        result[9] = QString::number(v.toInt());
+
+    if (const QJsonValue v = json["telefon kierunkowy"]; v.isDouble())
+        result[10] = QString::number(v.toInt());
+
     if (const QJsonValue v = json["telefon"]; v.isString())
-        result["telefon"] = v.toString();
+        result[11] = v.toString();
+    else if (const QJsonValue v = json["telefon"]; v.isDouble())
+        result[11] = QString::number(v.toInt());
+
     if (const QJsonValue v = json["telefon 2"]; v.isString())
-        result["telefon 2"] = v.toString();
-    if (const QJsonValue v = json["ogólny adres poczty elektronicznej gminy/powiatu/województwa"]; v.isString())
-        result["email"] = v.toString();
+        result[12] = v.toString();
+    else if (const QJsonValue v = json["telefon 2"]; v.isDouble())
+        result[12] = QString::number(v.toInt());
 
 
+    if (const QJsonValue v = json["email"]; v.isString())
+        result[13] = v.toString();
+
+    qDebug() << "****";
+    qDebug() << json;
+    qDebug() << result;
+    qDebug() << "****";
     return result;
 }

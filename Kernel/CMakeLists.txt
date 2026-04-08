@@ -27,6 +27,8 @@ qt_add_qml_module(${PROJECT_NAME}
 		SOURCES
 		SOURCES googlesso.h googlesso.cpp
 		SOURCES DataTypes/CredentialsData.h
+		SOURCES ModeleDanych/ProjektModel.h ModeleDanych/ProjektModel.cpp
+		SOURCES ModeleDanych/InwestorzyModel.h ModeleDanych/InwestorzyModel.cpp
 
 )
 qt_add_resources(${PROJECT_NAME} "data"
@@ -49,3 +51,4 @@ add_custom_target(copy_data
     COMMENT "Copying users data"
 )
 add_dependencies(${PROJECT_NAME} copy_data)
+

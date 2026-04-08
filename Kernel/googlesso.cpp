@@ -18,15 +18,36 @@ GoogleSSO::GoogleSSO(QObject *parent)
     m_networkManager = new QNetworkAccessManager(this);
     m_restManager = new QRestAccessManager(m_networkManager, this);
     m_sheetFactory = QNetworkRequestFactory(m_sheetsEndPoint);
-
-    init();
 }
 
 GoogleSSO::~GoogleSSO() {
     delete m_google;
 }
 
-void GoogleSSO::init(){
+
+bool GoogleSSO::init ()
+{
+
+    bool result = readCredentials();
+    if(result)
+    {
+       init_internal();
+    }
+
+    bool credsFromTokenFile = checkTokenFile();
+    if(credsFromTokenFile == false)
+    {
+        authenticate();
+    }
+    else
+    {
+        setAuthenticated(true);
+        m_sheetFactory.setBearerToken(m_activeToken.toLatin1());
+    }
+
+    return result;
+}
+void GoogleSSO::init_internal(){
     m_google->setScope(m_scope);
 
    // connect(m_networkManager,
@@ -83,16 +104,28 @@ void GoogleSSO::init(){
     connect(m_google,
             &QOAuth2AuthorizationCodeFlow::granted,
             [&](){
-                const QString token = m_google->token();
-                m_activeToken = token;
-                qDebug() << "token:" << m_activeToken;
-                emit gotToken(token);
+               const QString token = m_google->token();
+               const QString client = m_google->clientIdentifier();
+               const QUrl authho = m_google->authorizationUrl();
+               auto status = m_google->status();
+               auto extraT = m_google->extraTokens();
+
+               m_activeToken = token;
+               qlonglong expiredAt = extraT["refresh_token_expires_in"].toLongLong();
+
+               m_expiredAt = QTime::currentTime();
+               m_expiredAt = m_expiredAt.addMSecs(expiredAt);
+
+               emit gotToken(token);
+
+               writeTokenFile();
 
                 // Alternatively, just use the token for your purposes
-                //        auto reply = this->google->get(QUrl("https://people.googleapis.com/v1/{resourceName=people/me}"));
-                //        connect(reply, &QNetworkReply::finished, [reply](){
-                //            qInfo() << reply->readAll();
-                //        });
+                        //auto reply = this->m_google->get(QUrl("https://people.googleapis.com/v1/{resourceName=people/me}"));
+
+                      //  connect(reply, &QNetworkReply::finished, [reply](){
+                     //      qInfo() << reply->readAll();
+                     //  });
             });
 }
 
@@ -292,11 +325,13 @@ void GoogleSSO::slotSetErrorMessage(const QString & anError)
 bool GoogleSSO::readCredentials()
 {
     QDir dir;
-    QFile file(dir.absolutePath() + m_credentialsFile );
+    QFile file(dir.absolutePath() + m_dataDir + m_credentialsFile );
     if (!file.open(QIODevice::ReadOnly))
     {
         QFileInfo info(file);
         QString message = QString("Nie mogę otworzyć pliku %1").arg(info.absoluteFilePath() );
+        emit signalError(message);
+
         qWarning(message.toStdString().c_str());
 
         return false;
@@ -306,10 +341,13 @@ bool GoogleSSO::readCredentials()
     file.close();
 
     QJsonParseError perror;
-    QJsonDocument loadDoc(QJsonDocument::fromJson(loadData,&perror));
+    QJsonDocument loadDoc(QJsonDocument::fromJson(loadData, &perror));
     if(perror.error != QJsonParseError::NoError)
     {
         qWarning(perror.errorString().toStdString().c_str());
+        emit signalError(perror.errorString());
+
+        return false;
     }
 
     QJsonObject credObj = loadDoc.object();
@@ -334,4 +372,67 @@ bool GoogleSSO::readCredentials()
         return true;
     }
     return false;
+}
+
+bool GoogleSSO::checkTokenFile()
+{
+    QDir dir;
+    QFile file(dir.absolutePath() + m_dataDir + m_tokenFile );
+    if (!file.open(QIODevice::ReadOnly))
+    {
+        return false;
+    }
+
+    QByteArray loadData = file.readAll();
+    file.close();
+
+    QJsonParseError perror;
+    QJsonDocument loadDoc(QJsonDocument::fromJson(loadData, &perror));
+    if(perror.error != QJsonParseError::NoError)
+    {
+        qWarning(perror.errorString().toStdString().c_str());
+        emit signalError(perror.errorString());
+
+        return false;
+    }
+
+    QJsonObject credObj = loadDoc.object();
+    QTime time;
+    QString tmpToken;
+
+    if (const QJsonValue v = credObj["refresh_token"]; v.isString())
+    {
+        const QString ts = v.toString();
+        time = QTime::fromString(ts, "HH:mm:ss");
+    }
+    if (const QJsonValue v = credObj["token"]; v.isString())
+        tmpToken = v.toString();
+
+    if(QTime::currentTime() > time)
+    {
+        return false;
+    }
+    m_activeToken = tmpToken;
+
+    return true;
+}
+
+ void GoogleSSO::writeTokenFile()
+{
+     QDir dir;
+     QFile file(dir.absolutePath() + m_dataDir + m_tokenFile );
+     if (!file.open(QIODevice::WriteOnly | QIODevice::Text | QIODevice::Truncate))
+     {
+         return;
+     }
+
+     QJsonObject root;
+     root.insert("token", m_activeToken);
+     root.insert("refresh_token", m_expiredAt.toString());
+
+     QJsonDocument doc;
+     doc.setObject(root);
+
+     file.write(doc.toJson());
+     file.close();
 }

@@ -7,9 +7,9 @@ ArchitektDataWrapper::ArchitektDataWrapper()
     : IDataWrapper(DATA_TYPES::ARCHITEKT_DATA, "ArchitektData.json")
 {}
 
- QList<QMap<QString, QString>> ArchitektDataWrapper::read(const QJsonObject &json)const
+ QList<QStringList> ArchitektDataWrapper::read(const QJsonObject &json)const
 {
-     QList<QMap<QString, QString>> data;
+     QList<QStringList> data;
 
      if (const QJsonValue v = json["architek"]; v.isArray()) {
          const QJsonArray users = v.toArray();
@@ -20,15 +20,15 @@ ArchitektDataWrapper::ArchitektDataWrapper()
      return data;
 }
 
-QMap<QString, QString> ArchitektDataWrapper::readData(const QJsonObject &json)const
+QStringList ArchitektDataWrapper::readData(const QJsonObject &json)const
 {
-    QMap<QString, QString> result;
+    QStringList result(3);
     if (const QJsonValue v = json["nazwa"]; v.isString())
-        result["nazwa"] = v.toString();
+        result[0] = v.toString();
     if (const QJsonValue v = json["telefon"]; v.isString())
-        result["telefon"]= v.toString();
+        result[1]= v.toString();
     if (const QJsonValue v = json["email"]; v.isString())
-        result["email"] = v.toString();
+        result[2] = v.toString();
 
     return result;
 }

@@ -1,7 +1,7 @@
 #ifndef IDATAWRAPPER_H
 #define IDATAWRAPPER_H
 
-#include <QMap>
+#include <QStringList>
 #include <QString>
 #include <QJsonObject>
 #include "KernelCommon.h"
@@ -15,7 +15,7 @@ public:
     {}
     virtual QString getDataFile()const
     { return m_dataFile;}
-    virtual QList<QMap<QString, QString>> read(const QJsonObject &json) const=0;
+    virtual QList<QStringList> read(const QJsonObject &json) const=0;
     virtual DATA_TYPES getType()
     {return m_type;}
 
@@ -24,7 +24,7 @@ public:
     virtual void setFileName(const QString& aFile)
     {m_dataFile = aFile;}
 protected:
-    virtual QMap<QString, QString> readData(const QJsonObject &json)const =0;
+    virtual QStringList readData(const QJsonObject &json)const =0;
 
 private:
     QString m_dataFile;

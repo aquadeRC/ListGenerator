@@ -23,12 +23,16 @@ public:
     explicit DataWraperManager(QObject *parent = nullptr);
     AbstractAppModel* getModel(DATA_TYPES aType);
 
+    void addSheetModel(DATA_TYPES aType, QList<QStringList> aData);
+
+    void dumpData();
+
 protected:
     struct DataWraperManagerImpl;
 
 private :
     void createDataModels();
-    QList<QMap<QString, QString>> loadData(const IDataWrapper& aWrapper);
+    QList<QStringList> loadData(const IDataWrapper& aWrapper);
 
     std::shared_ptr<DataWraperManagerImpl> m_Impl;
 };

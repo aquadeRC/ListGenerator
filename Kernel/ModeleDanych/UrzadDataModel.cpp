@@ -8,7 +8,7 @@ UrzadDataModel::UrzadDataModel(QObject *parent)
 {}
 
 
-void UrzadDataModel::initData(const  QList<QMap<QString, QString>> &data)
+void UrzadDataModel::initData(const  QList<QStringList> &data)
 {
     if(data.isEmpty() == false)
     {
@@ -17,7 +17,7 @@ void UrzadDataModel::initData(const  QList<QMap<QString, QString>> &data)
 }
 
 
-QList<QMap<QString, QString>> UrzadDataModel::getData() const
+QList<QStringList> UrzadDataModel::getData() const
 {
     return m_urzadData;
 }
@@ -44,33 +44,33 @@ QVariant UrzadDataModel::data(const QModelIndex &index, int role) const
 
         switch (role) {
         case ID:
-            return m_urzadData[row]["Kod_TERYT"];
+            return m_urzadData[row].at(0);
         case Nazwa:
-            return m_urzadData[row]["nazwa_urzedu"];
+            return m_urzadData[row].at(1);
         case Nazwa_Samorzadu:
-            return m_urzadData[row]["nazwa_samorządu"];
+            return m_urzadData[row].at(2);
         case Wojewodztwo:
-            return m_urzadData[row]["Województwo"];
+            return m_urzadData[row].at(3);
         case Powiat:
-            return m_urzadData[row]["Powiat"];
+            return m_urzadData[row].at(4);
         case Miejscowosc:
-            return m_urzadData[row]["miejscowość"];
+            return m_urzadData[row].at(5);
         case Kod_Pocztowy:
-            return m_urzadData[row]["Kod pocztowy"];
+            return m_urzadData[row].at(6);
         case Poczta:
-            return m_urzadData[row]["poczta"];
+            return m_urzadData[row].at(7);
         case Ulica:
-            return m_urzadData[row]["Ulica"];
+            return m_urzadData[row].at(8);
         case Nr_Domu:
-            return m_urzadData[row]["Nr domu"];
+            return m_urzadData[row].at(9);
         case Kierunkowy:
-            return m_urzadData[row]["telefon kierunkowy"];
+            return m_urzadData[row].at(10);
         case Telefon:
-            return m_urzadData[row]["telefon"];
+            return m_urzadData[row].at(11);
         case Telefon2:
-            return m_urzadData[row]["telefon 2"];
+            return m_urzadData[row].at(12);
         case Email:
-            return m_urzadData[row]["email"];
+            return m_urzadData[row].at(13);
         }
 
         return QVariant();
@@ -85,20 +85,20 @@ bool UrzadDataModel::setData(const QModelIndex &index, const QVariant &value, in
 
     QStringList newData = value.toString().split("#");
 
-    m_urzadData[row]["Kod_TERYT"] = newData[0];
-    m_urzadData[row]["nazwa_urzedu"] = newData[1];
-    m_urzadData[row]["nazwa_samorządu"] = newData[2];
-    m_urzadData[row]["Województwo"] = newData[3];
-    m_urzadData[row]["Powiat"] = newData[4];
-    m_urzadData[row]["miejscowość"] = newData[5];
-    m_urzadData[row]["Kod pocztowy"] = newData[6];
-    m_urzadData[row]["poczta"] = newData[7];
-    m_urzadData[row]["Ulica"] = newData[8];
-    m_urzadData[row]["Nr domu"] = newData[9];
-    m_urzadData[row]["telefon kierunkowy"] = newData[10];
-    m_urzadData[row]["telefon"] = newData[11];
-    m_urzadData[row]["telefon 2"] = newData[12];
-    m_urzadData[row]["email"] = newData[13];
+    m_urzadData[row][0] = newData[0];
+    m_urzadData[row][1] = newData[1];
+    m_urzadData[row][2] = newData[2];
+    m_urzadData[row][3] = newData[3];
+    m_urzadData[row][4] = newData[4];
+    m_urzadData[row][5] = newData[5];
+    m_urzadData[row][6] = newData[6];
+    m_urzadData[row][7] = newData[7];
+    m_urzadData[row][8] = newData[8];
+    m_urzadData[row][9] = newData[9];
+    m_urzadData[row][10] = newData[10];
+    m_urzadData[row][11] = newData[11];
+    m_urzadData[row][12] = newData[12];
+    m_urzadData[row][13] = newData[13];
 
     emit dataChanged(index, index);
     return true;
@@ -132,4 +132,14 @@ QHash<int, QByteArray> UrzadDataModel::roleNames() const
 
     };
     return mapping;
+}
+
+void UrzadDataModel::dumpData()
+{
+    qDebug() << "UrzadDataModel";
+    QListIterator<QStringList> it(m_urzadData);
+    while(it.hasNext())
+    {
+        qDebug() << it.next() ;
+    }
 }

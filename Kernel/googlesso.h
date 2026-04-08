@@ -40,6 +40,8 @@ public:
         return m_errorMessage;
     }
 
+    bool init();
+
     std::optional<QJsonArray> getSheetValues(const QString & aRange);
 
 public slots:
@@ -58,11 +60,12 @@ protected slots:
     void slotSSLErrorHandler(QNetworkReply* aReplay,
                              const QList<QSslError> & anErrorList);
 
-private:
-    void init();
+private:  
     std::optional<QJsonObject> getReplay(const QString& aUrl);
-
+    void init_internal();
     bool readCredentials();
+    bool checkTokenFile();
+    void writeTokenFile();
 
     QPointer<QOAuth2AuthorizationCodeFlow> m_google {nullptr};
     QPointer<QNetworkAccessManager> m_networkManager {nullptr};
@@ -73,10 +76,13 @@ private:
     QNetworkRequestFactory m_sheetFactory {};
     QNetworkReply::NetworkError m_neworkReplyError {QNetworkReply::NoError};
     QString m_activeToken {};
+    QTime m_expiredAt {};
     QString m_errorMessage {};
     QString m_scope {"https://www.googleapis.com/auth/spreadsheets.readonly"};
     QString m_sheetsEndPoint {"https://sheets.googleapis.com/v4"};
     QString m_credentialsFile{"credentials.json"};
+    QString m_tokenFile{"token.json"};
+    QString m_dataDir{"/Kernel/Data/"};
     bool m_isAuthenticated {false};
 
     Modele_Danych::CredentialsData m_credentials{};

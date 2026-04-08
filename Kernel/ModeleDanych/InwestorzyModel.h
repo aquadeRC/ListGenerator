@@ -1,42 +1,30 @@
-#ifndef URZADDATAMODEL_H
-#define URZADDATAMODEL_H
+#ifndef INWESTORZYMODEL_H
+#define INWESTORZYMODEL_H
 
-#include "AbstractAppModel.h"
 #include <QAbstractListModel>
-#include <QModelIndex>
-#include <QVariant>
+#include "AbstractAppModel.h"
 
-namespace Modele_Danych {
-class UrzadDataModel : public AbstractAppModel
+
+class InwestorzyModel : public AbstractAppModel
 {
     Q_OBJECT
+
 public:
-    enum UrzadRoles {
+
+    enum InwestorRoles {
         ID = Qt::UserRole + 1,
-        Nazwa,
-        Nazwa_Samorzadu,
-        Wojewodztwo,
-        Powiat,
-        Miejscowosc,
-        Kod_Pocztowy,
-        Poczta,
         Ulica,
-        Nr_Domu,
-        Kierunkowy,
-        Telefon,
-        Telefon2,
-        Email
+        Kod,
+        Miejscowosc
     };
-    explicit UrzadDataModel(QObject *parent = nullptr);
+    explicit InwestorzyModel(QObject *parent = nullptr);
 
     void initData(const QList<QStringList>&data) override;
     QList<QStringList> getData() const;
 
-    // Basic functionality:
     int rowCount(const QModelIndex &parent = QModelIndex()) const override;
 
     QVariant data(const QModelIndex &index, int role = Qt::DisplayRole) const override;
-
     bool setData(const QModelIndex &index, const QVariant &value, int role) override;
 
     Qt::ItemFlags flags(const QModelIndex &index) const override;
@@ -44,9 +32,14 @@ public:
     QHash<int, QByteArray> roleNames() const override;
 
      void dumpData() override;
-private:
-    QList<QStringList> m_urzadData;
 
+private:
+    QList<QStringList> m_inwestorData;
+
+    const QString m_id{"id"};
+    const QString m_ulica{"ulica"};
+    const QString m_kod{"kod"};
+    const QString m_miejscowosc{"miejscowosc"};
 };
-}
-#endif // URZADDATAMODEL_H
+
+#endif // INWESTORZYMODEL_H
