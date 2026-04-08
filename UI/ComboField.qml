@@ -9,6 +9,9 @@ Item {
     required property string backendProp
     required property string fieldText
 
+    required property string textRolenNme
+    required property string valueRolenNme
+
     width: 263
     height: 58
 
@@ -29,6 +32,12 @@ Item {
             id: fieldCombo
             comboModel: comboField.comboModel
             backendProp: comboField.backendProp
+            textRolenNme: comboField.textRolenNme
+            valueRolenNme: comboField.valueRolenNme
         }
+    }
+
+    Component.onCompleted: {
+    console.log(" Combofield", comboField.textRolenNme, comboField.valueRolenNme)
     }
 }

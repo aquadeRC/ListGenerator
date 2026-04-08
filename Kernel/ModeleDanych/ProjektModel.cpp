@@ -15,7 +15,8 @@ int ProjektModel::rowCount(const QModelIndex &parent) const
 }
 
 QVariant ProjektModel::data(const QModelIndex &index, int role) const
-{
+{    qDebug() << role <<index ;
+
     if (!checkIndex(index, CheckIndexOption::IndexIsValid))
         return QVariant();
 
@@ -24,8 +25,10 @@ QVariant ProjektModel::data(const QModelIndex &index, int role) const
 
     int row = index.row();
 
+
     switch (role) {
     case ID:
+    case Qt::DisplayRole:
         return m_projektData[row].at(0);
     case Prowadzacy:
         return m_projektData[row].at(1);
@@ -55,10 +58,12 @@ QList<QStringList> ProjektModel::getData() const
 
 void ProjektModel::initData(const  QList<QStringList> &data)
 {
+    beginResetModel();
     if(data.isEmpty() == false)
     {
         m_projektData = data;
     }
+    endResetModel();
 }
 
 bool ProjektModel::setData(const QModelIndex &index, const QVariant &value, int role)

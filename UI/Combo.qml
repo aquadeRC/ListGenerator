@@ -5,14 +5,16 @@ ComboBox {
     id: control
     required property AbstractItemModel comboModel
     required property string backendProp
+    required property string textRolenNme
+    required property string valueRolenNme
 
     model: comboModel
     font: mainTheme.font
     width: 245
     height: 35
 
-    textRole: "nazwa"
-    valueRole: "nazwa"
+    textRole: control.textRolenNme
+    valueRole: control.valueRolenNme
 
     // Set currentValue to the value stored in the backend.
     currentValue: backendProp
@@ -121,5 +123,9 @@ ComboBox {
             opacity: 0.15
             z: 3
         }
+    }
+
+    Component.onCompleted: {
+        console.log(" Combo", control.textRolenNme, control.valueRolenNme);
     }
 }

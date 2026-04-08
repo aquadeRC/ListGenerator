@@ -7,6 +7,7 @@ Rectangle {
 
     required property AbstractItemModel architekciModel
     required property AbstractItemModel urzedyModel
+    required property AbstractItemModel projektyModel
 
     color: mainTheme.background_color
 
@@ -22,8 +23,10 @@ Rectangle {
             fieldText: "Projekt"
             width: 253
             height: 58
-            comboModel: InwestycjaModel {}
+            comboModel: leftPanel.projektyModel
             backendProp: backend2.inwestycja
+            textRolenNme: "id"
+            valueRolenNme: "id"
         }
 
         ComboField {
@@ -33,6 +36,8 @@ Rectangle {
             height: 58
             comboModel: InwestycjaModel {}
             backendProp: backend2.inwestycja
+            textRolenNme: "nazwa"
+            valueRolenNme: "nazwa"
         }
         ComboField {
             id: sprawaF
@@ -41,6 +46,8 @@ Rectangle {
             height: 58
             comboModel: UrzadModel {}
             backendProp: backend2.nr_sprawy
+            textRolenNme: "nazwa"
+            valueRolenNme: "nazwa"
         }
         ComboField {
             id: urzadCB
@@ -49,6 +56,8 @@ Rectangle {
             height: 58
             comboModel: leftPanel.urzedyModel
             backendProp: backend2.urzad
+            textRolenNme: "nazwa"
+            valueRolenNme: "nazwa"
         }
         ComboField {
             id: inwestorCB
@@ -57,6 +66,8 @@ Rectangle {
             height: 58
             comboModel: InwestorModel {}
             backendProp: backend2.inwestor
+            textRolenNme: "nazwa"
+            valueRolenNme: "nazwa"
         }
         ComboField {
             id: architektCB
@@ -65,6 +76,8 @@ Rectangle {
             height: 58
             comboModel: leftPanel.architekciModel
             backendProp: backend2.architekt
+            textRolenNme: "nazwa"
+            valueRolenNme: "achitektId"
         }
 
         IconButton {

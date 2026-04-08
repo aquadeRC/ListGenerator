@@ -16,6 +16,7 @@ ApplicationWindow {
     required property Kernel backEnd
     property AbstractItemModel archModel: backEnd.getModelArchitekci()
     property AbstractItemModel urzadModel: backEnd.getModelUrzedy()
+    property AbstractItemModel projektyModel: backEnd.getModelProjekt()
 
     property double headerHight: 79
     property double leftPanelW: 297
@@ -25,6 +26,11 @@ ApplicationWindow {
 
     AppTheme {
         id: mainTheme
+    }
+
+    BusyIndicator {
+        visible: !backEnd.isAuthenticated
+        anchors.centerIn: parent
     }
 
     QtObject {
@@ -55,8 +61,10 @@ ApplicationWindow {
         anchors.horizontalCenter: root.horizontalCenter
         anchors.top: toolBar.bottom
         anchors.left: root.left
+
         architekciModel: root.archModel
         urzedyModel: root.urzadModel
+        projektyModel: root.projektyModel
     }
 
     Settings {
@@ -70,9 +78,20 @@ ApplicationWindow {
         } else {
             mainTheme.setDarkMode();
         }
+
+        backEnd.authenticate();
     }
 
     Component.onDestruction: {
         settings.state = mainTheme.mode;
+    }
+
+    Connections {
+        target: backEnd
+        function onIsAuthenticatedChanged() {
+            archModel = backEnd.getModelArchitekci();
+            urzadModel = backEnd.getModelUrzedy();
+            projektyModel = backEnd.getModelProjekt();
+        }
     }
 }

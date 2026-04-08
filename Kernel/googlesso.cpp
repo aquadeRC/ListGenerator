@@ -18,6 +18,8 @@ GoogleSSO::GoogleSSO(QObject *parent)
     m_networkManager = new QNetworkAccessManager(this);
     m_restManager = new QRestAccessManager(m_networkManager, this);
     m_sheetFactory = QNetworkRequestFactory(m_sheetsEndPoint);
+
+    init();
 }
 
 GoogleSSO::~GoogleSSO() {
@@ -27,25 +29,13 @@ GoogleSSO::~GoogleSSO() {
 
 bool GoogleSSO::init ()
 {
-
-    bool result = readCredentials();
-    if(result)
+    m_credFileRead= readCredentials();
+    if(m_credFileRead)
     {
        init_internal();
     }
 
-    bool credsFromTokenFile = checkTokenFile();
-    if(credsFromTokenFile == false)
-    {
-        authenticate();
-    }
-    else
-    {
-        setAuthenticated(true);
-        m_sheetFactory.setBearerToken(m_activeToken.toLatin1());
-    }
-
-    return result;
+    return m_credFileRead;
 }
 void GoogleSSO::init_internal(){
     m_google->setScope(m_scope);
@@ -63,20 +53,64 @@ void GoogleSSO::init_internal(){
             &QOAuth2AuthorizationCodeFlow::authorizeWithBrowser,
             &QDesktopServices::openUrl);
 
+
+   /* connect(m_google,
+            &QOAuth2AuthorizationCodeFlow::granted,
+            [this](){
+                const QString token = m_google->token();
+                const QString client = m_google->clientIdentifier();
+                const QUrl authho = m_google->authorizationUrl();
+                auto status = m_google->status();
+                auto extraT = m_google->extraTokens();
+
+                m_activeToken = token;
+                qlonglong expiredAt = extraT["refresh_token_expires_in"].toLongLong();
+
+                m_expiredAt = QTime::currentTime();
+                m_expiredAt = m_expiredAt.addMSecs(expiredAt);
+
+                m_sheetFactory.setBearerToken(token.toLatin1());
+
+                emit gotToken(token);
+
+                writeTokenFile();
+
+                // Alternatively, just use the token for your purposes
+                //auto reply = this->m_google->get(QUrl("https://people.googleapis.com/v1/{resourceName=people/me}"));
+
+                //  connect(reply, &QNetworkReply::finished, [reply](){
+                //      qInfo() << reply->readAll();
+                //  });
+            });
+*/
+
     connect(m_google,
             &QOAuth2AuthorizationCodeFlow::statusChanged,
             [=](QAbstractOAuth::Status status) {
                 if (status == QAbstractOAuth::Status::Granted) {
+
+                    const QString token = m_google->token();
+                    const QString client = m_google->clientIdentifier();
+                    const QUrl authho = m_google->authorizationUrl();
+                    auto status = m_google->status();
+                    auto extraT = m_google->extraTokens();
+
+                    m_activeToken = token;
+                    qlonglong expiredAt = extraT["refresh_token_expires_in"].toLongLong();
+
+                    m_expiredAt = QTime::currentTime();
+                    m_expiredAt = m_expiredAt.addMSecs(expiredAt);
+
+                    m_sheetFactory.setBearerToken(token.toLatin1());
+
+                    emit gotToken(token);
+
+                    writeTokenFile();
+
                     setAuthenticated(true);
                 } else {
                     setAuthenticated(false);
                 }
-            });
-
-    connect(m_google,
-            &QOAuth2AuthorizationCodeFlow::granted, this,
-            [this]{
-                m_sheetFactory.setBearerToken(m_google->token().toLatin1());
             });
 
     const QUrl authUri(m_credentials.m_auth_uri);
@@ -101,32 +135,7 @@ void GoogleSSO::init_internal(){
     m_replyHandler = new QOAuthHttpServerReplyHandler(port, this);
     m_google->setReplyHandler(m_replyHandler);
 
-    connect(m_google,
-            &QOAuth2AuthorizationCodeFlow::granted,
-            [&](){
-               const QString token = m_google->token();
-               const QString client = m_google->clientIdentifier();
-               const QUrl authho = m_google->authorizationUrl();
-               auto status = m_google->status();
-               auto extraT = m_google->extraTokens();
 
-               m_activeToken = token;
-               qlonglong expiredAt = extraT["refresh_token_expires_in"].toLongLong();
-
-               m_expiredAt = QTime::currentTime();
-               m_expiredAt = m_expiredAt.addMSecs(expiredAt);
-
-               emit gotToken(token);
-
-               writeTokenFile();
-
-                // Alternatively, just use the token for your purposes
-                        //auto reply = this->m_google->get(QUrl("https://people.googleapis.com/v1/{resourceName=people/me}"));
-
-                      //  connect(reply, &QNetworkReply::finished, [reply](){
-                     //      qInfo() << reply->readAll();
-                     //  });
-            });
 }
 
 void GoogleSSO::setCredentials(const QString& clientId, const QString& clientSecret) {
@@ -136,7 +145,21 @@ void GoogleSSO::setCredentials(const QString& clientId, const QString& clientSec
 
 // Invoked externally to initiate
 void GoogleSSO::authenticate() {
-    m_google->grant();
+
+    if(m_credFileRead)
+    {
+        bool credsFromTokenFile = checkTokenFile();
+        if(credsFromTokenFile == false)
+        {
+            m_google->grant();
+        }
+        else
+        {
+            m_sheetFactory.setBearerToken(m_activeToken.toLatin1());
+            setAuthenticated(true);
+        }
+    }
+
 }
 
 std::optional<QJsonArray> GoogleSSO::getSheetValues(const QString & aRange)
@@ -174,14 +197,13 @@ std::optional<QJsonObject> GoogleSSO::getReplay(const QString& aUrl)
                 SIGNAL(errorOccurred(QNetworkReply::NetworkError)), this,
                 SLOT(slotNetworkError(QNetworkReply::NetworkError)));
 
-        int timeout = 5000;
         if (!reply->isFinished())
         {
             QEventLoop loop;
             QObject::connect(reply, SIGNAL(finished()), &loop, SLOT(quit()));
 
-            if (timeout > 0)
-                QTimer::singleShot(timeout, &loop, SLOT(quit()));
+            if (m_timeout > 0)
+                QTimer::singleShot(m_timeout, &loop, SLOT(quit()));
 
             loop.exec(QEventLoop::ExcludeUserInputEvents);
         }
@@ -193,9 +215,9 @@ std::optional<QJsonObject> GoogleSSO::getReplay(const QString& aUrl)
             reply->abort();
             reply->deleteLater();
 
-            if (timeout > 0)
+            if (m_timeout > 0)
             {
-                slotSetErrorMessage(QString("GET reply timed out after %1 milliseconds.").arg(timeout));
+                slotSetErrorMessage(QString("GET reply timed out after %1 milliseconds.").arg(m_timeout));
             }
             return std::nullopt;
         }
@@ -318,6 +340,7 @@ void GoogleSSO::slotSSLErrorHandler(QNetworkReply* aReplay, const QList<QSslErro
 void GoogleSSO::slotSetErrorMessage(const QString & anError)
 {
     m_errorMessage = anError;
+    qDebug()<< anError;
 
     emit signalError(m_errorMessage);
 }

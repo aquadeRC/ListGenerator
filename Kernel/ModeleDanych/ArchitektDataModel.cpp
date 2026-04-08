@@ -8,10 +8,12 @@ ArchitektDataModel::ArchitektDataModel(QObject *parent)
 
 void ArchitektDataModel::initData(const  QList<QStringList> &data)
 {
+    beginResetModel();
     if(data.isEmpty() == false)
     {
         m_architektData = data;
     }
+    endResetModel();
 }
 
  QList<QStringList> ArchitektDataModel::getData() const

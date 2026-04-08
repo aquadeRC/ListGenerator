@@ -10,10 +10,12 @@ UrzadDataModel::UrzadDataModel(QObject *parent)
 
 void UrzadDataModel::initData(const  QList<QStringList> &data)
 {
+    beginResetModel();
     if(data.isEmpty() == false)
     {
         m_urzadData = data;
     }
+    endResetModel();
 }
 
 

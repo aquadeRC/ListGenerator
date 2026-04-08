@@ -84,6 +84,9 @@ private:
     QString m_tokenFile{"token.json"};
     QString m_dataDir{"/Kernel/Data/"};
     bool m_isAuthenticated {false};
+    bool m_credFileRead{false};
+
+    int m_timeout{50000};
 
     Modele_Danych::CredentialsData m_credentials{};
 };

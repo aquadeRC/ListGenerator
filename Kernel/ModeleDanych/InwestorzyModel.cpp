@@ -46,10 +46,12 @@ QList<QStringList> InwestorzyModel::getData() const
 
 void InwestorzyModel::initData(const  QList<QStringList> &data)
 {
+    beginResetModel();
     if(data.isEmpty() == false)
     {
         m_inwestorData = data;
     }
+    endResetModel();
 }
 
 bool InwestorzyModel::setData(const QModelIndex &index, const QVariant &value, int role)

@@ -9,11 +9,11 @@ Kernel::Kernel(QObject *parent)
     m_DataWrapperManager {DataWraperManager(this)},
     m_googleWrapper{GoogleSSO(this)}
 {
-    bool result = m_googleWrapper.init();
-    if(result)
-    {
-    //  authenticate();
-    }
+
+    QObject::connect(&m_googleWrapper, &GoogleSSO::isAuthenticatedChanged,
+            this, &Kernel::slotSetAuthenticated);
+
+  //  bool result = m_googleWrapper.init();
 }
 
 AbstractAppModel* Kernel::getModelInwestycje()
@@ -36,6 +36,11 @@ AbstractAppModel* Kernel::getModelInwestor()
      return m_DataWrapperManager.getModel(DATA_TYPES::INWESTOR_DATA);
 }
 
+AbstractAppModel* Kernel::getModelProjekt()
+{
+    return m_DataWrapperManager.getModel(DATA_TYPES::PROJEKTY_DATA);
+}
+
 
  void Kernel::authenticate()
 {
@@ -45,6 +50,7 @@ AbstractAppModel* Kernel::getModelInwestor()
 
 void Kernel::getDataFromGoogle()
 {
+    qDebug() << "at getDataFromGoogle";
     getProjects();
     getInwestorzy();
     getArchitekci();
@@ -73,9 +79,10 @@ void Kernel::getProjects()
             projects.append(projekt);
         }
 
+        projects.removeAt(0);
+        projects.removeAt(0);
     }
-     projects.removeAt(0);
-     projects.removeAt(0);
+
 
      m_DataWrapperManager.addSheetModel(DATA_TYPES::PROJEKTY_DATA, projects);
 }
@@ -100,8 +107,9 @@ void Kernel::getInwestorzy()
 
             inwestorzy.append(inwestor);
         }
+      inwestorzy.removeAt(0);
     }
-    inwestorzy.removeAt(0);
+
 
     m_DataWrapperManager.addSheetModel(DATA_TYPES::INWESTOR_DATA, inwestorzy);
 }
@@ -125,8 +133,9 @@ void Kernel::getArchitekci()
             }
             architekci.append(architekt);
         }
+      architekci.removeAt(0);
     }
-    architekci.removeAt(0);
+
 
     m_DataWrapperManager.addSheetModel(DATA_TYPES::ARCHITEKT_DATA, architekci);
 }
@@ -134,4 +143,19 @@ void Kernel::getArchitekci()
 void Kernel::getUrzedy()
 {
 
+}
+
+void Kernel::slotSetAuthenticated()
+{
+    bool au= m_googleWrapper.isAuthenticated();
+
+    if (m_isAuthenticated != au) {
+        m_isAuthenticated = au;
+
+        if(m_isAuthenticated)
+            qDebug() << "m_isAuthenticated";
+            getDataFromGoogle();
+
+        emit isAuthenticatedChanged();
+    }
 }

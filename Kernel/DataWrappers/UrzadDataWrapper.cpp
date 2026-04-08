@@ -64,9 +64,5 @@ QStringList UrzadDataWrapper::readData(const QJsonObject &json) const
     if (const QJsonValue v = json["email"]; v.isString())
         result[13] = v.toString();
 
-    qDebug() << "****";
-    qDebug() << json;
-    qDebug() << result;
-    qDebug() << "****";
     return result;
 }
