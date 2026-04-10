@@ -47,13 +47,13 @@ QVariant UrzadDataModel::data(const QModelIndex &index, int role) const
         switch (role) {
         case ID:
             return m_urzadData[row].at(0);
-        case Nazwa:
-            return m_urzadData[row].at(1);
         case Nazwa_Samorzadu:
-            return m_urzadData[row].at(2);
+            return m_urzadData[row].at(1);
         case Wojewodztwo:
-            return m_urzadData[row].at(3);
+            return m_urzadData[row].at(2);
         case Powiat:
+            return m_urzadData[row].at(3);
+        case Nazwa:
             return m_urzadData[row].at(4);
         case Miejscowosc:
             return m_urzadData[row].at(5);

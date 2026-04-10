@@ -29,6 +29,7 @@ qt_add_qml_module(${PROJECT_NAME}
 		SOURCES DataTypes/CredentialsData.h
 		SOURCES ModeleDanych/ProjektModel.h ModeleDanych/ProjektModel.cpp
 		SOURCES ModeleDanych/InwestorzyModel.h ModeleDanych/InwestorzyModel.cpp
+		SOURCES GDocUpdateShema.h
 
 )
 qt_add_resources(${PROJECT_NAME} "data"

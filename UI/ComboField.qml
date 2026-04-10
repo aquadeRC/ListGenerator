@@ -12,6 +12,8 @@ Item {
     required property string textRolenNme
     required property string valueRolenNme
 
+    signal comboFieldChanged(aName: string, index: int)
+
     width: 263
     height: 58
 
@@ -34,10 +36,14 @@ Item {
             backendProp: comboField.backendProp
             textRolenNme: comboField.textRolenNme
             valueRolenNme: comboField.valueRolenNme
+
+            onActivated: {
+                comboFieldChanged(fieldCombo.backendProp, fieldCombo.currentIndex);
+            }
         }
     }
 
     Component.onCompleted: {
-    console.log(" Combofield", comboField.textRolenNme, comboField.valueRolenNme)
+        // console.log(" Combofield", comboField.textRolenNme, comboField.valueRolenNme);
     }
 }

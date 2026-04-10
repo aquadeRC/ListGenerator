@@ -7,17 +7,18 @@
 #include <QDesktopServices>
 #include <QtNetworkAuth>
 
+#include "GDocUpdateShema.h"
 
-#define SAMPLE_SPREADSHEET_ID "1g1S-g0OqpXYvv0SxqhUCo-JUIF3hshegyjcByQbeI9I"
+
 
 GoogleSSO::GoogleSSO(QObject *parent)
-    : QObject(parent),
-      m_isAuthenticated(false) {
-
+    : QObject(parent)
+{
     m_google = new QOAuth2AuthorizationCodeFlow(this);
     m_networkManager = new QNetworkAccessManager(this);
     m_restManager = new QRestAccessManager(m_networkManager, this);
     m_sheetFactory = QNetworkRequestFactory(m_sheetsEndPoint);
+    m_docFactory = QNetworkRequestFactory(m_docEndPoint);//setBaseUrl
 
     init();
 }
@@ -38,6 +39,11 @@ bool GoogleSSO::init ()
     return m_credFileRead;
 }
 void GoogleSSO::init_internal(){
+    QSet<QByteArray> scope;
+    //scope.insert("https://www.googleapis.com/auth/spreadsheets.readonly");
+  //  scope.insert("https://www.googleapis.com/auth/documents.readonly");
+
+  // m_google->setRequestedScopeTokens(scope);
     m_google->setScope(m_scope);
 
    // connect(m_networkManager,
@@ -53,37 +59,6 @@ void GoogleSSO::init_internal(){
             &QOAuth2AuthorizationCodeFlow::authorizeWithBrowser,
             &QDesktopServices::openUrl);
 
-
-   /* connect(m_google,
-            &QOAuth2AuthorizationCodeFlow::granted,
-            [this](){
-                const QString token = m_google->token();
-                const QString client = m_google->clientIdentifier();
-                const QUrl authho = m_google->authorizationUrl();
-                auto status = m_google->status();
-                auto extraT = m_google->extraTokens();
-
-                m_activeToken = token;
-                qlonglong expiredAt = extraT["refresh_token_expires_in"].toLongLong();
-
-                m_expiredAt = QTime::currentTime();
-                m_expiredAt = m_expiredAt.addMSecs(expiredAt);
-
-                m_sheetFactory.setBearerToken(token.toLatin1());
-
-                emit gotToken(token);
-
-                writeTokenFile();
-
-                // Alternatively, just use the token for your purposes
-                //auto reply = this->m_google->get(QUrl("https://people.googleapis.com/v1/{resourceName=people/me}"));
-
-                //  connect(reply, &QNetworkReply::finished, [reply](){
-                //      qInfo() << reply->readAll();
-                //  });
-            });
-*/
-
     connect(m_google,
             &QOAuth2AuthorizationCodeFlow::statusChanged,
             [=](QAbstractOAuth::Status status) {
@@ -95,6 +70,7 @@ void GoogleSSO::init_internal(){
                     auto status = m_google->status();
                     auto extraT = m_google->extraTokens();
 
+                    qDebug() << extraT;
                     m_activeToken = token;
                     qlonglong expiredAt = extraT["refresh_token_expires_in"].toLongLong();
 
@@ -102,6 +78,7 @@ void GoogleSSO::init_internal(){
                     m_expiredAt = m_expiredAt.addMSecs(expiredAt);
 
                     m_sheetFactory.setBearerToken(token.toLatin1());
+                    m_docFactory.setBearerToken(token.toLatin1());
 
                     emit gotToken(token);
 
@@ -134,8 +111,6 @@ void GoogleSSO::init_internal(){
 
     m_replyHandler = new QOAuthHttpServerReplyHandler(port, this);
     m_google->setReplyHandler(m_replyHandler);
-
-
 }
 
 void GoogleSSO::setCredentials(const QString& clientId, const QString& clientSecret) {
@@ -156,6 +131,8 @@ void GoogleSSO::authenticate() {
         else
         {
             m_sheetFactory.setBearerToken(m_activeToken.toLatin1());
+            m_docFactory.setBearerToken(m_activeToken.toLatin1());
+
             setAuthenticated(true);
         }
     }
@@ -165,15 +142,15 @@ void GoogleSSO::authenticate() {
 std::optional<QJsonArray> GoogleSSO::getSheetValues(const QString & aRange)
 {
     QString url = QString("/spreadsheets/%1/values/%2")
-                      .arg(SAMPLE_SPREADSHEET_ID, aRange);
+                      .arg(m_dataSpreadSheet, aRange);
 
-    std::optional<QJsonObject> resultObject = getReplay(url);
+    std::optional<QJsonObject> resultObject = getReplay(m_sheetsEndPoint, url);
     if(resultObject.has_value())
     {
        QJsonObject result =  resultObject.value();
         if (result.contains("values") == false)
         {
-           slotSetErrorMessage("POST result did not contain the expire time string.");
+           slotSetErrorMessage("GoogleSSO::getSheetValues result did not contain the values string.");
             return std::nullopt;
         }
 
@@ -185,12 +162,99 @@ std::optional<QJsonArray> GoogleSSO::getSheetValues(const QString & aRange)
     return std::nullopt;
 }
 
-std::optional<QJsonObject> GoogleSSO::getReplay(const QString& aUrl)
+std::optional<QJsonObject> GoogleSSO::getDocument(const QString & anId)
 {
-    if(m_restManager.isNull())
-        return std::nullopt;
+    QString url = QString("/documents/%1").arg(anId);
 
-    QNetworkReply *reply = m_restManager->get(m_sheetFactory.createRequest(aUrl));
+    std::optional<QJsonObject> resultObject = getReplay(m_docEndPoint, url);
+    if(resultObject.has_value())
+    {
+        QJsonObject result =  resultObject.value();
+        return result;
+    }
+
+    return std::nullopt;
+}
+
+std::optional<QString> GoogleSSO::copyDocument(const QString & anId, const QString &newName)
+{
+    QString url = QString("/files/%1/copy").arg(anId);
+    std::string rawData =R"({"name": "%1"})";
+    QString dataString = QString::fromUtf8(rawData).arg(newName);
+
+    QJsonDocument doc =  QJsonDocument::fromJson(dataString.toUtf8());
+    QByteArray requestData = doc.toJson(QJsonDocument::Compact);
+
+    std::optional<QJsonObject> updateResult = postReplay(m_fileEndPoint, url, requestData);
+    if(updateResult.has_value())
+    {
+        QJsonObject result =  updateResult.value();
+        if (result.contains("id") == false)
+        {
+            slotSetErrorMessage("GoogleSSO::copyDocument result did not contain the id string.");
+            return std::nullopt;
+        }
+
+        QString newFileId = result.value("id").toString();
+        return newFileId;
+    }
+    return std::nullopt;
+}
+
+
+void GoogleSSO::updateDocument(const QString & anId, const QString & newName)
+{
+   //copy document
+    std::optional<QString> copyResult = copyDocument(anId, newName);
+   if(copyResult.has_value())
+    {
+        QString newFileId = copyResult.value();
+
+       // get tmp document
+       std::optional<QJsonObject> resp = getDocument(newFileId);
+       if(resp.has_value())
+       {
+           //change data
+           QString url = QString("/documents/%1:batchUpdate").arg(newFileId);
+
+           GDocUpdateShema shema;
+           QString dataString = QString::fromUtf8(shema.rawData)
+                                    .arg("aa","aa","aa","aa","aa","aa","aa","aa","aa","aa","aa","aa","aa","aa","aa","aa","aa","aa","aa","aa","aa","aa");
+
+           QJsonDocument doc =  QJsonDocument::fromJson(dataString.toUtf8());
+           QByteArray requestData = doc.toJson(QJsonDocument::Compact);
+
+           std::optional<QJsonObject> updateResult = postReplay(m_docEndPoint, url, requestData);
+           if(updateResult.has_value())
+           {
+               QJsonObject result =  updateResult.value();
+               if (result.contains("replaceAllText") == false)
+               {
+                   slotSetErrorMessage("GoogleSSO::updateDocument result did not contain the replaceAllText string.");
+                   return;
+               }
+
+               QJsonValue token = result.value("replaceAllText");
+               QJsonArray values = token.toArray();
+               return;
+           }
+       }
+    }
+    return;
+}
+
+ std::optional<QJsonObject> GoogleSSO::postReplay(const QString & endPoint, const QString& aUrl,
+                                                 const QByteArray &aData)
+{
+     if(m_restManager.isNull())
+     {
+         slotSetErrorMessage(QString("GoogleSSO::postReplay m_restManager is NULL!"));
+
+        return std::nullopt;
+     }
+
+    m_sheetFactory.setBaseUrl(QUrl(endPoint));
+    QNetworkReply *reply = m_restManager->post(m_sheetFactory.createRequest(aUrl), aData);
     if(reply)
     {
         connect(reply,
@@ -210,6 +274,91 @@ std::optional<QJsonObject> GoogleSSO::getReplay(const QString& aUrl)
 
 
         // If we are not done then we timed out.
+        if (!reply->isFinished())
+        {
+            reply->abort();
+            reply->deleteLater();
+
+            if (m_timeout > 0)
+            {
+                slotSetErrorMessage(QString("POST reply timed out after %1 milliseconds.").arg(m_timeout));
+            }
+            return std::nullopt;
+        }
+
+        m_neworkReplyError = reply->error();
+        if (m_neworkReplyError != QNetworkReply::NoError)
+        {
+            slotSetErrorMessage(reply->errorString());
+            reply->deleteLater();
+            return std::nullopt;
+        }
+
+        QRestReply restReply(reply);
+        if (restReply.isSuccess())
+        {
+            QJsonParseError jsonParseError;
+
+            quint64 bytesAvailable = reply->bytesAvailable();
+            QByteArray replyData = reply->read(bytesAvailable);
+            QJsonDocument replyJson = QJsonDocument::fromJson(replyData, &jsonParseError);
+
+            if (jsonParseError.error != QJsonParseError::NoError)
+            {
+                slotSetErrorMessage(jsonParseError.errorString());
+                reply->deleteLater();
+                return std::nullopt;
+            }
+
+            if (!replyJson.isObject())
+            {
+                slotSetErrorMessage("POST result was not a JSON object as expected.");
+                reply->deleteLater();
+                return std::nullopt;
+            }
+
+            return replyJson.object();
+        }
+        else
+        {
+            return std::nullopt;
+        }
+    }
+    else
+    {
+        slotSetErrorMessage("QRestAccessManager::post return NULL!");
+        return std::nullopt;;
+    }
+
+    return std::nullopt;
+
+}
+
+
+std::optional<QJsonObject> GoogleSSO::getReplay(const QString & endPoint, const QString& aUrl)
+{
+    if(m_restManager.isNull())
+        return std::nullopt;
+
+    m_sheetFactory.setBaseUrl(QUrl(endPoint));
+    QNetworkReply *reply = m_restManager->get(m_sheetFactory.createRequest(aUrl));
+    if(reply)
+    {
+        connect(reply,
+                SIGNAL(errorOccurred(QNetworkReply::NetworkError)), this,
+                SLOT(slotNetworkError(QNetworkReply::NetworkError)));
+
+        if (!reply->isFinished())
+        {
+            QEventLoop loop;
+            QObject::connect(reply, SIGNAL(finished()), &loop, SLOT(quit()));
+
+            if (m_timeout > 0)
+                QTimer::singleShot(m_timeout, &loop, SLOT(quit()));
+
+            loop.exec(QEventLoop::ExcludeUserInputEvents);
+        }
+
         if (!reply->isFinished())
         {
             reply->abort();
@@ -303,14 +452,32 @@ std::optional<QJsonObject> GoogleSSO::getReplay(const QString& aUrl)
 }
 
 
-
 void GoogleSSO::slotNetworkError(QNetworkReply::NetworkError anError)
 {
     m_neworkReplyError = anError;
 
     QNetworkReply *reply = dynamic_cast<QNetworkReply*>(sender());
     if (reply){
-        slotSetErrorMessage(reply->errorString());
+
+        QString errorMesage = reply->errorString();
+
+        QJsonParseError jsonParseError;
+        quint64 bytesAvailable = reply->bytesAvailable();
+        QByteArray replyData = reply->read(bytesAvailable);
+        QJsonDocument replyJson = QJsonDocument::fromJson(replyData, &jsonParseError);
+
+        if(replyJson.isObject())
+        {
+            QJsonObject resultObj = replyJson.object();
+            QJsonObject errorObj = resultObj["error"].toObject();
+
+            int code = errorObj["code"].toInt();
+            QString message = errorObj["message"].toString();
+
+            errorMesage = QString("Network error, code: %1 :%2").arg(code).arg(message);
+        }
+
+        slotSetErrorMessage(errorMesage);
     }
     emit signalError(m_errorMessage);
 }

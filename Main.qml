@@ -30,6 +30,7 @@ ApplicationWindow {
 
     BusyIndicator {
         visible: !backEnd.isAuthenticated
+        running: !backEnd.isAuthenticated
         anchors.centerIn: parent
     }
 
@@ -54,6 +55,7 @@ ApplicationWindow {
     //}
 
     LeftPanel {
+        id: leftPanel
         width: root.leftPanelW
         height: root.height - root.headerHight
         visible: true
@@ -65,6 +67,23 @@ ApplicationWindow {
         architekciModel: root.archModel
         urzedyModel: root.urzadModel
         projektyModel: root.projektyModel
+    }
+
+    TextArea {
+        id: document
+        property string initDataStr
+
+        width: root.width - root.leftPanelW
+        height: root.height - root.headerHight
+        visible: true
+
+        anchors.horizontalCenter: root.horizontalCenter
+        anchors.top: toolBar.bottom
+        anchors.left: leftPanel.right
+
+        textFormat: TextEdit.RichText
+
+        // text: "<pre style='color:red'>" + document.initDataStr + "</pre>"
     }
 
     Settings {
@@ -92,6 +111,10 @@ ApplicationWindow {
             archModel = backEnd.getModelArchitekci();
             urzadModel = backEnd.getModelUrzedy();
             projektyModel = backEnd.getModelProjekt();
+
+            let doc = JSON.stringify(backEnd.getDoc(), null, '\t');
+
+            document.text = "<pre style='color:red'>" + doc + "</pre>";
         }
     }
 }

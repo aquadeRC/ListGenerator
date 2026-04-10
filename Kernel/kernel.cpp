@@ -1,3 +1,4 @@
+
 #include "kernel.h"
 #include "KernelCommon.h"
 
@@ -54,9 +55,8 @@ void Kernel::getDataFromGoogle()
     getProjects();
     getInwestorzy();
     getArchitekci();
-    getUrzedy();
-
-    m_DataWrapperManager.dumpData();
+   // getDoc();
+    //m_DataWrapperManager.dumpData();
 }
 
 void Kernel::getProjects()
@@ -140,14 +140,29 @@ void Kernel::getArchitekci()
     m_DataWrapperManager.addSheetModel(DATA_TYPES::ARCHITEKT_DATA, architekci);
 }
 
-void Kernel::getUrzedy()
+QJsonObject Kernel::getDoc()
 {
-
+std::optional<QJsonObject> result = m_googleWrapper.getDocument(m_tmpDoc);
+    if(result.has_value())
+    {
+  //  qDebug() << result.value();
+        return result.value();
+    }
+    else
+        return QJsonObject();
 }
+
+
+void Kernel::generateDocument(const QString & anID)
+{
+    m_googleWrapper.updateDocument(m_tmpDoc, anID);
+}
+
+
 
 void Kernel::slotSetAuthenticated()
 {
-    bool au= m_googleWrapper.isAuthenticated();
+    bool au = m_googleWrapper.isAuthenticated();
 
     if (m_isAuthenticated != au) {
         m_isAuthenticated = au;
@@ -158,4 +173,20 @@ void Kernel::slotSetAuthenticated()
 
         emit isAuthenticatedChanged();
     }
+}
+
+void Kernel::slotCurrentProjektChanged(const QString & aProjektName, int index)
+{
+    qDebug() <<  "projekt name changed to " << aProjektName << index;
+
+}
+
+QStringList Kernel::getProjectData(int anIndex)
+{
+    return m_DataWrapperManager.getProjectData(anIndex);
+}
+
+QStringList Kernel::getArchitektData(const QString & anID)
+{
+    return m_DataWrapperManager.getArchitektData(anID);
 }

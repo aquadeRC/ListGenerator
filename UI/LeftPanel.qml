@@ -27,6 +27,22 @@ Rectangle {
             backendProp: backend2.inwestycja
             textRolenNme: "id"
             valueRolenNme: "id"
+
+            onComboFieldChanged: (projektName, index) => {
+                let data = backEnd.getProjectData(index);
+
+                let inwestycja = data[2];
+                let inwestor = data[3];
+                let architektID = data[1];
+                let urzad = data[7];
+                let archData = backEnd.getArchitektData(architektID);
+                let archName = archData[0];
+
+                architektCB.backendProp = archName;
+                inwestycjaF.backendProp = inwestycja;
+                inwestorCB.backendProp = inwestor;
+                urzadCB.backendProp = urzad;
+            }
         }
 
         ComboField {
@@ -86,7 +102,7 @@ Rectangle {
             iconPath: "icons/ustawienia.svg"
 
             onClicked: {
-                backEnd.getDataFromGoogle();
+                backEnd.generateDocument("ala ma kota");
             }
         }
     }

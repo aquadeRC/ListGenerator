@@ -22,7 +22,6 @@ struct DataWraperManager::DataWraperManagerImpl
 {
     DataWraperManagerImpl()
     {
-
     }
 
     QString m_dataDir{"/Kernel/Data/"};
@@ -50,16 +49,6 @@ AbstractAppModel* DataWraperManager::getModel(DATA_TYPES aType)
 
 void DataWraperManager::createDataModels()
 {
-    /*
-    ArchitektDataWrapper archWrapper = ArchitektDataWrapper();
-    DATA_TYPES archType = archWrapper.getType();
-    auto archData = loadData(archWrapper);
-
-    m_Impl->m_dataModels[archType]= std::make_shared<ArchitektDataModel>(this);
-    m_Impl->m_dataModels[archType]->initData(archData);
-    */
-
-
     UrzadDataWrapper urzadWrapper = UrzadDataWrapper();
     DATA_TYPES urzadType = urzadWrapper.getType();
     auto urzadData = loadData(urzadWrapper);
@@ -138,6 +127,65 @@ void DataWraperManager::dumpData()
         auto model = modelsIt.value();
         model->dumpData();
     }
-
-
 }
+
+
+QStringList DataWraperManager::getProjectData(int anIndex)
+{
+    auto model = m_Impl->m_dataModels[DATA_TYPES::PROJEKTY_DATA];
+    auto index = model->index(anIndex);
+
+    QString  projektId =   model->data(index, ProjektModel::ID).toString();
+    QString  prowadzacy =   model->data(index, ProjektModel::Prowadzacy).toString();
+    QString  tytul =   model->data(index, ProjektModel::Tytuł).toString();
+    QString  inwestor =   model->data(index, ProjektModel::Inwestor).toString();
+    QString  dzialka =   model->data(index, ProjektModel::Dzialka).toString();
+    QString  ewidencja =   model->data(index, ProjektModel::Ewidencja).toString();
+    QString  obreb =   model->data(index, ProjektModel::Obreb).toString();
+    QString  urzad = model->data(index, ProjektModel::Urzad).toString();
+
+    QStringList data;
+    data.append(projektId);
+    data.append(prowadzacy);
+    data.append(tytul);
+    data.append(inwestor);
+    data.append(dzialka);
+    data.append(ewidencja);
+    data.append(obreb);
+    data.append(urzad);
+
+    return data;
+}
+
+QStringList DataWraperManager::getArchitektData(const QString & anID)
+{
+    auto model = m_Impl->m_dataModels[DATA_TYPES::ARCHITEKT_DATA];
+    auto dataModel = model->getData();
+
+    int row = 0;
+    QListIterator<QStringList> it(dataModel);
+    while(it.hasNext())
+    {
+        if(it.next().constFirst() == anID)
+            break;
+        else
+            ++row;
+    }
+
+
+    auto index = model->index(row);
+
+    QString  projektId =   model->data(index, ArchitektDataModel::ID).toString();
+    QString  nazwa =   model->data(index, ArchitektDataModel::Nazwa).toString();
+    QString  telefon =   model->data(index, ArchitektDataModel::Telefon).toString();
+    QString  email =   model->data(index, ArchitektDataModel::Email).toString();
+
+    QStringList data;
+    data.append(projektId);
+    data.append(nazwa);
+    data.append(telefon);
+    data.append(email);
+
+    return data;
+}
+

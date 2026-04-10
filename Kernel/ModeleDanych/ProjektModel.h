@@ -19,12 +19,13 @@ public:
         Ewidencja,
         Obreb,
         Ulica,
-        Inwestor
+        Inwestor,
+        Urzad
     };
     explicit ProjektModel(QObject *parent = nullptr);
 
     void initData(const QList<QStringList>&data) override;
-    QList<QStringList> getData() const;
+    QList<QStringList> getData()  const override;
 
     // Basic functionality:
     int rowCount(const QModelIndex &parent = QModelIndex()) const override;
@@ -50,6 +51,7 @@ private:
     const QString m_obreb{"obreb"};
     const QString m_ulica{"ulica"};
     const QString m_inwestor{"inwestor"};
+    const QString m_urzad{"urzad"};
 };
 
 #endif // PROJEKTMODEL_H

@@ -22,7 +22,7 @@ public:
     explicit ArchitektDataModel(QObject *parent = nullptr);
 
     void initData(const QList<QStringList>&data) override;
-    QList<QStringList> getData() const;
+    QList<QStringList> getData() const override;
 
     int rowCount(const QModelIndex &parent = QModelIndex()) const override;
 

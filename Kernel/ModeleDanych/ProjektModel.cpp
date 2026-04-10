@@ -46,6 +46,8 @@ QVariant ProjektModel::data(const QModelIndex &index, int role) const
         return m_projektData[row].at(7);
     case Inwestor:
         return m_projektData[row].at(8);
+    case Urzad:
+        return m_projektData[row].at(9);
     }
 
     return QVariant();
@@ -83,6 +85,7 @@ bool ProjektModel::setData(const QModelIndex &index, const QVariant &value, int 
     m_projektData[row][6] = newData[6];
     m_projektData[row][7] = newData[7];
     m_projektData[row][8] = newData[8];
+    m_projektData[row][9] = newData[9];
 
     emit dataChanged(index, index);
     return true;
@@ -108,7 +111,8 @@ QHash<int, QByteArray> ProjektModel::roleNames() const
         {ProjektRoles::Ewidencja, m_ewidencja.toUtf8()},
         {ProjektRoles::Obreb, m_obreb.toUtf8()},
         {ProjektRoles::Ulica, m_ulica.toUtf8()},
-        {ProjektRoles::Inwestor, m_inwestor.toUtf8()}
+        {ProjektRoles::Inwestor, m_inwestor.toUtf8()},
+        {ProjektRoles::Urzad, m_urzad.toUtf8()}
 
     };
     return mapping;

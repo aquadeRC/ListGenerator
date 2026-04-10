@@ -13,6 +13,7 @@ public:
     {}
 
     virtual void initData(const QList<QStringList>&data) =0;
+    virtual QList<QStringList> getData() const =0;
 
     // Basic functionality:
     int rowCount(const QModelIndex &parent = QModelIndex()) const =0;

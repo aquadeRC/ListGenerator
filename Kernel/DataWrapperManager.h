@@ -27,6 +27,10 @@ public:
 
     void dumpData();
 
+    QStringList getProjectData(int index);
+    QStringList getArchitektData(const QString & anIndex);
+
+
 protected:
     struct DataWraperManagerImpl;
 

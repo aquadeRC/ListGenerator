@@ -28,10 +28,10 @@ public:
         }
     }
 
-    bool isAuthenticated() const {
+    Q_INVOKABLE bool isAuthenticated()
+    {
         return m_isAuthenticated;
     }
-
 
     Q_INVOKABLE AbstractAppModel* getModelUrzedy();
     Q_INVOKABLE AbstractAppModel* getModelInwestycje();
@@ -40,27 +40,33 @@ public:
     Q_INVOKABLE AbstractAppModel* getModelProjekt();
 
     Q_INVOKABLE void authenticate();
+    Q_INVOKABLE QStringList getProjectData(int anIndex);
+    Q_INVOKABLE QStringList getArchitektData(const QString & anID);
+    Q_INVOKABLE QJsonObject getDoc();
+    Q_INVOKABLE void generateDocument(const QString & anID);
 
-    Q_INVOKABLE void getProjects();
-    Q_INVOKABLE void getInwestorzy();
-    Q_INVOKABLE void getArchitekci();
-    Q_INVOKABLE void getUrzedy();
+public slots:
+    void slotCurrentProjektChanged(const QString & aProjektName, int index);
 
-    Q_INVOKABLE void getDataFromGoogle();
-    Q_INVOKABLE bool isAuthenticated()
-    {
-        return m_isAuthenticated;
-    }
 
 signals:
     void isAuthenticatedChanged();
 
 protected slots:
     void slotSetAuthenticated();
+
 private:
     DataWraperManager m_DataWrapperManager;
     GoogleSSO m_googleWrapper;
     bool m_isAuthenticated {false};
+
+    void getDataFromGoogle();
+    void getProjects();
+    void getInwestorzy();
+    void getArchitekci();
+
+    const QString m_tmpDoc{"1IzeibTeOY8CW_G3AR5KfAsOsVKlbvM461ZvgLKqJ6b4"};
+
 };
 
 #endif // KERNEL_H
