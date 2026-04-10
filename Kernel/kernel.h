@@ -5,8 +5,10 @@
 #include <QtQml>
 #include <QQmlEngine>
 #include <QStringList>
+#include <QSharedPointer>
 #include "DataWrapperManager.h"
 #include "googlesso.h"
+#include "Ustawienia.h"
 
 using namespace std;
 
@@ -40,10 +42,11 @@ public:
     Q_INVOKABLE AbstractAppModel* getModelProjekt();
 
     Q_INVOKABLE void authenticate();
+    Q_INVOKABLE void generateDocument(const QString & anID);
     Q_INVOKABLE QStringList getProjectData(int anIndex);
     Q_INVOKABLE QStringList getArchitektData(const QString & anID);
     Q_INVOKABLE QJsonObject getDoc();
-    Q_INVOKABLE void generateDocument(const QString & anID);
+
 
 public slots:
     void slotCurrentProjektChanged(const QString & aProjektName, int index);
@@ -58,15 +61,13 @@ protected slots:
 private:
     DataWraperManager m_DataWrapperManager;
     GoogleSSO m_googleWrapper;
+    QSharedPointer<Ustawienia> m_settins;
     bool m_isAuthenticated {false};
 
     void getDataFromGoogle();
     void getProjects();
     void getInwestorzy();
     void getArchitekci();
-
-    const QString m_tmpDoc{"1IzeibTeOY8CW_G3AR5KfAsOsVKlbvM461ZvgLKqJ6b4"};
-
 };
 
 #endif // KERNEL_H

@@ -8,6 +8,7 @@
 #include <QtNetworkAuth>
 
 #include "GDocUpdateShema.h"
+#include "Ustawienia.h"
 
 
 
@@ -17,10 +18,9 @@ GoogleSSO::GoogleSSO(QObject *parent)
     m_google = new QOAuth2AuthorizationCodeFlow(this);
     m_networkManager = new QNetworkAccessManager(this);
     m_restManager = new QRestAccessManager(m_networkManager, this);
-    m_sheetFactory = QNetworkRequestFactory(m_sheetsEndPoint);
-    m_docFactory = QNetworkRequestFactory(m_docEndPoint);//setBaseUrl
+    m_requestFactory = QNetworkRequestFactory(m_sheetsEndPoint);
 
-    init();
+   // init();
 }
 
 GoogleSSO::~GoogleSSO() {
@@ -40,11 +40,12 @@ bool GoogleSSO::init ()
 }
 void GoogleSSO::init_internal(){
     QSet<QByteArray> scope;
-    //scope.insert("https://www.googleapis.com/auth/spreadsheets.readonly");
-  //  scope.insert("https://www.googleapis.com/auth/documents.readonly");
-
-  // m_google->setRequestedScopeTokens(scope);
-    m_google->setScope(m_scope);
+    scope.insert("https://www.googleapis.com/auth/spreadsheets.readonly");
+    scope.insert("https://www.googleapis.com/auth/documents");
+    scope.insert("https://www.googleapis.com/auth/drive");
+    scope.insert("https://www.googleapis.com/auth/drive.metadata.readonly");
+    m_google->setRequestedScopeTokens(scope);
+    //m_google->setScope(m_scope);
 
    // connect(m_networkManager,
      //       SIGNAL(sslErrors(QNetworkReply*, const QList<QSslError> &)), this,
@@ -77,8 +78,7 @@ void GoogleSSO::init_internal(){
                     m_expiredAt = QTime::currentTime();
                     m_expiredAt = m_expiredAt.addMSecs(expiredAt);
 
-                    m_sheetFactory.setBearerToken(token.toLatin1());
-                    m_docFactory.setBearerToken(token.toLatin1());
+                    m_requestFactory.setBearerToken(token.toLatin1());
 
                     emit gotToken(token);
 
@@ -130,8 +130,7 @@ void GoogleSSO::authenticate() {
         }
         else
         {
-            m_sheetFactory.setBearerToken(m_activeToken.toLatin1());
-            m_docFactory.setBearerToken(m_activeToken.toLatin1());
+            m_requestFactory.setBearerToken(m_activeToken.toLatin1());
 
             setAuthenticated(true);
         }
@@ -142,7 +141,7 @@ void GoogleSSO::authenticate() {
 std::optional<QJsonArray> GoogleSSO::getSheetValues(const QString & aRange)
 {
     QString url = QString("/spreadsheets/%1/values/%2")
-                      .arg(m_dataSpreadSheet, aRange);
+                      .arg(Ustawienia::getProjektyId(), aRange);
 
     std::optional<QJsonObject> resultObject = getReplay(m_sheetsEndPoint, url);
     if(resultObject.has_value())
@@ -253,8 +252,8 @@ void GoogleSSO::updateDocument(const QString & anId, const QString & newName)
         return std::nullopt;
      }
 
-    m_sheetFactory.setBaseUrl(QUrl(endPoint));
-    QNetworkReply *reply = m_restManager->post(m_sheetFactory.createRequest(aUrl), aData);
+    m_requestFactory.setBaseUrl(QUrl(endPoint));
+    QNetworkReply *reply = m_restManager->post(m_requestFactory.createRequest(aUrl), aData);
     if(reply)
     {
         connect(reply,
@@ -340,8 +339,8 @@ std::optional<QJsonObject> GoogleSSO::getReplay(const QString & endPoint, const 
     if(m_restManager.isNull())
         return std::nullopt;
 
-    m_sheetFactory.setBaseUrl(QUrl(endPoint));
-    QNetworkReply *reply = m_restManager->get(m_sheetFactory.createRequest(aUrl));
+    m_requestFactory.setBaseUrl(QUrl(endPoint));
+    QNetworkReply *reply = m_restManager->get(m_requestFactory.createRequest(aUrl));
     if(reply)
     {
         connect(reply,
@@ -515,7 +514,7 @@ void GoogleSSO::slotSetErrorMessage(const QString & anError)
 bool GoogleSSO::readCredentials()
 {
     QDir dir;
-    QFile file(dir.absolutePath() + m_dataDir + m_credentialsFile );
+    QFile file(dir.absolutePath() + Ustawienia::getDataDir() + Ustawienia::getCredentialFile());
     if (!file.open(QIODevice::ReadOnly))
     {
         QFileInfo info(file);
@@ -567,7 +566,7 @@ bool GoogleSSO::readCredentials()
 bool GoogleSSO::checkTokenFile()
 {
     QDir dir;
-    QFile file(dir.absolutePath() + m_dataDir + m_tokenFile );
+    QFile file(dir.absolutePath() + Ustawienia::getDataDir() + m_tokenFile );
     if (!file.open(QIODevice::ReadOnly))
     {
         return false;
@@ -610,7 +609,7 @@ bool GoogleSSO::checkTokenFile()
  void GoogleSSO::writeTokenFile()
 {
      QDir dir;
-     QFile file(dir.absolutePath() + m_dataDir + m_tokenFile );
+     QFile file(dir.absolutePath() + Ustawienia::getDataDir() + m_tokenFile );
      if (!file.open(QIODevice::WriteOnly | QIODevice::Text | QIODevice::Truncate))
      {
          return;

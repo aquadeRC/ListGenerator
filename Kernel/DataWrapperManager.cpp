@@ -15,7 +15,7 @@
 #include "ModeleDanych/UrzadDataModel.h"
 #include "ModeleDanych/InwestorzyModel.h"
 #include "ModeleDanych/ProjektModel.h"
-
+#include "Ustawienia.h"
 
 
 struct DataWraperManager::DataWraperManagerImpl
@@ -24,7 +24,6 @@ struct DataWraperManager::DataWraperManagerImpl
     {
     }
 
-    QString m_dataDir{"/Kernel/Data/"};
     QMap<DATA_TYPES, std::shared_ptr<AbstractAppModel>> m_dataModels;
 };
 
@@ -32,7 +31,7 @@ DataWraperManager::DataWraperManager(QObject *parent)
     : QObject{parent}
 {
     m_Impl.reset(new DataWraperManagerImpl());
-    createDataModels();
+    //createDataModels();
 }
 
 AbstractAppModel* DataWraperManager::getModel(DATA_TYPES aType)
@@ -56,7 +55,6 @@ void DataWraperManager::createDataModels()
     m_Impl->m_dataModels[urzadType]= std::make_shared<Modele_Danych::UrzadDataModel>(this);
     m_Impl->m_dataModels[urzadType]->initData(urzadData);
 }
-
 
 void DataWraperManager::addSheetModel(DATA_TYPES aType, QList<QStringList> aData)
 {
@@ -94,7 +92,7 @@ QList<QStringList> DataWraperManager::loadData(const IDataWrapper& aWrapper)
     QDir dir;
 
     QString dataFile = aWrapper.getDataFile();
-    QFile file(dir.absolutePath() + m_Impl->m_dataDir + dataFile );
+    QFile file(dir.absolutePath() + Ustawienia::getDataDir() + dataFile );
     if (!file.open(QIODevice::ReadOnly))
         {
            QFileInfo info(file);
@@ -171,7 +169,6 @@ QStringList DataWraperManager::getArchitektData(const QString & anID)
         else
             ++row;
     }
-
 
     auto index = model->index(row);
 

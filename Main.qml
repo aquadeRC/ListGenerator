@@ -82,8 +82,6 @@ ApplicationWindow {
         anchors.left: leftPanel.right
 
         textFormat: TextEdit.RichText
-
-        // text: "<pre style='color:red'>" + document.initDataStr + "</pre>"
     }
 
     Settings {

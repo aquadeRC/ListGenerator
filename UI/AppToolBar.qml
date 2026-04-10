@@ -57,6 +57,8 @@ Rectangle {
             id: ustawieniaButton
             buttonName: qsTr("Ustawienia")
             iconPath: "icons/ustawienia.svg"
+            onClicked: {
+            }
         }
 
         IconButton {

@@ -65,11 +65,11 @@ protected slots:
 
 private:  
     std::optional<QJsonObject> getReplay(const QString & endPoint, const QString& aUrl);
-     std::optional<QJsonObject> postReplay(const QString & endPoint, const QString& aUrl,
+    std::optional<QJsonObject> postReplay(const QString & endPoint, const QString& aUrl,
                                           const QByteArray &aData = QByteArray());
 
 
-     std::optional<QString> copyDocument(const QString & anId, const QString &newName);
+    std::optional<QString> copyDocument(const QString & anId, const QString &newName);
     void init_internal();
     bool readCredentials();
     bool checkTokenFile();
@@ -80,32 +80,28 @@ private:
     QPointer<QRestAccessManager> m_restManager {nullptr};
     QPointer<QOAuthHttpServerReplyHandler> m_replyHandler {nullptr};
 
-
-    QNetworkRequestFactory m_sheetFactory {};
-    QNetworkRequestFactory m_docFactory {};
+    QNetworkRequestFactory m_requestFactory {};
     QNetworkReply::NetworkError m_neworkReplyError {QNetworkReply::NoError};
-    QString m_activeToken {};
-    QTime m_expiredAt {};
-    QString m_errorMessage {};
+    Modele_Danych::CredentialsData m_credentials{};
 
-    const QString m_scope {"https://www.googleapis.com/auth/spreadsheets.readonly https://www.googleapis.com/auth/documents https://www.googleapis.com/auth/drive https://www.googleapis.com/auth/drive.metadata.readonly"};
+    QTime m_expiredAt {};
+
+    QString m_errorMessage {};
+    QString m_activeToken {};
+
+    const QString m_scope {"https://www.googleapis.com/auth/spreadsheets.readonly "
+                          "https://www.googleapis.com/auth/documents "
+                          "https://www.googleapis.com/auth/drive "
+                          "https://www.googleapis.com/auth/drive.metadata.readonly"};
+
     const QString m_sheetsEndPoint {"https://sheets.googleapis.com/v4"};
     const QString m_docEndPoint {"https://docs.googleapis.com/v1"};
     const QString m_fileEndPoint {"https://www.googleapis.com/drive/v3"};
-
-
-    const QString m_credentialsFile{"credentials.json"};
     const QString m_tokenFile{"token.json"};
-    const QString m_dataDir{"/Kernel/Data/"};
-    const QString m_dataSpreadSheet{"1g1S-g0OqpXYvv0SxqhUCo-JUIF3hshegyjcByQbeI9I"};
-    const QString m_template{"1IzeibTeOY8CW_G3AR5KfAsOsVKlbvM461ZvgLKqJ6b4"};
 
     bool m_isAuthenticated {false};
     bool m_credFileRead{false};
-
-    int m_timeout{50000};
-
-    Modele_Danych::CredentialsData m_credentials{};
+    int m_timeout{50000};  
 };
 
 #endif // GOOGLESSO_H

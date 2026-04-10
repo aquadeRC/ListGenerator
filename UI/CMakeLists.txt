@@ -17,6 +17,7 @@ qt_add_qml_module(${PROJECT_NAME}
 		QML_FILES UrzadModel.qml
 
 	RESOURCES icons/ksiezyc.svg icons/sloneczko.svg icons/ustawienia.svg
+	QML_FILES Ustawienia.qml
 )
 
 add_custom_target(copy_Icons_data

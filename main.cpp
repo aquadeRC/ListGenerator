@@ -10,12 +10,6 @@ int main(int argc, char *argv[])
     app.setApplicationName("PismoGenerator");
 
     Kernel appKernel;
-  //  ArchitektDataModel *archModel = appKernel.getModelArchitekci();
-   // QStringListModel archModel;
-   // archModel.setStringList(appKernel.getListaArchitekci());
-
-
-    //appKernel.getProjects();
 
     QQmlApplicationEngine engine;
     engine.addImportPath(QString("%1/Kernel").arg(QGuiApplication::applicationDirPath()));
