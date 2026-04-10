@@ -58,6 +58,7 @@ Rectangle {
             buttonName: qsTr("Ustawienia")
             iconPath: "icons/ustawienia.svg"
             onClicked: {
+                settingsDialog.open();
             }
         }
 

@@ -514,7 +514,8 @@ void GoogleSSO::slotSetErrorMessage(const QString & anError)
 bool GoogleSSO::readCredentials()
 {
     QDir dir;
-    QFile file(dir.absolutePath() + Ustawienia::getDataDir() + Ustawienia::getCredentialFile());
+    QFile file( Ustawienia::getCredentialFile());
+   // QFile file(dir.absolutePath() + Ustawienia::getDataDir() + Ustawienia::getCredentialFile());
     if (!file.open(QIODevice::ReadOnly))
     {
         QFileInfo info(file);

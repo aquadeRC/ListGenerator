@@ -1,19 +1,25 @@
+pragma ComponentBehavior: Bound
+
 import QtQuick
 import QtQuick.Controls
 import QtQuick.Layouts
+import QtQuick.Dialogs
 
-Rectangle {
-    width: Constants.width
-    height: Constants.height
+Dialog {
+    id: settingsDialog
+    title: "Ustawienia"
+    width: 500
+    height: 400
 
-    color: Constants.backgroundColor
+    standardButtons: StandardButton.Ok | StandardButton.Cancel
 
-    Frame {
-        id: frame
-        x: 630
-        y: 93
-        width: 660
-        height: 543
+    Rectangle {
+        id: settingsRect
+        anchors.fill: parent
+        width: settingsDialog.width
+        height: settingsDialog.height
+
+        color: mainTheme.background_color
 
         ColumnLayout {
             anchors.fill: parent
@@ -145,6 +151,8 @@ Rectangle {
                     height: 40
                     text: "Anuluj"
                     display: AbstractButton.TextOnly
+
+                    onClicked: reject()
                 }
 
                 RoundButton {
@@ -156,8 +164,14 @@ Rectangle {
                     text: "Zatwierdż"
                     display: AbstractButton.TextOnly
                     highlighted: true
+
+                    onClicked: accept()
                 }
             }
         }
     }
+
+    onAccepted: {}
+
+    Component.onCompleted: {}
 }

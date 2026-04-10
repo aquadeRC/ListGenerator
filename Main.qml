@@ -3,6 +3,7 @@ pragma ComponentBehavior: Bound
 import QtQuick
 import QtQuick.Controls.Windows
 import QtQuick.Layouts
+import QtQuick.Dialogs
 import QtCore
 import LG_GUI
 import Kernel
@@ -87,6 +88,10 @@ ApplicationWindow {
     Settings {
         id: settings
         property string state: mainTheme.mode
+    }
+
+    Ustawienia {
+        id: settingsDialog
     }
 
     Component.onCompleted: {
