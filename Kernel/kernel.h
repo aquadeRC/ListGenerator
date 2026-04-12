@@ -45,6 +45,9 @@ public:
     Q_INVOKABLE void generateDocument(const QString & anID);
     Q_INVOKABLE QStringList getProjectData(int anIndex);
     Q_INVOKABLE QStringList getArchitektData(const QString & anID);
+    Q_INVOKABLE QStringList getSettings();
+    Q_INVOKABLE void setSettings(const QStringList &aData);
+
     Q_INVOKABLE QJsonObject getDoc();
 
 

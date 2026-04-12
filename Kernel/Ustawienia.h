@@ -17,11 +17,14 @@ public:
     static QString getTemplateId();
     static QString getCredentialFile();
     static QString getDataDir();
+    static QStringList getSettingsData();
 
     static void setProjektyId(const QString& aValue);
     static void setDecyjzeId(const QString& aValue);
     static void setTemplateId(const QString& aValue);
-    static void setCredentialFile(const QString& aValue);
+    static void setCredentialFile(const QString& aValue); 
+    static void setSettingsData(const QStringList& aData);
+
 
 signals:
     void signalError(const QString & anError);

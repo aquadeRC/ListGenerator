@@ -49,6 +49,23 @@ AbstractAppModel* Kernel::getModelProjekt()
     return m_DataWrapperManager.getModel(DATA_TYPES::PROJEKTY_DATA);
 }
 
+QStringList Kernel::getSettings()
+{
+    return Ustawienia::getSettingsData();
+}
+
+void  Kernel::setSettings(const QStringList &aData)
+{
+  Ustawienia::setSettingsData(aData);
+
+    m_settins->load();
+    m_googleWrapper.init();
+
+    authenticate();
+}
+
+
+
  void Kernel::authenticate()
 {
      m_googleWrapper.authenticate();

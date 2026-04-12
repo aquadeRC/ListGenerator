@@ -17,6 +17,9 @@ qt_add_qml_module(${PROJECT_NAME}
 		QML_FILES UrzadModel.qml
 		QML_FILES Ustawienia.qml
 	RESOURCES icons/ksiezyc.svg icons/sloneczko.svg icons/ustawienia.svg
+	QML_FILES FileEdit.qml
+	QML_FILES RoundedButton.qml
+	QML_FILES RoundedTextField.qml
 
 )
 

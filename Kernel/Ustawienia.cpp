@@ -37,6 +37,19 @@ QString Ustawienia::getDataDir()
     return m_data_dir;
 }
 
+QStringList Ustawienia::getSettingsData()
+{
+    QStringList  data ;
+
+    data.append(m_projekty_file_id);
+    data.append(m_decyje_file_id);
+    data.append(m_template_file_id);
+    data.append(m_credentials_file);
+    data.append(m_data_dir);
+
+    return data;
+}
+
 void Ustawienia::setProjektyId(const QString &aValue)
 {
     m_projekty_file_id = aValue;
@@ -56,6 +69,17 @@ void Ustawienia::setCredentialFile(const QString &aValue)
 {
     m_credentials_file = aValue;
 }
+
+
+void Ustawienia::setSettingsData(const QStringList& aData)
+{
+     m_projekty_file_id = aData[0];
+     m_decyje_file_id = aData[1];
+     m_template_file_id = aData[2];
+     m_credentials_file = aData[3];
+}
+
+
 
 void Ustawienia::load()
 {
