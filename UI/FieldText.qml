@@ -5,7 +5,7 @@ import QtQuick.Layouts
 Item {
     id: textField
 
-    required property string fieldText
+    required property string fieldLabel
     property alias fieldtext: textInput.text
 
     width: 263
@@ -19,7 +19,7 @@ Item {
         Label {
             id: field_Text
             color: mainTheme.text_color
-            text: textField.fieldText
+            text: textField.fieldLabel
             font.pixelSize: 12
             verticalAlignment: Text.AlignVCenter
         }

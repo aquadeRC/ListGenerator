@@ -136,21 +136,23 @@ QStringList DataWraperManager::getProjectData(int anIndex)
     QString  projektId =   model->data(index, ProjektModel::ID).toString();
     QString  prowadzacy =   model->data(index, ProjektModel::Prowadzacy).toString();
     QString  tytul =   model->data(index, ProjektModel::Tytuł).toString();
-    QString  inwestor =   model->data(index, ProjektModel::Inwestor).toString();
     QString  dzialka =   model->data(index, ProjektModel::Dzialka).toString();
     QString  ewidencja =   model->data(index, ProjektModel::Ewidencja).toString();
     QString  obreb =   model->data(index, ProjektModel::Obreb).toString();
+
+    QString  inwestor =   model->data(index, ProjektModel::Inwestor).toString();
     QString  urzad = model->data(index, ProjektModel::Urzad).toString();
 
     QStringList data;
     data.append(projektId);
     data.append(prowadzacy);
     data.append(tytul);
-    data.append(inwestor);
     data.append(dzialka);
     data.append(ewidencja);
     data.append(obreb);
-    data.append(urzad);
+
+    //data.append(inwestor);
+    //data.append(urzad);
 
     return data;
 }

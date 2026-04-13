@@ -47,23 +47,35 @@ Rectangle {
 
                     onComboFieldChanged: (projektName, index) => {
                         let data = backEnd.getProjectData(index);
+                        console.log(data);
 
-                        let inwestycja = data[2];
-                        let inwestor = data[3];
+                        let projektId = data[0];
                         let architektID = data[1];
-                        let urzad = data[7];
+                        let inwestycja = data[2];
+                        //let inwestor = data[3];
+                        let dzialka = data[3];
+                        let ewidencja = data[4];
+                        let obreb = data[5];
+                        // let urzad = data[7];
+
                         let archData = backEnd.getArchitektData(architektID);
                         let archName = archData[0];
 
                         architektCB.backendProp = archName;
-                        inwestycjaF.backendProp = inwestycja;
-                        inwestorCB.backendProp = inwestor;
-                        urzadCB.backendProp = urzad;
+                        inwestycjaF.fieldtext = inwestycja;
+                        nrDzialka.fieldtext = dzialka;
+                        ewidencjaF.fieldtext = ewidencja;
+                        obrebF.fieldtext = obreb;
+                        nazwaProjekt.fieldtext = inwestycja;
+
+                    //inwestorCB.backendProp = inwestor;
+                    //urzadCB.backendProp = urzad;
+
                     }
                 }
                 FieldText {
                     id: nazwaProjekt
-                    fieldText: "Nazwa"
+                    fieldLabel: "Nazwa"
                     width: 253
                     implicitHeight: 58
                 }
@@ -79,19 +91,19 @@ Rectangle {
                 }
                 FieldText {
                     id: nrDzialka
-                    fieldText: "Nr. Działki"
+                    fieldLabel: "Nr. Działki"
                     width: 253
                     implicitHeight: 58
                 }
                 FieldText {
-                    id: ewidencja
-                    fieldText: "Ewidencja"
+                    id: ewidencjaF
+                    fieldLabel: "Ewidencja"
                     width: 253
                     implicitHeight: 58
                 }
                 FieldText {
-                    id: obreb
-                    fieldText: "Obręb"
+                    id: obrebF
+                    fieldLabel: "Obręb"
                     width: 253
                     implicitHeight: 58
                 }
@@ -117,25 +129,25 @@ Rectangle {
                 }
                 FieldText {
                     id: inwestorCB
-                    fieldText: "Inwestor"
+                    fieldLabel: "Inwestor"
                     width: 253
                     implicitHeight: 58
                 }
                 FieldText {
                     id: inwestycjaF
-                    fieldText: "Inwestycja"
+                    fieldLabel: "Inwestycja"
                     width: 253
                     implicitHeight: 58
                 }
                 FieldText {
                     id: odpowiedzTresc
-                    fieldText: "Treść odpowiedzi"
+                    fieldLabel: "Treść odpowiedzi"
                     width: 253
                     implicitHeight: 58
                 }
                 FieldText {
                     id: zalaczniki
-                    fieldText: "Załączniki"
+                    fieldLabel: "Załączniki"
                     width: 253
                     implicitHeight: 58
                 }
