@@ -10,6 +10,8 @@ Rectangle {
     required property AbstractItemModel urzedyModel
     required property AbstractItemModel projektyModel
 
+    property variant wnioskiModel
+    property string currentProjekt
     color: mainTheme.background_color
 
     ColumnLayout {
@@ -46,17 +48,16 @@ Rectangle {
                     valueRolenNme: "id"
 
                     onComboFieldChanged: (projektName, index) => {
+                        leftPanel.currentProjekt = projektName;
+                        leftPanel.wnioskiModel = backEnd.getWnioskiList(projektName);
                         let data = backEnd.getProjectData(index);
-                        console.log(data);
 
                         let projektId = data[0];
                         let architektID = data[1];
                         let inwestycja = data[2];
-                        //let inwestor = data[3];
                         let dzialka = data[3];
                         let ewidencja = data[4];
                         let obreb = data[5];
-                        // let urzad = data[7];
 
                         let archData = backEnd.getArchitektData(architektID);
                         let archName = archData[0];
@@ -68,9 +69,7 @@ Rectangle {
                         obrebF.fieldtext = obreb;
                         nazwaProjekt.fieldtext = inwestycja;
 
-                    //inwestorCB.backendProp = inwestor;
-                    //urzadCB.backendProp = urzad;
-
+                        sprawaF.comboModel = leftPanel.wnioskiModel;
                     }
                 }
                 FieldText {
@@ -107,15 +106,26 @@ Rectangle {
                     width: 253
                     implicitHeight: 58
                 }
-                ComboField {
+                ComboField2 {
                     id: sprawaF
                     fieldText: "Numer sprawy"
                     width: 253
                     implicitHeight: 58
-                    comboModel: UrzadModel {}
                     backendProp: backend2.nr_sprawy
-                    textRolenNme: "nazwa"
-                    valueRolenNme: "nazwa"
+                    comboModel: []
+
+                    onComboFieldChanged: (ewidencjaNr, index) => {
+                        let data = backEnd.getWniosekData(leftPanel.currentProjekt, ewidencjaNr);
+                        let urzadD = data[1];
+                        const urzadLines = urzadD.split("\n");
+                        let urzadnazwa = urzadLines[1];
+
+                        urzadCB.backendProp = urzadnazwa;
+                        inwestorCB.fieldtext = data[3];
+                        inwestycjaF.fieldtext = data[2];
+                        odpowiedzTresc.fieldtext = data[4];
+                        zalaczniki.fieldtext = data[5];
+                    }
                 }
                 ComboField {
                     id: urzadCB

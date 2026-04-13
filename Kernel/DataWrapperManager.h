@@ -18,11 +18,14 @@ public:
     AbstractAppModel* getModel(DATA_TYPES aType);
     void createDataModels();
     void addSheetModel(DATA_TYPES aType, QList<QStringList> aData);
-
+    void addDecyzjeSheetModel( QMap<QString, QList<QStringList>> aData);
     void dumpData();
 
     QStringList getProjectData(int index);
     QStringList getArchitektData(const QString & anIndex);
+
+    QStringList getWnioskiList(const QString&anProjectId);
+    QStringList getWniosekData(const QString&anProjectId, const QString&aEwidencjaId);
 
 
 protected:

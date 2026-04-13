@@ -32,8 +32,6 @@ QtObject {
         field_higlight_color = "#eceaea";
 
         mode = "dark_mode";
-
-        console.log("Dark mode");
     }
 
     function setLightMode() {
@@ -49,7 +47,5 @@ QtObject {
         field_higlight_color = "#eceaea";
 
         mode = "light_mode";
-
-        console.log("Light mode");
     }
 }

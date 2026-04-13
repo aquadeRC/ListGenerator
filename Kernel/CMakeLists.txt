@@ -17,6 +17,9 @@ qt_add_qml_module(${PROJECT_NAME}
 		ModeleDanych/ArchitektDataModel.h
 		ModeleDanych/UrzadDataModel.cpp
 		ModeleDanych/ArchitektDataModel.cpp
+		ModeleDanych/DecyzjeModel.h
+		ModeleDanych/DecyzjeModel.cpp
+
 		DataTypes/UrzadData.h
 		DataTypes/ArchitektData.h
 		DataWrappers/ArchitektDataWrapper.h 
@@ -32,6 +35,7 @@ qt_add_qml_module(${PROJECT_NAME}
 		SOURCES GDocUpdateShema.h
 		QML_FILES Data/Settings.json
 		SOURCES Ustawienia.h Ustawienia.cpp
+		SOURCES
 
 )
 qt_add_resources(${PROJECT_NAME} "data"

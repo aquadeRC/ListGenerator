@@ -10,7 +10,8 @@ Kernel::Kernel(QObject *parent)
     : QObject{parent},
     m_DataWrapperManager {DataWraperManager(this)},
     m_googleWrapper{GoogleSSO(this)},
-    m_settins{new Ustawienia(this)}
+    m_settins{new Ustawienia(this)},
+    m_wnioskiModel{ new QStringListModel()}
 {
      m_settins->load();
      m_DataWrapperManager.createDataModels();
@@ -64,8 +65,6 @@ void  Kernel::setSettings(const QStringList &aData)
     authenticate();
 }
 
-
-
  void Kernel::authenticate()
 {
      m_googleWrapper.authenticate();
@@ -76,12 +75,14 @@ void Kernel::getDataFromGoogle()
     getProjects();
     getInwestorzy();
     getArchitekci();
+    getWnioski();
     //m_DataWrapperManager.dumpData();
 }
 
 void Kernel::getProjects()
 {
-    std::optional<QJsonArray> result = m_googleWrapper.getSheetValues("Projekty");
+    std::optional<QJsonArray> result =
+        m_googleWrapper.getSheetValues(Ustawienia::getProjektyId(), "Projekty");
     QList<QStringList> projects;
 
     if(result.has_value())
@@ -105,7 +106,8 @@ void Kernel::getProjects()
 
 void Kernel::getInwestorzy()
 {
-    std::optional<QJsonArray> result = m_googleWrapper.getSheetValues("Inwestorzy");
+    std::optional<QJsonArray> result
+        = m_googleWrapper.getSheetValues(Ustawienia::getProjektyId(), "Inwestorzy");
     QList<QStringList> inwestorzy;
 
     if(result.has_value())
@@ -128,7 +130,8 @@ void Kernel::getInwestorzy()
 
 void Kernel::getArchitekci()
 {
-    std::optional<QJsonArray> result = m_googleWrapper.getSheetValues("Architekci");
+    std::optional<QJsonArray> result
+        = m_googleWrapper.getSheetValues(Ustawienia::getProjektyId(), "Architekci");
     QList<QStringList> architekci;
 
     if(result.has_value())
@@ -147,6 +150,43 @@ void Kernel::getArchitekci()
       architekci.removeAt(0);
     }
     m_DataWrapperManager.addSheetModel(DATA_TYPES::ARCHITEKT_DATA, architekci);
+}
+
+void Kernel::getWnioski()
+{
+    const QString decysjeSheetId = Ustawienia::getDecyjzeId();
+
+    std::optional<QStringList> sheetsIds
+        = m_googleWrapper.getSheets(decysjeSheetId);
+    QMap<QString, QList<QStringList>> decyzje;
+
+    if(sheetsIds.has_value())
+    {
+        for(const auto &sheetId: sheetsIds.value())
+        {
+            std::optional<QJsonArray> result
+                = m_googleWrapper.getSheetValues(decysjeSheetId, sheetId);
+            QList<QStringList> sheetData;
+
+            if(result.has_value())
+            {
+                for(const auto &arr: result.value())
+                {
+                    const QJsonArray row = arr.toArray();
+                    QStringList data;
+                    for(const auto& rowValue:row)
+                    {
+                        QString val = rowValue.toString();
+                        data.append(val);
+                    }
+                    sheetData.append(data);
+                }
+                sheetData.removeAt(0);
+                decyzje.insert(sheetId, sheetData);
+            }
+        }
+    }
+    m_DataWrapperManager.addDecyzjeSheetModel(decyzje);
 }
 
 QJsonObject Kernel::getDoc()
@@ -192,4 +232,19 @@ QStringList Kernel::getProjectData(int anIndex)
 QStringList Kernel::getArchitektData(const QString & anID)
 {
     return m_DataWrapperManager.getArchitektData(anID);
+}
+
+QStringList Kernel::getWnioskiList(const QString &anProjectId)
+{
+    return m_DataWrapperManager.getWnioskiList(anProjectId);
+   // m_wnioskiModel->setStringList(data);
+
+  //  qDebug() << data;
+  //  return m_wnioskiModel.get();
+
+}
+
+QStringList Kernel::getWniosekData(const QString&anProjectId, const QString&aEwidencjaId)
+{
+    return m_DataWrapperManager.getWniosekData(anProjectId ,aEwidencjaId);
 }

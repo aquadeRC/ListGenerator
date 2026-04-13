@@ -3,33 +3,29 @@ import QtQuick.Controls.Basic
 
 ComboBox {
     id: control
-    required property AbstractItemModel comboModel
+    required property variant comboModel
     required property string backendProp
-    required property string textRolenNme
-    required property string valueRolenNme
 
     model: comboModel
     font: mainTheme.font
-
-    textRole: control.textRolenNme
-    valueRole: control.valueRolenNme
     width: 245
     height: 35
 
     // Set currentValue to the value stored in the backend.
     currentValue: backendProp
     // When an item is selected, update the backend.
-    onActivated: backendProp = currentValue
+    onActivated: {
+        backendProp = currentValue;
+        console.log(currentValue);
+    }
 
     delegate: ItemDelegate {
         id: delegate
-
-        required property var model
+        required property string modelData
         required property int index
-
         width: control.width
         contentItem: Text {
-            text: delegate.model[control.textRole]
+            text: delegate.modelData
             color: mainTheme.text_color
             font: control.font
             elide: Text.ElideRight

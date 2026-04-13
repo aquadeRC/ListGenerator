@@ -50,7 +50,7 @@ Switch {
     }
 
     Component.onCompleted: {
-        if (settings.state == "light_mode") {
+        if (settings.state === "light_mode") {
             control.checked = false;
         } else {
             control.checked = true;

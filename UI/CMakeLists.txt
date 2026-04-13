@@ -21,6 +21,8 @@ qt_add_qml_module(${PROJECT_NAME}
 	QML_FILES RoundedButton.qml
 	QML_FILES RoundedTextField.qml
 	QML_FILES FieldText.qml
+	QML_FILES ComboField2.qml
+	QML_FILES ComboN.qml
 
 )
 

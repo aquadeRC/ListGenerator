@@ -138,10 +138,11 @@ void GoogleSSO::authenticate() {
 
 }
 
-std::optional<QJsonArray> GoogleSSO::getSheetValues(const QString & aRange)
+std::optional<QJsonArray> GoogleSSO::getSheetValues(const QString & aSheetId,
+                                                    const QString & aTabId)
 {
     QString url = QString("/spreadsheets/%1/values/%2")
-                      .arg(Ustawienia::getProjektyId(), aRange);
+                      .arg(aSheetId, aTabId);
 
     std::optional<QJsonObject> resultObject = getReplay(m_sheetsEndPoint, url);
     if(resultObject.has_value())
@@ -625,4 +626,41 @@ bool GoogleSSO::checkTokenFile()
 
      file.write(doc.toJson());
      file.close();
+}
+
+
+std::optional<QStringList> GoogleSSO::getSheets(const QString & aSheetId)
+{
+    QString url = QString("/spreadsheets/%1").arg(aSheetId);
+    QStringList values;
+
+    std::optional<QJsonObject> resultObject = getReplay(m_sheetsEndPoint, url);
+    if(resultObject.has_value())
+    {
+        QJsonObject result =  resultObject.value();
+        if (result.contains("sheets") == false)
+        {
+            slotSetErrorMessage("GoogleSSO::getSheetValues result did not contain the values string.");
+            return std::nullopt;
+        }
+
+        QJsonValue token = result.value("sheets");
+        QJsonArray sheets = token.toArray();
+
+        for(const auto& sheet:sheets)
+        {
+            QJsonObject sheetobj = sheet.toObject();
+
+            QJsonObject props =  sheetobj.value("properties").toObject();
+
+            QString shhetId = props.value("sheetId").toString();
+            QString shhetTitle = props.value("title").toString();
+
+            values.append(shhetTitle);
+        }
+        qDebug() <<values;
+        return values;
+    }
+
+    return std::nullopt;
 }

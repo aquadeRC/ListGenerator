@@ -42,8 +42,4 @@ Item {
             }
         }
     }
-
-    Component.onCompleted: {
-        // console.log(" Combofield", comboField.textRolenNme, comboField.valueRolenNme);
-    }
 }

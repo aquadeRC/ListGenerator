@@ -15,6 +15,7 @@
 #include "ModeleDanych/UrzadDataModel.h"
 #include "ModeleDanych/InwestorzyModel.h"
 #include "ModeleDanych/ProjektModel.h"
+#include "ModeleDanych/DecyzjeModel.h"
 #include "Ustawienia.h"
 
 
@@ -25,6 +26,7 @@ struct DataWraperManager::DataWraperManagerImpl
     }
 
     QMap<DATA_TYPES, std::shared_ptr<AbstractAppModel>> m_dataModels;
+    std::shared_ptr<DecyzjeModel> m_wnioski;
 };
 
 DataWraperManager::DataWraperManager(QObject *parent)
@@ -81,10 +83,17 @@ void DataWraperManager::addSheetModel(DATA_TYPES aType, QList<QStringList> aData
 
         break;
         }
+
     default:
         {
         }
     }
+}
+
+void  DataWraperManager::addDecyzjeSheetModel( QMap<QString, QList<QStringList>> aData)
+{
+    m_Impl->m_wnioski= std::make_shared<DecyzjeModel>(this);
+    m_Impl->m_wnioski->initData(aData);
 }
 
 QList<QStringList> DataWraperManager::loadData(const IDataWrapper& aWrapper)
@@ -126,7 +135,6 @@ void DataWraperManager::dumpData()
         model->dumpData();
     }
 }
-
 
 QStringList DataWraperManager::getProjectData(int anIndex)
 {
@@ -188,3 +196,20 @@ QStringList DataWraperManager::getArchitektData(const QString & anID)
     return data;
 }
 
+QStringList DataWraperManager::getWnioskiList(const QString&anProjectId)
+{
+    QStringList result;
+    auto data = m_Impl->m_wnioski->getDataForProjekt(anProjectId);
+    QListIterator<QStringList> it(data);
+    while(it.hasNext())
+    {
+        auto wniosekData = it.next();
+        result .append(wniosekData[0]);
+    }
+    return result;
+}
+
+QStringList DataWraperManager::getWniosekData(const QString&anProjectId, const QString&aEwidencjaId)
+{
+   return  m_Impl->m_wnioski->getDataForProjektAndEwidencja(anProjectId, aEwidencjaId);
+}

@@ -42,7 +42,8 @@ public:
 
     bool init();
 
-    std::optional<QJsonArray> getSheetValues(const QString & aRange);
+    std::optional<QStringList> getSheets(const QString & aSheetId);
+    std::optional<QJsonArray> getSheetValues(const QString & aSheetId, const QString & aTabId);
     std::optional<QJsonObject> getDocument(const QString & anId);
 
     void updateDocument(const QString & anId, const QString & newName);
@@ -70,6 +71,8 @@ private:
 
 
     std::optional<QString> copyDocument(const QString & anId, const QString &newName);
+
+
     void init_internal();
     bool readCredentials();
     bool checkTokenFile();

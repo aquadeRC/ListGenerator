@@ -40,15 +40,22 @@ public:
     Q_INVOKABLE AbstractAppModel* getModelArchitekci();
     Q_INVOKABLE AbstractAppModel* getModelInwestor();
     Q_INVOKABLE AbstractAppModel* getModelProjekt();
+    Q_INVOKABLE QStringList getWnioskiList(const QString &anProjectId);
 
     Q_INVOKABLE void authenticate();
     Q_INVOKABLE void generateDocument(const QString & anID);
     Q_INVOKABLE QStringList getProjectData(int anIndex);
     Q_INVOKABLE QStringList getArchitektData(const QString & anID);
+
+
+    Q_INVOKABLE QStringList getWniosekData(const QString &anProjectId, const QString &aEwidencjaId);
+
     Q_INVOKABLE QStringList getSettings();
     Q_INVOKABLE void setSettings(const QStringList &aData);
 
     Q_INVOKABLE QJsonObject getDoc();
+
+
 
 
 public slots:
@@ -65,12 +72,15 @@ private:
     DataWraperManager m_DataWrapperManager;
     GoogleSSO m_googleWrapper;
     QSharedPointer<Ustawienia> m_settins;
+    QSharedPointer<QStringListModel> m_wnioskiModel;
+
     bool m_isAuthenticated {false};
 
     void getDataFromGoogle();
     void getProjects();
     void getInwestorzy();
     void getArchitekci();
+    void getWnioski();
 };
 
 #endif // KERNEL_H
