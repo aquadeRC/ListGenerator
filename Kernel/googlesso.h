@@ -46,7 +46,9 @@ public:
     std::optional<QJsonArray> getSheetValues(const QString & aSheetId, const QString & aTabId);
     std::optional<QJsonObject> getDocument(const QString & anId);
 
-    void updateDocument(const QString & anId, const QString & newName);
+    void updateDocument(const QString & anId,
+                        const QString & newName,
+                        const QVariantMap  &aData);
 
 public slots:
     void setCredentials(const QString& clientId,

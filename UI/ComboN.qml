@@ -16,7 +16,6 @@ ComboBox {
     // When an item is selected, update the backend.
     onActivated: {
         backendProp = currentValue;
-        console.log(currentValue);
     }
 
     delegate: ItemDelegate {

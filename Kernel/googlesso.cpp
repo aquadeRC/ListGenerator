@@ -202,7 +202,9 @@ std::optional<QString> GoogleSSO::copyDocument(const QString & anId, const QStri
 }
 
 
-void GoogleSSO::updateDocument(const QString & anId, const QString & newName)
+void GoogleSSO::updateDocument(const QString & anId,
+                               const QString & newName,
+                               const QVariantMap  &aData)
 {
    //copy document
     std::optional<QString> copyResult = copyDocument(anId, newName);

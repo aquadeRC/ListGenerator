@@ -200,9 +200,9 @@ QJsonObject Kernel::getDoc()
         return QJsonObject();
 }
 
-void Kernel::generateDocument(const QString & anID)
+void Kernel::generateDocument(const QString & anID, const QVariantMap  &aData)
 {
-    m_googleWrapper.updateDocument(Ustawienia::getTemplateId(), anID);
+    m_googleWrapper.updateDocument(Ustawienia::getTemplateId(), anID, aData);
 }
 
 void Kernel::slotSetAuthenticated()

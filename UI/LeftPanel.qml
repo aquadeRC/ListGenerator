@@ -198,7 +198,21 @@ Rectangle {
                 buttonName: qsTr("Generuj")
                 iconPath: "icons/ustawienia.svg"
                 onClicked: {
-                    backEnd.generateDocument("ala ma kota");
+                    let wynikNazwa = `${leftPanel.currentProjekt}_${Date.now()}`;
+
+                    let data = {
+                        "urzad_nazwa": urzadCB.backendProp,
+                        "inwestcja_nazwa": inwestycjaF.fieldtext,
+                        "dzialka": nrDzialka.fieldtext,
+                        "obreb": obrebF.fieldtext,
+                        "ewidencja": ewidencjaF.fieldtext,
+                        "inwestor": inwestorCB.fieldtext,
+                        "sprawa": sprawaF.fieldText,
+                        "tesc": odpowiedzTresc.fieldtext,
+                        "zalaczniki": zalaczniki.fieldtext
+                    };
+
+                    backEnd.generateDocument(wynikNazwa, data);
                 }
             }
         }
