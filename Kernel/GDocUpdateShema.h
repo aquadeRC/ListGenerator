@@ -113,34 +113,7 @@ struct GDocUpdateShema {
          "replaceAllText":{
             "replaceText":"%12",
             "containsText":{
-               "text":"{{Inwestor_Nazwa}}",
-               "matchCase":false
-            }
-         }
-      },
-      {
-         "replaceAllText":{
-            "replaceText":"%13",
-            "containsText":{
-               "text":"{{Inwestor_Adres}}",
-               "matchCase":false
-            }
-         }
-      },
-      {
-         "replaceAllText":{
-            "replaceText":"%14",
-            "containsText":{
-               "text":"{{Inwestor_Kod}}",
-               "matchCase":false
-            }
-         }
-      },
-      {
-         "replaceAllText":{
-            "replaceText":"%15",
-            "containsText":{
-               "text":"{{Inwestor_miejscowosc}}",
+               "text":"{{Inwestor}}",
                "matchCase":false
             }
          }
@@ -158,7 +131,7 @@ struct GDocUpdateShema {
          "replaceAllText":{
             "replaceText":"%17",
             "containsText":{
-               "text":"{{Dodatki}}",
+               "text":"{{Tresc}}",
                "matchCase":false
             }
          }
@@ -208,7 +181,6 @@ struct GDocUpdateShema {
             }
          }
       }
-   ]
 }
 )";
 

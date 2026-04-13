@@ -8,118 +8,128 @@ import QtQuick.Dialogs
 Dialog {
     id: settingsDialog
     title: "Ustawienia"
+
     width: 500
     height: 400
-    margins: 20
+    margins: 10
     modal: true
-
-    Rectangle {
-        id: settingsRect
+    background: Rectangle {
         anchors.fill: parent
-        width: settingsDialog.width
-        height: settingsDialog.height
-
+        width: parent.width
+        height: parent.height
         color: mainTheme.background_color
+    }
 
-        anchors.margins: 10
+    ColumnLayout {
+        anchors.fill: parent
 
-        ColumnLayout {
-            anchors.fill: parent
-            spacing: 10
+        Rectangle {
+            id: settingsRect
+            Layout.fillHeight: true
+            Layout.fillWidth: true
 
-            RowLayout {
-                x: 41
-                y: 0
-                width: 557
-                height: 35
+            color: mainTheme.background_color
+
+            anchors.margins: 10
+
+            ColumnLayout {
+                anchors.fill: parent
                 spacing: 10
-                Label {
-                    id: label
-                    x: 49
-                    y: 49
-                    color: mainTheme.text_color
-                    text: qsTr("ID Szablonu")
-                }
-                RoundedTextField {
-                    id: fieldIdSzablonu
-                    x: 170
-                    y: 37
-                    width: 428
+
+                RowLayout {
+                    x: 41
+                    y: 0
+                    width: 557
                     height: 35
-                    Layout.fillHeight: false
-                    Layout.fillWidth: true
-                    placeholderText: qsTr("Text Field")
+                    spacing: 10
+                    Label {
+                        id: label
+                        x: 49
+                        y: 49
+                        color: mainTheme.text_color
+                        text: qsTr("ID Szablonu")
+                    }
+                    RoundedTextField {
+                        id: fieldIdSzablonu
+                        x: 170
+                        y: 37
+                        width: 428
+                        height: 35
+                        Layout.fillHeight: false
+                        Layout.fillWidth: true
+                        placeholderText: qsTr("Text Field")
+                    }
                 }
-            }
 
-            RowLayout {
-                x: 41
-                y: 60
-                width: 557
-                height: 35
-                Label {
-                    id: label1
-                    x: 49
-                    y: 113
-                    color: mainTheme.text_color
-                    text: qsTr("ID skoroszytu Projekty")
-                }
-                RoundedTextField {
-                    id: fieldIdProjekty
-                    x: 170
-                    y: 100
-                    width: 428
+                RowLayout {
+                    x: 41
+                    y: 60
+                    width: 557
                     height: 35
-                    Layout.fillWidth: true
-                    placeholderText: qsTr("Text Field")
+                    Label {
+                        id: label1
+                        x: 49
+                        y: 113
+                        color: mainTheme.text_color
+                        text: qsTr("ID skoroszytu Projekty")
+                    }
+                    RoundedTextField {
+                        id: fieldIdProjekty
+                        x: 170
+                        y: 100
+                        width: 428
+                        height: 35
+                        Layout.fillWidth: true
+                        placeholderText: qsTr("Text Field")
+                    }
                 }
-            }
 
-            RowLayout {
-                x: 41
-                y: 120
-                width: 557
-                height: 35
-                Label {
-                    id: label2
-                    x: 49
-                    y: 175
-                    color: mainTheme.text_color
-                    text: qsTr("Id skoroszytu Dodatki")
-                }
-                RoundedTextField {
-                    id: fieldIdDodatki
-                    x: 170
-                    y: 162
-                    width: 428
+                RowLayout {
+                    x: 41
+                    y: 120
+                    width: 557
                     height: 35
-                    Layout.fillWidth: true
-                    placeholderText: qsTr("Text Field")
+                    Label {
+                        id: label2
+                        x: 49
+                        y: 175
+                        color: mainTheme.text_color
+                        text: qsTr("Id skoroszytu Dodatki")
+                    }
+                    RoundedTextField {
+                        id: fieldIdDodatki
+                        x: 170
+                        y: 162
+                        width: 428
+                        height: 35
+                        Layout.fillWidth: true
+                        placeholderText: qsTr("Text Field")
+                    }
                 }
-            }
 
-            RowLayout {
-                x: 41
-                y: 150
-                width: 557
-                height: 35
-
-                FileEdit {
-                    id: fieldIdCertyfikat
+                RowLayout {
+                    x: 41
                     y: 150
-                    labelName: "Certyfikat"
-                    Layout.fillWidth: true
-                    itemText: ""
-                }
-            }
+                    width: 557
+                    height: 35
 
-            Rectangle {
-                id: rectangle2
-                x: 59
-                y: 479
-                color: "#00ffffff"
-                Layout.fillHeight: true
-                Layout.fillWidth: false
+                    FileEdit {
+                        id: fieldIdCertyfikat
+                        y: 150
+                        labelName: "Certyfikat"
+                        Layout.fillWidth: true
+                        itemText: ""
+                    }
+                }
+
+                Rectangle {
+                    id: rectangle2
+                    x: 59
+                    y: 479
+                    color: "#00ffffff"
+                    Layout.fillHeight: true
+                    Layout.fillWidth: false
+                }
             }
         }
     }
@@ -130,6 +140,10 @@ Dialog {
         defaultButton: zatwierdzButton
         position: DialogButtonBox.Footer
 
+        background: Rectangle {
+            anchors.fill: parent
+            color: mainTheme.central_background_color
+        }
         RoundButton {
             id: anulujButton
             x: 408
@@ -153,11 +167,23 @@ Dialog {
             display: AbstractButton.TextOnly
             highlighted: true
             DialogButtonBox.buttonRole: DialogButtonBox.AcceptRole
-            // onClicked: accept()
+            onClicked: {
+                if (fieldIdSzablonu.text.length !== 0 & fieldIdProjekty.text.length !== 0 & fieldIdDodatki.text.length !== 0 & fieldIdCertyfikat.itemText.length !== 0)
+                    accept();
+            }
         }
     }
 
-    onAccepted: {}
+    onAccepted: {
+        let data = [];
+        data.push(fieldIdSzablonu.text);
+        data.push(fieldIdProjekty.text);
+        data.push(fieldIdDodatki.text);
+        data.push(fieldIdCertyfikat.itemText);
+
+        if (data.length > 0)
+            backEnd.setSettings(data);
+    }
 
     Component.onCompleted: {
         let settings = backEnd.getSettings();
@@ -166,5 +192,15 @@ Dialog {
         fieldIdProjekty.text = settings[0];
         fieldIdDodatki.text = settings[1];
         fieldIdCertyfikat.itemText = settings[3];
+    }
+    onVisibleChanged: {
+        if (visible === true) {
+            let settings = backEnd.getSettings();
+
+            fieldIdSzablonu.text = settings[2];
+            fieldIdProjekty.text = settings[0];
+            fieldIdDodatki.text = settings[1];
+            fieldIdCertyfikat.itemText = settings[3];
+        }
     }
 }

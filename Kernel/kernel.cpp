@@ -56,7 +56,7 @@ QStringList Kernel::getSettings()
 
 void  Kernel::setSettings(const QStringList &aData)
 {
-  Ustawienia::setSettingsData(aData);
+    Ustawienia::setSettingsData(aData);
 
     m_settins->load();
     m_googleWrapper.init();

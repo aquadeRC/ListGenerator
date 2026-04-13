@@ -20,6 +20,7 @@ qt_add_qml_module(${PROJECT_NAME}
 	QML_FILES FileEdit.qml
 	QML_FILES RoundedButton.qml
 	QML_FILES RoundedTextField.qml
+	QML_FILES FieldText.qml
 
 )
 
