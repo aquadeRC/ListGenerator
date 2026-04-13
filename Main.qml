@@ -51,38 +51,39 @@ ApplicationWindow {
         visible: true
     }
 
-    // footer: Footer {
-    //    id: footer
-    //}
-
-    LeftPanel {
-        id: leftPanel
-        width: root.leftPanelW
-        height: root.height - root.headerHight
-        visible: true
-
-        anchors.horizontalCenter: root.horizontalCenter
-        anchors.top: toolBar.bottom
-        anchors.left: root.left
-
-        architekciModel: root.archModel
-        urzedyModel: root.urzadModel
-        projektyModel: root.projektyModel
+    /*
+    footer: Footer {
+        id: footer
+        anchors.fill: parent
     }
+*/
+    ColumnLayout {
+        anchors.fill: parent
 
-    TextArea {
-        id: document
-        property string initDataStr
+        RowLayout {
+            Layout.fillWidth: true
+            Layout.fillHeight: true
 
-        width: root.width - root.leftPanelW
-        height: root.height - root.headerHight
-        visible: true
+            LeftPanel {
+                id: leftPanel
+                width: root.leftPanelW
+                Layout.fillHeight: true
+                visible: true
+                architekciModel: root.archModel
+                urzedyModel: root.urzadModel
+                projektyModel: root.projektyModel
+            }
 
-        anchors.horizontalCenter: root.horizontalCenter
-        anchors.top: toolBar.bottom
-        anchors.left: leftPanel.right
+            TextArea {
+                id: document
+                property string initDataStr
 
-        textFormat: TextEdit.RichText
+                width: root.width - root.leftPanelW
+                Layout.fillHeight: true
+                visible: true
+                textFormat: TextEdit.RichText
+            }
+        }
     }
 
     Settings {

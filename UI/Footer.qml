@@ -8,6 +8,4 @@ Rectangle {
     width: parent.width
     height: 46
     visible: true
-    anchors.bottom: parent.bottom
-    anchors.bottomMargin: 0
 }

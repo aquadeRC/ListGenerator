@@ -18,17 +18,22 @@ Rectangle {
 
         ScrollView {
             id: scroll
-            height: topLayout.height - 90
-            width: topLayout.width
-            contentHeight: topLayout.height//fieldsColumL.height  // Same
+            contentHeight: 820
+
+            contentWidth: leftPanel.width
             Layout.fillWidth: true
+            Layout.fillHeight: true
             Layout.alignment: Qt.AlignLeft | Qt.AlignTop
             clip: true
+            spacing: 5
 
             ColumnLayout {
                 id: fieldsColumL
-                spacing: 19
+                spacing: 10
+                anchors.left: parent.left
+                anchors.right: parent.right
                 anchors.top: parent.top
+                anchors.bottom: parent.bottom
 
                 ComboField {
                     id: projektF
@@ -134,17 +139,45 @@ Rectangle {
                     width: 253
                     implicitHeight: 58
                 }
+
+                Rectangle {
+                    width: 10
+                    color: "#00ffffff"
+                    Layout.maximumWidth: 10
+                    Layout.fillHeight: true
+                }
             }
         }
 
-        IconButton {
-            id: generujBT
-            width: 40
-            Layout.alignment: Qt.AlignLeft | Qt.AlignBottom
-            buttonName: qsTr("Generuj")
-            iconPath: "icons/ustawienia.svg"
-            onClicked: {
-                backEnd.generateDocument("ala ma kota");
+        RowLayout {
+            id: rowLayout
+            Layout.maximumHeight: 40
+            Layout.preferredHeight: 40
+            uniformCellSizes: false
+            Layout.fillHeight: true
+            Layout.fillWidth: true
+            Layout.margins: 5
+
+            Layout.alignment: Qt.AlignHCenter | Qt.AlignVCenter
+
+            Rectangle {
+                width: 200
+                height: 10
+
+                color: "#00ffffff"
+                Layout.maximumHeight: 10
+                Layout.fillWidth: true
+            }
+
+            IconButton {
+                id: generujBT
+                width: 40
+                Layout.alignment: Qt.AlignLeft | Qt.AlignBottom
+                buttonName: qsTr("Generuj")
+                iconPath: "icons/ustawienia.svg"
+                onClicked: {
+                    backEnd.generateDocument("ala ma kota");
+                }
             }
         }
     }
