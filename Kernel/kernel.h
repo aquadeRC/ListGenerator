@@ -64,9 +64,11 @@ public slots:
 
 signals:
     void isAuthenticatedChanged();
+    void isError(const QString & aData);
 
 protected slots:
     void slotSetAuthenticated();
+    void slotSooError(const QString &error);
 
 private:
     DataWraperManager m_DataWrapperManager;

@@ -95,6 +95,11 @@ ApplicationWindow {
         id: settingsDialog
     }
 
+    MessageDialog {
+        id: message_Dialog
+        buttons: MessageDialog.Ok
+    }
+
     Component.onCompleted: {
         if (settings.state == "light_mode") {
             mainTheme.setLightMode();
@@ -119,6 +124,11 @@ ApplicationWindow {
             let doc = JSON.stringify(backEnd.getDoc(), null, '\t');
 
             document.text = "<pre style='color:red'>" + doc + "</pre>";
+        }
+
+        function onIsError(data: string) {
+            message_Dialog.text = "Error";
+            message_Dialog.informativeText = data;
         }
     }
 }

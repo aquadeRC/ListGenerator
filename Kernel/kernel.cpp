@@ -30,6 +30,10 @@ Kernel::Kernel(QObject *parent)
     QObject::connect(&m_googleWrapper, &GoogleSSO::isAuthenticatedChanged,
             this, &Kernel::slotSetAuthenticated);
 
+     QObject::connect(&m_googleWrapper, &GoogleSSO::signalError,
+                      this, &Kernel::slotSooError);
+
+
     QObject::connect(qApp, &QGuiApplication::aboutToQuit, this,
                      [&](){m_settins->save();});
 }
@@ -264,8 +268,6 @@ QString Kernel::createUpdateData(const QVariantMap  &aData)
 
     QString updateData = QString::fromUtf8(rawStartToken);
 
-   // QString updateToken("{\"replaceAllText\":{\"replaceText\":\"%1\",\"containsText\":{\"text\":\"{{\"%2\"}}\",\"matchCase\":false}}}");
-
     QStringList tokens;
     QMapIterator<QString, QVariant> it(aData);
     while(it.hasNext())
@@ -313,7 +315,6 @@ QString Kernel::createUpdateData(const QVariantMap  &aData)
                 tokens.append(miasto);
             }
         }
-
     }
 
     QString tokenData = QString::fromUtf8(rawToken).arg(QDate::currentDate().toString(), "DATA");
@@ -325,6 +326,11 @@ QString Kernel::createUpdateData(const QVariantMap  &aData)
 return updateData;
 }
 
+
+ void Kernel::slotSooError(const QString &error)
+{
+     emit isError(error);
+}
 
 
 

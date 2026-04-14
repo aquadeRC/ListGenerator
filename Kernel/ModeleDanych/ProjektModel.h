@@ -50,8 +50,6 @@ private:
     const QString m_ewidencja{"ewidencja"};
     const QString m_obreb{"obreb"};
     const QString m_ulica{"ulica"};
-    const QString m_inwestor{"inwestor"};
-    const QString m_urzad{"urzad"};
 };
 
 #endif // PROJEKTMODEL_H

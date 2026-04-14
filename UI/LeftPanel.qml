@@ -202,22 +202,27 @@ Rectangle {
                 buttonName: qsTr("Generuj")
                 iconPath: "icons/ustawienia.svg"
                 onClicked: {
-                    let wynikNazwa = `${leftPanel.currentProjekt}_${Date.now()}`;
+                    if (urzadCB.backendProp.length > 0 && inwestycjaF.fieldtext.length > 0 && nrDzialka.fieldtext.length > 0 && obrebF.fieldtext.length > 0 && ewidencjaF.fieldtext.length > 0 && inwestorCB.fieldtext.length > 0 && sprawaF.backendProp.length > 0 && odpowiedzTresc.fieldtext.length > 0 && zalaczniki.fieldtext.length > 0 && leftPanel.currentArchitekt.length > 0) {
+                        let wynikNazwa = `${leftPanel.currentProjekt}_${Date.now()}`;
 
-                    let data = {
-                        "urzad_nazwa": urzadCB.backendProp,
-                        "inwestcja_nazwa": inwestycjaF.fieldtext,
-                        "dzialka": nrDzialka.fieldtext,
-                        "obreb": obrebF.fieldtext,
-                        "ewidencja": ewidencjaF.fieldtext,
-                        "inwestor": inwestorCB.fieldtext,
-                        "sprawa": sprawaF.backendProp,
-                        "tesc": odpowiedzTresc.fieldtext,
-                        "zalaczniki": zalaczniki.fieldtext,
-                        "architekt": leftPanel.currentArchitekt
-                    };
+                        let data = {
+                            "urzad_nazwa": urzadCB.backendProp,
+                            "inwestcja_nazwa": inwestycjaF.fieldtext,
+                            "dzialka": nrDzialka.fieldtext,
+                            "obreb": obrebF.fieldtext,
+                            "ewidencja": ewidencjaF.fieldtext,
+                            "inwestor": inwestorCB.fieldtext,
+                            "sprawa": sprawaF.backendProp,
+                            "tesc": odpowiedzTresc.fieldtext,
+                            "zalaczniki": zalaczniki.fieldtext,
+                            "architekt": leftPanel.currentArchitekt
+                        };
 
-                    backEnd.generateDocument(wynikNazwa, data);
+                        backEnd.generateDocument(wynikNazwa, data);
+                    } else {
+                        message_Dialog.text = "Wypełnij wszystkie pola!";
+                        message_Dialog.open();
+                    }
                 }
             }
         }
