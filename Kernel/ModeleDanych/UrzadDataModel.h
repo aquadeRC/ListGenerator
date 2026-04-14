@@ -31,6 +31,7 @@ public:
 
     void initData(const QList<QStringList>&data) override;
     QList<QStringList> getData() const override;
+    QStringList getDataFor(const QString& anUrzadNazwa) const;
 
     // Basic functionality:
     int rowCount(const QModelIndex &parent = QModelIndex()) const override;

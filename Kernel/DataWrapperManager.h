@@ -26,7 +26,7 @@ public:
 
     QStringList getWnioskiList(const QString&anProjectId);
     QStringList getWniosekData(const QString&anProjectId, const QString&aEwidencjaId);
-
+    QStringList getUrzadData(const QString&anName);
 
 protected:
     struct DataWraperManagerImpl;

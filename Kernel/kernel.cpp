@@ -13,6 +13,15 @@ Kernel::Kernel(QObject *parent)
     m_settins{new Ustawienia(this)},
     m_wnioskiModel{ new QStringListModel()}
 {
+     m_updateTokensMap["dzialka"] = "Inwestycja_dzialka";
+     m_updateTokensMap["obreb"] = "Inwestycja_Obreb";
+     m_updateTokensMap["ewidencja"] = "Inwestycja_Ewidencja";
+     m_updateTokensMap["inwestcja_nazwa"] = "Inwestycja_Nazwa";
+     m_updateTokensMap["inwestor"] = "Inwestor";
+     m_updateTokensMap["tesc"] = "Tresc";
+     m_updateTokensMap["zalaczniki"] = "Zalaczniki";
+     m_updateTokensMap["sprawa"] = "Inwestycja_Sprawa";
+
      m_settins->load();
      m_DataWrapperManager.createDataModels();
      m_googleWrapper.init();
@@ -202,7 +211,8 @@ QJsonObject Kernel::getDoc()
 
 void Kernel::generateDocument(const QString & anID, const QVariantMap  &aData)
 {
-    m_googleWrapper.updateDocument(Ustawienia::getTemplateId(), anID, aData);
+    auto data = createUpdateData(aData);
+    m_googleWrapper.updateDocument(Ustawienia::getTemplateId(), anID, data);
 }
 
 void Kernel::slotSetAuthenticated()
@@ -237,14 +247,84 @@ QStringList Kernel::getArchitektData(const QString & anID)
 QStringList Kernel::getWnioskiList(const QString &anProjectId)
 {
     return m_DataWrapperManager.getWnioskiList(anProjectId);
-   // m_wnioskiModel->setStringList(data);
-
-  //  qDebug() << data;
-  //  return m_wnioskiModel.get();
-
 }
 
 QStringList Kernel::getWniosekData(const QString&anProjectId, const QString&aEwidencjaId)
 {
     return m_DataWrapperManager.getWniosekData(anProjectId ,aEwidencjaId);
 }
+
+
+QString Kernel::createUpdateData(const QVariantMap  &aData)
+{
+
+    string rawStartToken = R"({"requests":[)";
+    string rawEndToken = R"(]})";
+    string rawToken = R"({"replaceAllText":{"replaceText":"%1","containsText":{"text":"{{%2}}","matchCase":false}}})";
+
+    QString updateData = QString::fromUtf8(rawStartToken);
+
+   // QString updateToken("{\"replaceAllText\":{\"replaceText\":\"%1\",\"containsText\":{\"text\":\"{{\"%2\"}}\",\"matchCase\":false}}}");
+
+    QStringList tokens;
+    QMapIterator<QString, QVariant> it(aData);
+    while(it.hasNext())
+    {
+        auto mapData = it.next();
+
+        if(m_updateTokensMap.contains(mapData.key()))
+        {
+            QString tokenName = m_updateTokensMap[mapData.key()];
+            QString value = mapData.value().toString();
+
+            QString tokenData = QString::fromUtf8(rawToken).arg(value, tokenName);
+            tokens.append(tokenData);
+        }
+        else
+        {
+            if(mapData.key() == "architekt")
+            {
+                auto archData = mapData.value().toList();
+
+                QString imie = QString::fromUtf8(rawToken).arg(archData[1].toString(), "Architekt_Imie");
+                QString telefon = QString::fromUtf8(rawToken).arg(archData[2].toString(), "Architekt_telefon");
+                QString email = QString::fromUtf8(rawToken).arg(archData[3].toString(), "Architekt_email");
+
+                tokens.append(imie);
+                tokens.append(telefon);
+                tokens.append(email);
+            }
+
+            if(mapData.key() == "urzad_nazwa")
+            {
+                QString val = mapData.value().toString();
+                QStringList urzadData = m_DataWrapperManager.getUrzadData(val);
+
+                QString adresCaly = urzadData[8] + " "+ urzadData[9];
+
+                QString nazwa = QString::fromUtf8(rawToken).arg(urzadData[4],"Urzad_Nazwa");
+                QString adres = QString::fromUtf8(rawToken).arg(adresCaly,  "Urzad_Adres");
+                QString kod = QString::fromUtf8(rawToken).arg(urzadData[6], "Urzad_Kod");
+                QString miasto = QString::fromUtf8(rawToken).arg(urzadData[7], "Urzad_Miasto");
+
+                tokens.append(nazwa);
+                tokens.append(adres);
+                tokens.append(kod);
+                tokens.append(miasto);
+            }
+        }
+
+    }
+
+    QString tokenData = QString::fromUtf8(rawToken).arg(QDate::currentDate().toString(), "DATA");
+    tokens.append(tokenData);
+
+    updateData.append(tokens.join(","));
+    updateData.append(QString::fromUtf8(rawEndToken));
+
+return updateData;
+}
+
+
+
+

@@ -19,8 +19,6 @@ GoogleSSO::GoogleSSO(QObject *parent)
     m_networkManager = new QNetworkAccessManager(this);
     m_restManager = new QRestAccessManager(m_networkManager, this);
     m_requestFactory = QNetworkRequestFactory(m_sheetsEndPoint);
-
-   // init();
 }
 
 GoogleSSO::~GoogleSSO() {
@@ -77,6 +75,7 @@ void GoogleSSO::init_internal(){
 
                     m_expiredAt = QTime::currentTime();
                     m_expiredAt = m_expiredAt.addMSecs(expiredAt);
+                    m_tokenDate = QDate::currentDate();
 
                     m_requestFactory.setBearerToken(token.toLatin1());
 
@@ -204,9 +203,9 @@ std::optional<QString> GoogleSSO::copyDocument(const QString & anId, const QStri
 
 void GoogleSSO::updateDocument(const QString & anId,
                                const QString & newName,
-                               const QVariantMap  &aData)
+                               const QString &aData)
 {
-   //copy document
+    //copy document
     std::optional<QString> copyResult = copyDocument(anId, newName);
    if(copyResult.has_value())
     {
@@ -217,13 +216,9 @@ void GoogleSSO::updateDocument(const QString & anId,
        if(resp.has_value())
        {
            //change data
-           QString url = QString("/documents/%1:batchUpdate").arg(newFileId);
+           QString url = QString("/documents/%1:batchUpdate").arg(newFileId);    
+           QJsonDocument doc =  QJsonDocument::fromJson(aData.toUtf8());
 
-           GDocUpdateShema shema;
-           QString dataString = QString::fromUtf8(shema.rawData)
-                                    .arg("aa","aa","aa","aa","aa","aa","aa","aa","aa","aa","aa","aa","aa","aa","aa","aa","aa","aa","aa","aa","aa","aa");
-
-           QJsonDocument doc =  QJsonDocument::fromJson(dataString.toUtf8());
            QByteArray requestData = doc.toJson(QJsonDocument::Compact);
 
            std::optional<QJsonObject> updateResult = postReplay(m_docEndPoint, url, requestData);
@@ -592,16 +587,28 @@ bool GoogleSSO::checkTokenFile()
     QJsonObject credObj = loadDoc.object();
     QTime time;
     QString tmpToken;
+    QDate tokenDate;
 
     if (const QJsonValue v = credObj["refresh_token"]; v.isString())
     {
         const QString ts = v.toString();
         time = QTime::fromString(ts, "HH:mm:ss");
     }
+    if (const QJsonValue v = credObj["tokenDate"]; v.isString())
+    {
+        const QString ds = v.toString();
+        tokenDate = QDate::fromString(ds, "ddd MMM dd yyyy");
+    }
+
     if (const QJsonValue v = credObj["token"]; v.isString())
         tmpToken = v.toString();
 
-    if(QTime::currentTime() > time)
+    qDebug() << "curent time  "<< QTime::currentTime()<< " token time" << time;
+    qDebug() << "curent date  "<< QDate::currentDate()<< " token date" << tokenDate;
+
+    if(QDate::currentDate() > tokenDate ||
+        (QDate::currentDate() ==  tokenDate &&
+         QTime::currentTime() > time))
     {
         return false;
     }
@@ -622,6 +629,7 @@ bool GoogleSSO::checkTokenFile()
      QJsonObject root;
      root.insert("token", m_activeToken);
      root.insert("refresh_token", m_expiredAt.toString());
+     root.insert("tokenDate", m_tokenDate.toString());
 
      QJsonDocument doc;
      doc.setObject(root);

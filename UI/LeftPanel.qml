@@ -12,6 +12,8 @@ Rectangle {
 
     property variant wnioskiModel
     property string currentProjekt
+    property variant currentArchitekt
+
     color: mainTheme.background_color
 
     ColumnLayout {
@@ -60,6 +62,8 @@ Rectangle {
                         let obreb = data[5];
 
                         let archData = backEnd.getArchitektData(architektID);
+
+                        leftPanel.currentArchitekt = archData;
                         let archName = archData[0];
 
                         architektCB.backendProp = archName;
@@ -207,9 +211,10 @@ Rectangle {
                         "obreb": obrebF.fieldtext,
                         "ewidencja": ewidencjaF.fieldtext,
                         "inwestor": inwestorCB.fieldtext,
-                        "sprawa": sprawaF.fieldText,
+                        "sprawa": sprawaF.backendProp,
                         "tesc": odpowiedzTresc.fieldtext,
-                        "zalaczniki": zalaczniki.fieldtext
+                        "zalaczniki": zalaczniki.fieldtext,
+                        "architekt": leftPanel.currentArchitekt
                     };
 
                     backEnd.generateDocument(wynikNazwa, data);

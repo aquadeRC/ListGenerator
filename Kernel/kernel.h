@@ -74,6 +74,8 @@ private:
     QSharedPointer<Ustawienia> m_settins;
     QSharedPointer<QStringListModel> m_wnioskiModel;
 
+    QMap<QString, QString> m_updateTokensMap;
+
     bool m_isAuthenticated {false};
 
     void getDataFromGoogle();
@@ -81,6 +83,7 @@ private:
     void getInwestorzy();
     void getArchitekci();
     void getWnioski();
+    QString createUpdateData(const QVariantMap  &aData);
 };
 
 #endif // KERNEL_H

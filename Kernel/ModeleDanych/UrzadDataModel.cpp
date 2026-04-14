@@ -24,6 +24,22 @@ QList<QStringList> UrzadDataModel::getData() const
     return m_urzadData;
 }
 
+QStringList UrzadDataModel::getDataFor(const QString& anUrzadNazwa) const
+{
+    QStringList result;
+    QListIterator it(m_urzadData);
+    while(it.hasNext())
+    {
+        QStringList data = it.next();
+        if(data[4] == anUrzadNazwa)
+        {
+            result = data;
+        }
+
+    }
+    return result;;
+}
+
 int UrzadDataModel::rowCount(const QModelIndex &parent) const
 {
     // For list models only the root node (an invalid parent) should return the list's size. For all

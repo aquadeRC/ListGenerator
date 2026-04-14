@@ -48,7 +48,7 @@ public:
 
     void updateDocument(const QString & anId,
                         const QString & newName,
-                        const QVariantMap  &aData);
+                        const QString &aData);
 
 public slots:
     void setCredentials(const QString& clientId,
@@ -74,7 +74,6 @@ private:
 
     std::optional<QString> copyDocument(const QString & anId, const QString &newName);
 
-
     void init_internal();
     bool readCredentials();
     bool checkTokenFile();
@@ -90,6 +89,7 @@ private:
     Modele_Danych::CredentialsData m_credentials{};
 
     QTime m_expiredAt {};
+    QDate m_tokenDate {};
 
     QString m_errorMessage {};
     QString m_activeToken {};
@@ -103,6 +103,9 @@ private:
     const QString m_docEndPoint {"https://docs.googleapis.com/v1"};
     const QString m_fileEndPoint {"https://www.googleapis.com/drive/v3"};
     const QString m_tokenFile{"token.json"};
+
+
+
 
     bool m_isAuthenticated {false};
     bool m_credFileRead{false};

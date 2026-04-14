@@ -213,3 +213,10 @@ QStringList DataWraperManager::getWniosekData(const QString&anProjectId, const Q
 {
    return  m_Impl->m_wnioski->getDataForProjektAndEwidencja(anProjectId, aEwidencjaId);
 }
+
+QStringList DataWraperManager::getUrzadData(const QString&anName)
+{
+    auto model = m_Impl->m_dataModels[DATA_TYPES::URZEDY_DATA];
+    std::shared_ptr<Modele_Danych::UrzadDataModel> bp = std::dynamic_pointer_cast<Modele_Danych::UrzadDataModel>(model);
+    return bp->getDataFor(anName);
+}
