@@ -23,7 +23,7 @@ ApplicationWindow {
     property double headerHight: 79
     property double leftPanelW: 297
 
-    property url curentDoc: "file:///D:/sandbox/ListGenerator/build/Desktop_Qt_6_11_0_MSVC2022_64bit-Debug/mapa.pdf"
+    property url curentDoc: "file:///pusty.pdf"
 
     visible: true
     title: qsTr("Generuj pismo")
@@ -131,7 +131,7 @@ ApplicationWindow {
             urzadModel = backEnd.getModelUrzedy();
             projektyModel = backEnd.getModelProjekt();
 
-            root.curentDoc = backEnd.getDoc();
+            root.curentDoc = backEnd.getDocPdfPath();
             innerDoc.source = root.curentDoc;
         }
     }

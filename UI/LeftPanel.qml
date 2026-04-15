@@ -74,6 +74,8 @@ Rectangle {
                         nazwaProjekt.fieldtext = inwestycja;
 
                         sprawaF.comboModel = leftPanel.wnioskiModel;
+
+                        console.log(architektCB.backendProp);
                     }
                 }
                 FieldText {
@@ -119,6 +121,7 @@ Rectangle {
                     comboModel: []
 
                     onComboFieldChanged: (ewidencjaNr, index) => {
+                        sprawaF.backendProp = ewidencjaNr;
                         let data = backEnd.getWniosekData(leftPanel.currentProjekt, ewidencjaNr);
                         let urzadD = data[1];
                         const urzadLines = urzadD.split("\n");
@@ -129,6 +132,8 @@ Rectangle {
                         inwestycjaF.fieldtext = data[2];
                         odpowiedzTresc.fieldtext = data[4];
                         zalaczniki.fieldtext = data[5];
+
+                        console.log(sprawaF.backendProp);
                     }
                 }
                 ComboField {
@@ -203,6 +208,7 @@ Rectangle {
                 iconPath: "icons/ustawienia.svg"
                 onClicked: {
                     if (urzadCB.backendProp.length > 0 && inwestycjaF.fieldtext.length > 0 && nrDzialka.fieldtext.length > 0 && obrebF.fieldtext.length > 0 && ewidencjaF.fieldtext.length > 0 && inwestorCB.fieldtext.length > 0 && sprawaF.backendProp.length > 0 && odpowiedzTresc.fieldtext.length > 0 && zalaczniki.fieldtext.length > 0 && leftPanel.currentArchitekt.length > 0) {
+                        innerDoc.source = "file:///pusty.pdf";
                         let wynikNazwa = `${leftPanel.currentProjekt}_${Date.now()}`;
 
                         let data = {
@@ -218,7 +224,11 @@ Rectangle {
                             "architekt": leftPanel.currentArchitekt
                         };
 
-                        backEnd.generateDocument(wynikNazwa, data);
+                        let fileId = backEnd.generateDocument(wynikNazwa, data);
+                        let newPdf = backEnd.getDocPdfPath([fileId, wynikNazwa]);
+                        console.log(newPdf);
+                        root.curentDoc = newPdf;
+                        innerDoc.source = root.curentDoc;
                     } else {
                         message_Dialog.text = "Wypełnij wszystkie pola!";
                         message_Dialog.open();

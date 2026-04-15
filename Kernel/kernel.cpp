@@ -202,13 +202,25 @@ void Kernel::getWnioski()
     m_DataWrapperManager.addDecyzjeSheetModel(decyzje);
 }
 
-QUrl Kernel::getDoc()
+QUrl Kernel::getDocPdfPath(const QStringList &docIds )
 {
-    std::optional<QByteArray> result = m_googleWrapper.getDocumentAsPdf(Ustawienia::getTemplateId());
+    QString docId ;
+    QString outName = "/tmp.pdf";
+    if(docIds.isEmpty())
+    {
+        docId = Ustawienia::getTemplateId();
+    }
+    else
+    {
+        docId = docIds[0];
+        outName = QString("/%1.pdf").arg(docIds[1]);
+    }
+
+    std::optional<QByteArray> result = m_googleWrapper.getDocumentAsPdf(docId);
     if(result.has_value())
     {
         QDir dir;
-        QFile file(dir.absolutePath()  + "/tmp.pdf");
+        QFile file(dir.absolutePath()  + outName);
         if (!file.open(QIODevice::WriteOnly | QIODevice::Truncate,
                        QFileDevice::WriteUser| QFileDevice::ReadUser| QFileDevice::ExeUser))
         {
@@ -232,10 +244,17 @@ QUrl Kernel::getDoc()
      return Ustawienia::getTemplateId();
 }
 
-void Kernel::generateDocument(const QString & anID, const QVariantMap  &aData)
+QString Kernel::generateDocument(const QString & anID, const QVariantMap  &aData)
 {
     auto data = createUpdateData(aData);
-    m_googleWrapper.updateDocument(Ustawienia::getTemplateId(), anID, data);
+    std::optional<QString> out = m_googleWrapper.updateDocument(Ustawienia::getTemplateId(), anID, data);
+
+    if(out.has_value())
+    {
+        return out.value();
+    }
+    else
+        return QString();
 }
 
 void Kernel::slotSetAuthenticated()

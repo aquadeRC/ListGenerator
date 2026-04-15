@@ -47,7 +47,7 @@ public:
     std::optional<QJsonObject> getDocument(const QString & anId);
     std::optional<QByteArray> getDocumentAsPdf(const QString & anId);
 
-    void updateDocument(const QString & anId,
+    std::optional<QString> updateDocument(const QString & anId,
                         const QString & newName,
                         const QString &aData);
 

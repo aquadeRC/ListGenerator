@@ -216,7 +216,7 @@ std::optional<QString> GoogleSSO::copyDocument(const QString & anId, const QStri
 }
 
 
-void GoogleSSO::updateDocument(const QString & anId,
+std::optional<QString> GoogleSSO::updateDocument(const QString & anId,
                                const QString & newName,
                                const QString &aData)
 {
@@ -240,19 +240,19 @@ void GoogleSSO::updateDocument(const QString & anId,
            if(updateResult.has_value())
            {
                QJsonObject result =  updateResult.value();
-               if (result.contains("replaceAllText") == false)
-               {
-                   slotSetErrorMessage("GoogleSSO::updateDocument result did not contain the replaceAllText string.");
-                   return;
-               }
+             //  if (result.contains("replaceAllText") == false)
+             //  {
+              //     slotSetErrorMessage("GoogleSSO::updateDocument result did not contain the replaceAllText string.");
+              //     return std::nullopt;
+             //  }
 
-               QJsonValue token = result.value("replaceAllText");
-               QJsonArray values = token.toArray();
-               return;
+             //  QJsonValue token = result.value("replaceAllText");
+              // QJsonArray values = token.toArray();
+               return newFileId;
            }
        }
     }
-    return;
+    return std::nullopt;
 }
 
  std::optional<QJsonObject> GoogleSSO::postReplay(const QString & endPoint, const QString& aUrl,

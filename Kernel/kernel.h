@@ -43,7 +43,7 @@ public:
     Q_INVOKABLE QStringList getWnioskiList(const QString &anProjectId);
 
     Q_INVOKABLE void authenticate();
-    Q_INVOKABLE void generateDocument(const QString & anID, const QVariantMap  &aData);
+    Q_INVOKABLE QString generateDocument(const QString & anID, const QVariantMap  &aData);
     Q_INVOKABLE QStringList getProjectData(int anIndex);
     Q_INVOKABLE QStringList getArchitektData(const QString & anID);
 
@@ -53,7 +53,7 @@ public:
     Q_INVOKABLE QStringList getSettings();
     Q_INVOKABLE void setSettings(const QStringList &aData);
 
-    Q_INVOKABLE QUrl getDoc();
+    Q_INVOKABLE QUrl getDocPdfPath(const QStringList &docId = QStringList());
     Q_INVOKABLE QString getDocId();
 
 
