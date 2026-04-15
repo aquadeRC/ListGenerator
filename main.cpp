@@ -2,9 +2,13 @@
 #include <QQmlApplicationEngine>
 #include "Kernel/kernel.h"
 #include <QStringListModel>
+#include <QtWebView/QtWebView>
+
 
 int main(int argc, char *argv[])
 {
+   // QtWebView::initialize();
+
     QGuiApplication app(argc, argv);
     app.setOrganizationName("RCStudio");
     app.setApplicationName("PismoGenerator");

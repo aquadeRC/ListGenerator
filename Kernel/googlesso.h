@@ -45,6 +45,7 @@ public:
     std::optional<QStringList> getSheets(const QString & aSheetId);
     std::optional<QJsonArray> getSheetValues(const QString & aSheetId, const QString & aTabId);
     std::optional<QJsonObject> getDocument(const QString & anId);
+    std::optional<QByteArray> getDocumentAsPdf(const QString & anId);
 
     void updateDocument(const QString & anId,
                         const QString & newName,
@@ -68,6 +69,7 @@ protected slots:
 
 private:  
     std::optional<QJsonObject> getReplay(const QString & endPoint, const QString& aUrl);
+    std::optional<QByteArray> getPdfReplay(const QString & endPoint, const QString& aUrl);
     std::optional<QJsonObject> postReplay(const QString & endPoint, const QString& aUrl,
                                           const QByteArray &aData = QByteArray());
 

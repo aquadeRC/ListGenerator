@@ -53,9 +53,8 @@ public:
     Q_INVOKABLE QStringList getSettings();
     Q_INVOKABLE void setSettings(const QStringList &aData);
 
-    Q_INVOKABLE QJsonObject getDoc();
-
-
+    Q_INVOKABLE QUrl getDoc();
+    Q_INVOKABLE QString getDocId();
 
 
 public slots:

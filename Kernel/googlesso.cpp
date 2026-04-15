@@ -171,6 +171,21 @@ std::optional<QJsonObject> GoogleSSO::getDocument(const QString & anId)
         QJsonObject result =  resultObject.value();
         return result;
     }
+    return std::nullopt;
+}
+
+
+
+std::optional<QByteArray> GoogleSSO::getDocumentAsPdf(const QString & anId)
+{
+    QString url = QString("/files/%1/export?mimeType=application%2Fpdf").arg(anId);
+
+    std::optional<QByteArray> resultObject = getPdfReplay(m_fileEndPoint, url);
+    if(resultObject.has_value())
+    {
+        QByteArray result =  resultObject.value();
+        return result;
+    }
 
     return std::nullopt;
 }
@@ -447,6 +462,76 @@ std::optional<QJsonObject> GoogleSSO::getReplay(const QString & endPoint, const 
 
     return std::nullopt;
 }
+
+std::optional<QByteArray> GoogleSSO::getPdfReplay(const QString & endPoint, const QString& aUrl)
+{
+    if(m_restManager.isNull())
+        return std::nullopt;
+
+    m_requestFactory.setBaseUrl(QUrl(endPoint));
+    QNetworkReply *reply = m_restManager->get(m_requestFactory.createRequest(aUrl));
+    if(reply)
+    {
+        connect(reply,
+                SIGNAL(errorOccurred(QNetworkReply::NetworkError)), this,
+                SLOT(slotNetworkError(QNetworkReply::NetworkError)));
+
+        if (!reply->isFinished())
+        {
+            QEventLoop loop;
+            QObject::connect(reply, SIGNAL(finished()), &loop, SLOT(quit()));
+
+            if (m_timeout > 0)
+                QTimer::singleShot(m_timeout, &loop, SLOT(quit()));
+
+            loop.exec(QEventLoop::ExcludeUserInputEvents);
+        }
+
+        if (!reply->isFinished())
+        {
+            reply->abort();
+            reply->deleteLater();
+
+            if (m_timeout > 0)
+            {
+                slotSetErrorMessage(QString("GET getPdfReplay timed out after %1 milliseconds.").arg(m_timeout));
+            }
+            return std::nullopt;
+        }
+
+        m_neworkReplyError = reply->error();
+        if (m_neworkReplyError != QNetworkReply::NoError)
+        {
+            slotSetErrorMessage(reply->errorString());
+            reply->deleteLater();
+            return std::nullopt;
+        }
+
+        QRestReply restReply(reply);
+        if (restReply.isSuccess())
+        {
+            QJsonParseError jsonParseError;
+
+            quint64 bytesAvailable = reply->bytesAvailable();
+            QByteArray replyData = reply->read(bytesAvailable);
+
+            return replyData;
+        }
+        else
+        {
+            return std::nullopt;
+        }
+
+    }
+    else
+    {
+        slotSetErrorMessage("QRestAccessManager::getPdfReplay return NULL!");
+        return std::nullopt;;
+    }
+
+    return std::nullopt;
+}
+
 
 
 void GoogleSSO::slotNetworkError(QNetworkReply::NetworkError anError)

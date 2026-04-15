@@ -202,15 +202,34 @@ void Kernel::getWnioski()
     m_DataWrapperManager.addDecyzjeSheetModel(decyzje);
 }
 
-QJsonObject Kernel::getDoc()
+QUrl Kernel::getDoc()
 {
-    std::optional<QJsonObject> result = m_googleWrapper.getDocument(Ustawienia::getTemplateId());
+    std::optional<QByteArray> result = m_googleWrapper.getDocumentAsPdf(Ustawienia::getTemplateId());
     if(result.has_value())
     {
-        return result.value();
+        QDir dir;
+        QFile file(dir.absolutePath()  + "/tmp.pdf");
+        if (!file.open(QIODevice::WriteOnly | QIODevice::Truncate,
+                       QFileDevice::WriteUser| QFileDevice::ReadUser| QFileDevice::ExeUser))
+        {
+            return QString();
+        }
+        QFileInfo info(file);
+        QString filePath = info.absoluteFilePath();
+
+        file.write(result.value());
+        file.close();
+
+
+        return QUrl::fromLocalFile(filePath);
     }
     else
-        return QJsonObject();
+        return QString();
+}
+
+ Q_INVOKABLE QString Kernel::getDocId()
+{
+     return Ustawienia::getTemplateId();
 }
 
 void Kernel::generateDocument(const QString & anID, const QVariantMap  &aData)

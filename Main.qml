@@ -4,6 +4,7 @@ import QtQuick
 import QtQuick.Controls.Basic
 import QtQuick.Layouts
 import QtQuick.Dialogs
+import QtQuick.Pdf
 import QtCore
 import LG_GUI
 import Kernel
@@ -21,6 +22,8 @@ ApplicationWindow {
 
     property double headerHight: 79
     property double leftPanelW: 297
+
+    property url curentDoc: "file:///D:/sandbox/ListGenerator/build/Desktop_Qt_6_11_0_MSVC2022_64bit-Debug/mapa.pdf"
 
     visible: true
     title: qsTr("Generuj pismo")
@@ -74,14 +77,21 @@ ApplicationWindow {
                 projektyModel: root.projektyModel
             }
 
-            TextArea {
-                id: document
-                property string initDataStr
+            PdfPageView {
+                id: pdfView
+                property alias dUrl: innerDoc.source
+                property alias inner_Doc: innerDoc
 
                 width: root.width - root.leftPanelW
                 Layout.fillHeight: true
                 visible: true
-                textFormat: TextEdit.RichText
+
+                Component.onCompleted: scaleToWidth(width, height)
+
+                document: PdfDocument {
+                    id: innerDoc
+                    source: Qt.resolvedUrl(root.curentDoc)
+                }
             }
         }
     }
@@ -121,11 +131,13 @@ ApplicationWindow {
             urzadModel = backEnd.getModelUrzedy();
             projektyModel = backEnd.getModelProjekt();
 
-            let doc = JSON.stringify(backEnd.getDoc(), null, '\t');
-
-            document.text = "<pre style='color:red'>" + doc + "</pre>";
+            root.curentDoc = backEnd.getDoc();
+            innerDoc.source = root.curentDoc;
         }
+    }
 
+    Connections {
+        target: backEnd
         function onIsError(data: string) {
             message_Dialog.text = "Error";
             message_Dialog.informativeText = data;
