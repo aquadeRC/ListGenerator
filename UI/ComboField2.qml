@@ -8,6 +8,7 @@ Item {
     required property variant comboModel
     required property string backendProp
     required property string fieldText
+    property bool higlight: false
 
     signal comboFieldChanged(aName: string, index: int)
 
@@ -31,6 +32,7 @@ Item {
             id: fieldComboN
             comboModel: comboFieldN.comboModel
             backendProp: comboFieldN.backendProp
+            higlight: comboFieldN.higlight
 
             onActivated: {
                 comboFieldChanged(fieldComboN.backendProp, fieldComboN.currentIndex);

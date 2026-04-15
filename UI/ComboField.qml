@@ -11,6 +11,7 @@ Item {
 
     required property string textRolenNme
     required property string valueRolenNme
+    property bool higlight: false
 
     signal comboFieldChanged(aName: string, index: int)
 
@@ -36,6 +37,7 @@ Item {
             backendProp: comboField.backendProp
             textRolenNme: comboField.textRolenNme
             valueRolenNme: comboField.valueRolenNme
+            higlight: comboField.higlight
 
             onActivated: {
                 comboFieldChanged(fieldCombo.backendProp, fieldCombo.currentIndex);

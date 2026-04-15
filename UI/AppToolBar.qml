@@ -62,11 +62,13 @@ Rectangle {
             }
         }
 
+        /*
         IconButton {
             id: exportPdfButton
             buttonName: qsTr("Eksport PDF")
             iconPath: "icons/ustawienia.svg"
         }
+        */
 
         ThemeSwitch {
             id: motywSW

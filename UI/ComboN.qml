@@ -5,6 +5,7 @@ ComboBox {
     id: control
     required property variant comboModel
     required property string backendProp
+    property bool higlight: false
 
     model: comboModel
     font: mainTheme.font
@@ -78,7 +79,9 @@ ComboBox {
             width: control.visualFocus ? 2 : 1
         }
         radius: 10
-        color: mainTheme.field_bacground_color
+        color: {
+            control.higlight === false ? mainTheme.field_bacground_color : Qt.lighter(mainTheme.field_bacground_color);
+        }
     }
 
     popup: Popup {

@@ -48,6 +48,7 @@ Rectangle {
                     backendProp: backend2.inwestycja
                     textRolenNme: "id"
                     valueRolenNme: "id"
+                    higlight: true
 
                     onComboFieldChanged: (projektName, index) => {
                         leftPanel.currentProjekt = projektName;
@@ -74,8 +75,6 @@ Rectangle {
                         nazwaProjekt.fieldtext = inwestycja;
 
                         sprawaF.comboModel = leftPanel.wnioskiModel;
-
-                        console.log(architektCB.backendProp);
                     }
                 }
                 FieldText {
@@ -117,6 +116,7 @@ Rectangle {
                     fieldText: "Numer sprawy"
                     width: 253
                     implicitHeight: 58
+                    higlight: true
                     backendProp: backend2.nr_sprawy
                     comboModel: []
 
