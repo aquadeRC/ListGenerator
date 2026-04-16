@@ -201,6 +201,28 @@ Rectangle {
             }
 
             IconButton {
+                id: reset
+                buttonName: qsTr("Reset")
+                iconPath: "icons/ustawienia.svg"
+                Layout.alignment: Qt.AlignLeft | Qt.AlignBottom
+                onClicked: {
+                    projektF.backendProp = "";
+                    nazwaProjekt.fieldtext = "";
+                    nazwaProjekt.fieldtext = "";
+                    architektCB.backendProp = "";
+                    nrDzialka.fieldtext = "";
+                    ewidencjaF.fieldtext = "";
+                    obrebF.fieldtext = "";
+                    sprawaF.backendProp = "";
+                    urzadCB.backendProp = "";
+                    inwestorCB.fieldtext = "";
+                    inwestycjaF.fieldtext = "";
+                    odpowiedzTresc.fieldtext = "";
+                    zalaczniki.fieldtext = "";
+                }
+            }
+
+            IconButton {
                 id: generujBT
                 width: 40
                 Layout.alignment: Qt.AlignLeft | Qt.AlignBottom
