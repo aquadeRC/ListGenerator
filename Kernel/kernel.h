@@ -19,6 +19,11 @@ class Kernel : public QObject
     QML_UNCREATABLE("Kernel must be instantiated in C++")
     Q_PROPERTY(bool isAuthenticated READ isAuthenticated WRITE setAuthenticated NOTIFY isAuthenticatedChanged)
 public:
+    enum LogLewels{
+        LOG_INFO =0,
+        LOG_ERROR,
+        LOG_WARNING
+    };
     explicit Kernel(QObject *parent = nullptr);
     ~Kernel() = default;
 
@@ -66,10 +71,13 @@ public slots:
 signals:
     void isAuthenticatedChanged(bool aStatus);
     void isError(const QString & aData);
+    void signalDocumentCreated(const QString& aName);
 
 protected slots:
     void slotSetAuthenticated();
     void slotSooError(const QString &error);
+
+
 
 private:
     DataWraperManager m_DataWrapperManager;
@@ -78,6 +86,7 @@ private:
     QSharedPointer<QStringListModel> m_wnioskiModel;
 
     QMap<QString, QString> m_updateTokensMap;
+    QString m_logName {"log.txt"};
 
     bool m_isAuthenticated {false};
 
@@ -87,6 +96,7 @@ private:
     void getArchitekci();
     void getWnioski();
     QString createUpdateData(const QVariantMap  &aData);
+    void addLog(const QString & aMessage, LogLewels alevel);
 };
 
 #endif // KERNEL_H

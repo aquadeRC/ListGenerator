@@ -86,7 +86,7 @@ void  Kernel::setSettings(const QStringList &aData)
 void Kernel::getDataFromGoogle()
 {
     getProjects();
-    getInwestorzy();
+    //getInwestorzy();
     getArchitekci();
     getWnioski();
     //m_DataWrapperManager.dumpData();
@@ -115,6 +115,7 @@ void Kernel::getProjects()
         projects.removeAt(0);
     }
      m_DataWrapperManager.addSheetModel(DATA_TYPES::PROJEKTY_DATA, projects);
+    addLog(QString("Pobrano dane Projekty"), LogLewels::LOG_INFO);
 }
 
 void Kernel::getInwestorzy()
@@ -139,6 +140,7 @@ void Kernel::getInwestorzy()
       inwestorzy.removeAt(0);
     }
     m_DataWrapperManager.addSheetModel(DATA_TYPES::INWESTOR_DATA, inwestorzy);
+    addLog(QString("Pobrano dane Inwestorzu"), LogLewels::LOG_INFO);
 }
 
 void Kernel::getArchitekci()
@@ -163,6 +165,8 @@ void Kernel::getArchitekci()
       architekci.removeAt(0);
     }
     m_DataWrapperManager.addSheetModel(DATA_TYPES::ARCHITEKT_DATA, architekci);
+
+    addLog(QString("Pobrano dane Architekt"), LogLewels::LOG_INFO);
 }
 
 void Kernel::getWnioski()
@@ -200,6 +204,7 @@ void Kernel::getWnioski()
         }
     }
     m_DataWrapperManager.addDecyzjeSheetModel(decyzje);
+    addLog(QString("Pobrano dane Wnioski"), LogLewels::LOG_INFO);
 }
 
 QUrl Kernel::getDocPdfPath(const QStringList &docIds )
@@ -224,6 +229,7 @@ QUrl Kernel::getDocPdfPath(const QStringList &docIds )
         if (!file.open(QIODevice::WriteOnly | QIODevice::Truncate,
                        QFileDevice::WriteUser| QFileDevice::ReadUser| QFileDevice::ExeUser))
         {
+            addLog(QString("Blod zapisu pdf %1").arg(outName), LogLewels::LOG_ERROR);
             return QString();
         }
         QFileInfo info(file);
@@ -233,6 +239,7 @@ QUrl Kernel::getDocPdfPath(const QStringList &docIds )
         file.close();
 
 
+        addLog(QString("Utworzono dokument pdf %1").arg(filePath), LogLewels::LOG_INFO);
         return QUrl::fromLocalFile(filePath);
     }
     else
@@ -251,6 +258,8 @@ QString Kernel::generateDocument(const QString & anID, const QVariantMap  &aData
 
     if(out.has_value())
     {
+        addLog(QString("Utworzono dokument %1").arg(anID), LogLewels::LOG_INFO);
+        emit signalDocumentCreated(anID);
         return out.value();
     }
     else
@@ -264,7 +273,8 @@ void Kernel::slotSetAuthenticated()
         m_isAuthenticated = au;
 
         if(m_isAuthenticated)
-            qDebug() << "m_isAuthenticated";
+            addLog("Aplikacja polaczona z Google Api  ", LogLewels::LOG_INFO);
+
             getDataFromGoogle();
 
         emit isAuthenticatedChanged(m_isAuthenticated);
@@ -361,14 +371,60 @@ QString Kernel::createUpdateData(const QVariantMap  &aData)
     updateData.append(tokens.join(","));
     updateData.append(QString::fromUtf8(rawEndToken));
 
+
 return updateData;
 }
 
 
  void Kernel::slotSooError(const QString &error)
 {
+     addLog(error, LogLewels::LOG_ERROR);
      emit isError(error);
 }
 
 
+void  Kernel::addLog(const QString & aMessage, LogLewels alevel)
+{
+    QDir dir;
+    QFile logFile  = QFile(dir.absolutePath() +"/"+ m_logName );
+    if (!logFile.open(QIODevice::ReadOnly | QIODevice::Append | QIODevice::Text))
+    {
+        QFileInfo info(logFile);
+        QString message = QString("Nie mogę otworzyć pliku logu  %1").arg(info.absoluteFilePath() );
+        qWarning(message.toStdString().c_str());
+
+        return ;
+    }
+
+    QString loglevel;
+    switch(alevel)
+    {
+        case LogLewels::LOG_ERROR:
+        {
+            loglevel = "Error";
+            break;
+
+        }
+        case LogLewels::LOG_INFO:
+        {
+            loglevel = "Info";
+            break;
+
+        }
+        case LogLewels::LOG_WARNING:
+        {
+            loglevel = "Warning";
+            break;
+
+        }
+    }
+
+
+
+    QTextStream out(&logFile);
+    QString message = QString("%1 %2 %4 %3\n").arg(QDate::currentDate().toString()).arg(QTime::currentTime().toString()).arg(aMessage).arg(loglevel);
+
+    out << message;
+    logFile.close();
+}
 

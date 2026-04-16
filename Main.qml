@@ -149,6 +149,20 @@ ApplicationWindow {
             message_Dialog.text = "Error";
             message_Dialog.informativeText = data;
             footer.message = data;
+
+            message_Dialog.open();
+        }
+    }
+
+    Connections {
+        target: backEnd
+        function onSignalDocumentCreated(data: string) {
+            message_Dialog.text = "Dokument wygenerowany.";
+            let message = `Wygenerowano pismo :${data}`;
+            message_Dialog.informativeText = message;
+            footer.message = message;
+
+            message_Dialog.open();
         }
     }
 }
