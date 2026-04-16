@@ -53,6 +53,17 @@ target_link_libraries(app${PROJECT_NAME}
     Kernel
 )
 
+#add_custom_command(APPEND)
+##add_custom_target(copy_pdf
+#        COMMAND ${CMAKE_COMMAND} -E copy_if_different
+#        "${CMAKE_CURRENT_SOURCE_DIR}/pusty.pdf"
+#        "${CMAKE_CURRENT_BINARY_DIR}"
+#    COMMENT "Copying users data"
+#)
+#add_dependencies(${PROJECT_NAME} copy_pdf)
+
+
+
 #include(GNUInstallDirs)
 install(TARGETS app${PROJECT_NAME}
     BUNDLE DESTINATION .

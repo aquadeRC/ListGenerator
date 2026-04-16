@@ -26,7 +26,9 @@ public:
     void setAuthenticated(bool isAuthenticated) {
         if (m_isAuthenticated != isAuthenticated) {
             m_isAuthenticated = isAuthenticated;
-            emit isAuthenticatedChanged();
+
+
+            emit isAuthenticatedChanged(m_isAuthenticated);
         }
     }
 
@@ -62,7 +64,7 @@ public slots:
 
 
 signals:
-    void isAuthenticatedChanged();
+    void isAuthenticatedChanged(bool aStatus);
     void isError(const QString & aData);
 
 protected slots:

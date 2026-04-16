@@ -267,7 +267,7 @@ void Kernel::slotSetAuthenticated()
             qDebug() << "m_isAuthenticated";
             getDataFromGoogle();
 
-        emit isAuthenticatedChanged();
+        emit isAuthenticatedChanged(m_isAuthenticated);
     }
 }
 

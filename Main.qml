@@ -54,12 +54,9 @@ ApplicationWindow {
         visible: true
     }
 
-    /*
     footer: Footer {
         id: footer
-        anchors.fill: parent
     }
-*/
     ColumnLayout {
         anchors.fill: parent
 
@@ -126,13 +123,23 @@ ApplicationWindow {
 
     Connections {
         target: backEnd
-        function onIsAuthenticatedChanged() {
+        function onIsAuthenticatedChanged(status: bool) {
             archModel = backEnd.getModelArchitekci();
             urzadModel = backEnd.getModelUrzedy();
             projektyModel = backEnd.getModelProjekt();
 
             root.curentDoc = backEnd.getDocPdfPath();
             innerDoc.source = root.curentDoc;
+
+            if (status === true) {
+                footer.state = "connected";
+                footer.message = "Połaczenie autoryzowane";
+            } else if (status === false) {
+                footer.state = "error";
+                footer.message = "Brak autoryzacji";
+            } else {
+                footer.state = "idle";
+            }
         }
     }
 
@@ -141,6 +148,7 @@ ApplicationWindow {
         function onIsError(data: string) {
             message_Dialog.text = "Error";
             message_Dialog.informativeText = data;
+            footer.message = data;
         }
     }
 }
