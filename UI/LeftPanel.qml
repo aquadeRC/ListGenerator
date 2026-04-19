@@ -89,7 +89,6 @@ Rectangle {
                     backendProp: backend2.pracownia
                     textRolenNme: "id"
                     valueRolenNme: "id"
-                    higlight: true
 
                     onComboFieldChanged: (pracowniatName, index) => {
                         leftPanel.currentPracownia = pracowniatName;

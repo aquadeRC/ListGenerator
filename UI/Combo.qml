@@ -85,7 +85,7 @@ ComboBox {
         }
         radius: 10
         color: {
-            control.higlight === false ? mainTheme.field_bacground_color : Qt.lighter(mainTheme.field_bacground_color);
+            control.higlight === false ? mainTheme.field_bacground_color : mainTheme.mode === "dark_mode" ? Qt.lighter(mainTheme.field_bacground_color) : Qt.darker(mainTheme.field_bacground_color);
         }
     }
 
