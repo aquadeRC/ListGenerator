@@ -145,12 +145,12 @@ Rectangle {
                         root.generujOdpowiedz = check;
                         if (check === true) {
                             sprawaF.enabled = true;
-                            urzadCB.enabled = false;
-                            urzadField.enabled = true;
+
+                            urzadLoader.sourceComponent = urzadFieldComponent;
                         } else {
                             sprawaF.enabled = false;
-                            urzadCB.enabled = true;
-                            urzadField.enabled = false;
+
+                            urzadLoader.sourceComponent = urzadCBComponent;
                         }
                     }
                 }
@@ -170,7 +170,7 @@ Rectangle {
                         let urzadD = data[1];
 
                         if (root.generujOdpowiedz === true) {
-                            urzadField.fieldtext = urzadD;
+                            urzadLoader.item.fieldtext = urzadD;
                         }
 
                         inwestorCB.fieldtext = data[3];
@@ -179,6 +179,13 @@ Rectangle {
                         zalaczniki.fieldtext = data[5];
                     }
                 }
+                Loader {
+                    id: urzadLoader
+                    width: 253
+                    height: 58
+                    visible: true
+                }
+                /*
                 ComboField {
                     id: urzadCB
                     fieldText: "Urząd"
@@ -198,7 +205,7 @@ Rectangle {
                     fieldLabel: "Urząd"
                     width: 253
                     implicitHeight: 58
-                }
+                }*/
                 FieldText {
                     id: inwestorCB
                     fieldLabel: "Inwestor"
@@ -223,7 +230,6 @@ Rectangle {
                     width: 253
                     implicitHeight: 58
                 }
-
                 Rectangle {
                     width: 10
                     color: "#00ffffff"
@@ -274,6 +280,7 @@ Rectangle {
                     zalaczniki.fieldtext = "";
                     nazwaPisma.fieldtext = "";
                     pracowniaCB.backendProp = "";
+                    zapiszNazwa.fieldtext = "";
                 }
             }
 
@@ -284,7 +291,7 @@ Rectangle {
                 buttonName: qsTr("Generuj")
                 iconPath: "icons/ustawienia.svg"
                 onClicked: {
-                    let urzadData = root.generujOdpowiedz ? urzadField.fieldtext : leftPanel.currentUrzad;
+                    let urzadData = root.generujOdpowiedz ? urzadLoader.item.fieldtext : urzadLoader.item.currentUrzad;
                     let sprawa = root.generujOdpowiedz ? sprawaF.backendProp : "tmp";
 
                     console.log(leftPanel.currentUrzad);
@@ -302,13 +309,31 @@ Rectangle {
 
                     if (urzadData.length > 0 && inwestycjaF.fieldtext.length > 0 && nrDzialka.fieldtext.length > 0 && obrebF.fieldtext.length > 0 && ewidencjaF.fieldtext.length > 0 && inwestorCB.fieldtext.length > 0 && sprawa.length > 0 && odpowiedzTresc.fieldtext.length > 0 && zalaczniki.fieldtext.length > 0 && leftPanel.currentArchitekt.length > 0 && nazwaPisma.fieldtext.length > 0 && leftPanel.currentPracownia.length > 0) {
                         innerDoc.source = "file:///pusty.pdf";
-                        let wynikNazwa = `${leftPanel.currentProjekt}_${Date.now()}`;
+
+                        let uData;
+                        if (root.generujOdpowiedz === true) {
+                            let data = urzadLoader.item.fieldtext;
+                            const words = data.split("\n");
+                            uData = words[0];
+                        } else {
+                            uData = leftPanel.currentUrzad;
+                        }
+
+                        const options = {
+                            weekday: "long",
+                            year: "numeric",
+                            month: "numeric",
+                            day: "numeric",
+                            hour1: "false",
+                            timeStyle: "short"
+                        };
+                        let wynikNazwa = `${leftPanel.currentProjekt}_${uData}_${Date.now().toLocaleString("pl-PL", options)}`;
 
                         let urzadData = "";
                         if (root.generujOdpowiedz === false) {
                             urzadData = leftPanel.currentUrzad;
                         } else {
-                            urzadData = urzadField.fieldtext;
+                            urzadData = urzadLoader.item.fieldtext;
                         }
 
                         let data = {
@@ -343,7 +368,34 @@ Rectangle {
 
     Component.onCompleted: {
         sprawaF.enabled = true;
-        urzadCB.enabled = false;
-        urzadField.enabled = true;
+
+        urzadLoader.sourceComponent = urzadFieldComponent;
+    }
+
+    Component {
+        id: urzadCBComponent
+        ComboField {
+            id: urzadCB
+            fieldText: "Urząd"
+            width: 253
+            implicitHeight: 58
+            comboModel: leftPanel.urzedyModel
+            backendProp: backend2.urzad
+            textRolenNme: "nazwa"
+            valueRolenNme: "nazwa"
+
+            onComboFieldChanged: (urzadId, index) => {
+                leftPanel.currentUrzad = urzadId;
+            }
+        }
+    }
+    Component {
+        id: urzadFieldComponent
+        FieldText {
+            id: urzadField
+            fieldLabel: "Urząd"
+            width: 253
+            implicitHeight: 58
+        }
     }
 }

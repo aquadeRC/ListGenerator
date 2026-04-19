@@ -415,7 +415,7 @@ QString Kernel::createUpdateData(const QVariantMap  &aData)
                 QString telefon = pracowniaData[4];
                 QString nip = pracowniaData[5];
 
-                QString data = QString("%1, %2, &3 %4, tel %5, NIP %6").arg(id, adres, kod, miejscowosc, telefon, nip);
+                QString data = QString("%1, %2, %3 %4, tel %5, NIP %6").arg(id, adres, kod, miejscowosc, telefon, nip);
 
                 QString prac = QString::fromUtf8(rawToken).arg(data, "Pracownia");
                 tokens.append(prac);
