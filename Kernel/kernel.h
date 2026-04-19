@@ -47,14 +47,14 @@ public:
     Q_INVOKABLE AbstractAppModel* getModelArchitekci();
     Q_INVOKABLE AbstractAppModel* getModelInwestor();
     Q_INVOKABLE AbstractAppModel* getModelProjekt();
+    Q_INVOKABLE AbstractAppModel* getModelPracownia();
     Q_INVOKABLE QStringList getWnioskiList(const QString &anProjectId);
 
     Q_INVOKABLE void authenticate();
     Q_INVOKABLE QString generateDocument(const QString & anID, const QVariantMap  &aData);
-    Q_INVOKABLE QStringList getProjectData(int anIndex);
+    Q_INVOKABLE QStringList getProjectData(int anIndex); 
     Q_INVOKABLE QStringList getArchitektData(const QString & anID);
-
-
+    Q_INVOKABLE QStringList getPracowniaData(const QString & anID);
     Q_INVOKABLE QStringList getWniosekData(const QString &anProjectId, const QString &aEwidencjaId);
 
     Q_INVOKABLE QStringList getSettings();
@@ -95,6 +95,7 @@ private:
     void getInwestorzy();
     void getArchitekci();
     void getWnioski();
+    void getPacownie();
     QString createUpdateData(const QVariantMap  &aData);
     void addLog(const QString & aMessage, LogLewels alevel);
 };

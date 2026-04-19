@@ -23,6 +23,7 @@ public:
 
     QStringList getProjectData(int index);
     QStringList getArchitektData(const QString & anIndex);
+    QStringList getPracowniaData(const QString&anPracowniaId);
 
     QStringList getWnioskiList(const QString&anProjectId);
     QStringList getWniosekData(const QString&anProjectId, const QString&aEwidencjaId);

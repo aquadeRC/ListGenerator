@@ -36,6 +36,7 @@ qt_add_qml_module(${PROJECT_NAME}
 		QML_FILES Data/Settings.json
 		SOURCES Ustawienia.h Ustawienia.cpp
 		SOURCES
+		SOURCES ModeleDanych/PracowniaModel.h ModeleDanych/PracowniaModel.cpp
 
 )
 qt_add_resources(${PROJECT_NAME} "data"

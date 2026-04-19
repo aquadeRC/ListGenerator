@@ -16,6 +16,7 @@
 #include "ModeleDanych/InwestorzyModel.h"
 #include "ModeleDanych/ProjektModel.h"
 #include "ModeleDanych/DecyzjeModel.h"
+#include "ModeleDanych/PracowniaModel.h"
 #include "Ustawienia.h"
 
 
@@ -33,7 +34,6 @@ DataWraperManager::DataWraperManager(QObject *parent)
     : QObject{parent}
 {
     m_Impl.reset(new DataWraperManagerImpl());
-    //createDataModels();
 }
 
 AbstractAppModel* DataWraperManager::getModel(DATA_TYPES aType)
@@ -83,7 +83,13 @@ void DataWraperManager::addSheetModel(DATA_TYPES aType, QList<QStringList> aData
 
         break;
         }
+    case DATA_TYPES::PRACOWNIA_DATA:
+    {
+        m_Impl->m_dataModels[aType]= std::make_shared<PracowniaModel>(this);
+        m_Impl->m_dataModels[aType]->initData(aData);
 
+        break;
+    }
     default:
         {
         }
@@ -192,6 +198,43 @@ QStringList DataWraperManager::getArchitektData(const QString & anID)
     data.append(nazwa);
     data.append(telefon);
     data.append(email);
+
+    return data;
+}
+
+QStringList DataWraperManager::getPracowniaData(const QString&anPracowniaId)
+{
+    auto model = m_Impl->m_dataModels[DATA_TYPES::PRACOWNIA_DATA];
+    auto dataModel = model->getData();
+
+    int row = 0;
+    QListIterator<QStringList> it(dataModel);
+    while(it.hasNext())
+    {
+        if(it.next().constFirst() == anPracowniaId)
+            break;
+        else
+            ++row;
+    }
+
+    auto index = model->index(row);
+
+    QString  projektId =   model->data(index, PracowniaModel::ID).toString();
+    QString  nazwa =   model->data(index, PracowniaModel::Adres).toString();
+    QString  kod =   model->data(index, PracowniaModel::Kod).toString();
+    QString  email =   model->data(index, PracowniaModel::Miejscowosc).toString();
+    QString  telefon =   model->data(index, PracowniaModel::Telefon).toString();
+    QString  nip =   model->data(index, PracowniaModel::Nip).toString();
+    QString  krs =   model->data(index, PracowniaModel::Krs).toString();
+
+    QStringList data;
+    data.append(projektId);
+    data.append(nazwa);
+    data.append(kod);
+    data.append(email);
+    data.append(telefon);
+    data.append(nip);
+    data.append(krs);
 
     return data;
 }

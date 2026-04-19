@@ -19,11 +19,13 @@ ApplicationWindow {
     property AbstractItemModel archModel: backEnd.getModelArchitekci()
     property AbstractItemModel urzadModel: backEnd.getModelUrzedy()
     property AbstractItemModel projektyModel: backEnd.getModelProjekt()
+    property AbstractItemModel pracowniaModel: backEnd.getModelPracownia()
 
     property double headerHight: 79
     property double leftPanelW: 297
 
     property url curentDoc: "file:///pusty.pdf"
+    property bool generujOdpowiedz: true
 
     visible: true
     title: qsTr("Generuj pismo")
@@ -45,6 +47,7 @@ ApplicationWindow {
         property string inwestycja
         property string nr_sprawy
         property string inwestor
+        property string pracownia
     }
 
     header: AppToolBar {
@@ -72,6 +75,7 @@ ApplicationWindow {
                 architekciModel: root.archModel
                 urzedyModel: root.urzadModel
                 projektyModel: root.projektyModel
+                pracowniaModel: root.pracowniaModel
             }
 
             PdfPageView {
@@ -127,6 +131,7 @@ ApplicationWindow {
             archModel = backEnd.getModelArchitekci();
             urzadModel = backEnd.getModelUrzedy();
             projektyModel = backEnd.getModelProjekt();
+            pracowniaModel = backEnd.getModelPracownia();
 
             root.curentDoc = backEnd.getDocPdfPath();
             innerDoc.source = root.curentDoc;

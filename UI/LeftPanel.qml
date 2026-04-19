@@ -9,10 +9,13 @@ Rectangle {
     required property AbstractItemModel architekciModel
     required property AbstractItemModel urzedyModel
     required property AbstractItemModel projektyModel
+    required property AbstractItemModel pracowniaModel
 
     property variant wnioskiModel
-    property string currentProjekt
     property variant currentArchitekt
+    property string currentPracownia
+    property string currentProjekt
+    property string currentUrzad
 
     color: mainTheme.background_color
 
@@ -77,9 +80,30 @@ Rectangle {
                         sprawaF.comboModel = leftPanel.wnioskiModel;
                     }
                 }
+                ComboField {
+                    id: pracowniaCB
+                    fieldText: "Pracownia"
+                    implicitHeight: 58
+                    width: 253
+                    comboModel: leftPanel.pracowniaModel
+                    backendProp: backend2.pracownia
+                    textRolenNme: "id"
+                    valueRolenNme: "id"
+                    higlight: true
+
+                    onComboFieldChanged: (pracowniatName, index) => {
+                        leftPanel.currentPracownia = pracowniatName;
+                    }
+                }
                 FieldText {
                     id: nazwaProjekt
                     fieldLabel: "Nazwa"
+                    width: 253
+                    implicitHeight: 58
+                }
+                FieldText {
+                    id: nazwaPisma
+                    fieldLabel: "Nazwa pisma"
                     width: 253
                     implicitHeight: 58
                 }
@@ -111,6 +135,26 @@ Rectangle {
                     width: 253
                     implicitHeight: 58
                 }
+
+                CheckBoxField {
+                    id: typPisma
+                    checked: true
+                    text: qsTr("Odpowiewdz na pismo...")
+
+                    onControlChecked: check => {
+                        root.generujOdpowiedz = check;
+                        if (check === true) {
+                            sprawaF.enabled = true;
+                            urzadCB.enabled = false;
+                            urzadField.enabled = true;
+                        } else {
+                            sprawaF.enabled = false;
+                            urzadCB.enabled = true;
+                            urzadField.enabled = false;
+                        }
+                    }
+                }
+
                 ComboField2 {
                     id: sprawaF
                     fieldText: "Numer sprawy"
@@ -124,16 +168,15 @@ Rectangle {
                         sprawaF.backendProp = ewidencjaNr;
                         let data = backEnd.getWniosekData(leftPanel.currentProjekt, ewidencjaNr);
                         let urzadD = data[1];
-                        const urzadLines = urzadD.split("\n");
-                        let urzadnazwa = urzadLines[1];
 
-                        urzadCB.backendProp = urzadnazwa;
+                        if (root.generujOdpowiedz === true) {
+                            urzadField.fieldtext = urzadD;
+                        }
+
                         inwestorCB.fieldtext = data[3];
                         inwestycjaF.fieldtext = data[2];
                         odpowiedzTresc.fieldtext = data[4];
                         zalaczniki.fieldtext = data[5];
-
-                        console.log(sprawaF.backendProp);
                     }
                 }
                 ComboField {
@@ -145,6 +188,16 @@ Rectangle {
                     backendProp: backend2.urzad
                     textRolenNme: "nazwa"
                     valueRolenNme: "nazwa"
+
+                    onComboFieldChanged: (urzadId, index) => {
+                        leftPanel.currentUrzad = urzadId;
+                    }
+                }
+                FieldText {
+                    id: urzadField
+                    fieldLabel: "Urząd"
+                    width: 253
+                    implicitHeight: 58
                 }
                 FieldText {
                     id: inwestorCB
@@ -219,6 +272,8 @@ Rectangle {
                     inwestycjaF.fieldtext = "";
                     odpowiedzTresc.fieldtext = "";
                     zalaczniki.fieldtext = "";
+                    nazwaPisma.fieldtext = "";
+                    pracowniaCB.backendProp = "";
                 }
             }
 
@@ -229,12 +284,35 @@ Rectangle {
                 buttonName: qsTr("Generuj")
                 iconPath: "icons/ustawienia.svg"
                 onClicked: {
-                    if (urzadCB.backendProp.length > 0 && inwestycjaF.fieldtext.length > 0 && nrDzialka.fieldtext.length > 0 && obrebF.fieldtext.length > 0 && ewidencjaF.fieldtext.length > 0 && inwestorCB.fieldtext.length > 0 && sprawaF.backendProp.length > 0 && odpowiedzTresc.fieldtext.length > 0 && zalaczniki.fieldtext.length > 0 && leftPanel.currentArchitekt.length > 0) {
+                    let urzadData = root.generujOdpowiedz ? urzadField.fieldtext : leftPanel.currentUrzad;
+                    let sprawa = root.generujOdpowiedz ? sprawaF.backendProp : "tmp";
+
+                    console.log(leftPanel.currentUrzad);
+                    console.log("urzadData.length > 0", urzadData.length > 0);
+                    console.log("inwestycjaF.fieldtext.length > 0", inwestycjaF.fieldtext.length > 0);
+                    console.log("nrDzialka.fieldtext.length > 0", nrDzialka.fieldtext.length > 0);
+                    console.log("obrebF.fieldtext.length > 0", obrebF.fieldtext.length > 0);
+                    console.log("ewidencja.length > 0", ewidencjaF.fieldtext.length > 0);
+                    console.log("inwestorCB.fieldtext.length > 0", inwestorCB.fieldtext.length > 0);
+                    console.log("sprawaF.backendProp.length > 0", sprawa.length > 0);
+                    console.log("odpowiedzTresc.fieldtext.length > 0 ", odpowiedzTresc.fieldtext.length > 0);
+                    console.log("zalaczniki.fieldtext.length > 0", zalaczniki.fieldtext.length > 0);
+                    console.log("leftPanel.currentArchitekt.length > 0 ", leftPanel.currentArchitekt.length > 0);
+                    console.log("nazwaPisma.fieldtext.length > 0", nazwaPisma.fieldtext.length > 0);
+
+                    if (urzadData.length > 0 && inwestycjaF.fieldtext.length > 0 && nrDzialka.fieldtext.length > 0 && obrebF.fieldtext.length > 0 && ewidencjaF.fieldtext.length > 0 && inwestorCB.fieldtext.length > 0 && sprawa.length > 0 && odpowiedzTresc.fieldtext.length > 0 && zalaczniki.fieldtext.length > 0 && leftPanel.currentArchitekt.length > 0 && nazwaPisma.fieldtext.length > 0 && leftPanel.currentPracownia.length > 0) {
                         innerDoc.source = "file:///pusty.pdf";
                         let wynikNazwa = `${leftPanel.currentProjekt}_${Date.now()}`;
 
+                        let urzadData = "";
+                        if (root.generujOdpowiedz === false) {
+                            urzadData = leftPanel.currentUrzad;
+                        } else {
+                            urzadData = urzadField.fieldtext;
+                        }
+
                         let data = {
-                            "urzad_nazwa": urzadCB.backendProp,
+                            "urzad_nazwa": urzadData,
                             "inwestcja_nazwa": inwestycjaF.fieldtext,
                             "dzialka": nrDzialka.fieldtext,
                             "obreb": obrebF.fieldtext,
@@ -243,7 +321,10 @@ Rectangle {
                             "sprawa": sprawaF.backendProp,
                             "tesc": odpowiedzTresc.fieldtext,
                             "zalaczniki": zalaczniki.fieldtext,
-                            "architekt": leftPanel.currentArchitekt
+                            "architekt": leftPanel.currentArchitekt,
+                            "pismoNazwa": nazwaPisma.fieldtext,
+                            "odpowiedzType": root.generujOdpowiedz,
+                            "pracownia": leftPanel.currentPracownia
                         };
 
                         let fileId = backEnd.generateDocument(wynikNazwa, data);
@@ -258,5 +339,11 @@ Rectangle {
                 }
             }
         }
+    }
+
+    Component.onCompleted: {
+        sprawaF.enabled = true;
+        urzadCB.enabled = false;
+        urzadField.enabled = true;
     }
 }

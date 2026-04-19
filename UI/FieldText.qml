@@ -36,11 +36,19 @@ Item {
             ToolButton {
                 id: showLargeBox
                 icon.source: Qt.resolvedUrl("icons/ustawienia.svg")
-                icon.color: "transparent"
                 ToolTip.visible: enabled && hovered
                 ToolTip.delay: 2000
                 ToolTip.text: "Pokaż wiecej..."
                 display: AbstractButton.IconOnly
+
+                background: Rectangle {
+                    color: showLargeBox.down ? mainTheme.button_color_down : mainTheme.button_color
+                    implicitHeight: 30
+                    opacity: enabled ? 1 : 0.3
+                    border.color: showLargeBox.down ? mainTheme.button_color_down : mainTheme.button_color
+                    border.width: 1
+                    radius: 10
+                }
                 onClicked: {
                     tArea.text = textInput.text;
                     editorPopup.open();
@@ -51,8 +59,6 @@ Item {
 
     Popup {
         id: editorPopup
-        y: textField.y
-        x: textInput.x + 5
         width: 481
         height: 400
         implicitHeight: contentItem.implicitHeight

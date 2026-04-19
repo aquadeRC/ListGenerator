@@ -21,6 +21,7 @@ Kernel::Kernel(QObject *parent)
      m_updateTokensMap["tesc"] = "Tresc";
      m_updateTokensMap["zalaczniki"] = "Zalaczniki";
      m_updateTokensMap["sprawa"] = "Inwestycja_Sprawa";
+     m_updateTokensMap["pismoNazwa"] = "Tytul";
 
      m_settins->load();
      m_DataWrapperManager.createDataModels();
@@ -63,6 +64,11 @@ AbstractAppModel* Kernel::getModelProjekt()
     return m_DataWrapperManager.getModel(DATA_TYPES::PROJEKTY_DATA);
 }
 
+AbstractAppModel* Kernel::getModelPracownia()
+{
+    return m_DataWrapperManager.getModel(DATA_TYPES::PRACOWNIA_DATA);
+}
+
 QStringList Kernel::getSettings()
 {
     return Ustawienia::getSettingsData();
@@ -86,9 +92,9 @@ void  Kernel::setSettings(const QStringList &aData)
 void Kernel::getDataFromGoogle()
 {
     getProjects();
-    //getInwestorzy();
     getArchitekci();
     getWnioski();
+    getPacownie();
     //m_DataWrapperManager.dumpData();
 }
 
@@ -116,6 +122,33 @@ void Kernel::getProjects()
     }
      m_DataWrapperManager.addSheetModel(DATA_TYPES::PROJEKTY_DATA, projects);
     addLog(QString("Pobrano dane Projekty"), LogLewels::LOG_INFO);
+}
+
+void Kernel::getPacownie()
+{
+    std::optional<QJsonArray> result =
+        m_googleWrapper.getSheetValues(Ustawienia::getProjektyId(), "Pracownia");
+    QList<QStringList> projects;
+
+    if(result.has_value())
+    {
+
+        for(const auto &arr: result.value())
+        {
+            const QJsonArray row = arr.toArray();
+            QStringList projekt;
+            for(const auto& rowValue:row)
+            {
+                QString val = rowValue.toString();
+                projekt.append(val);
+            }
+            projects.append(projekt);
+        }
+        projects.removeAt(0);
+        qDebug() << projects;
+    }
+    m_DataWrapperManager.addSheetModel(DATA_TYPES::PRACOWNIA_DATA, projects);
+    addLog(QString("Pobrano dane Pracownie"), LogLewels::LOG_INFO);
 }
 
 void Kernel::getInwestorzy()
@@ -295,6 +328,10 @@ QStringList Kernel::getArchitektData(const QString & anID)
 {
     return m_DataWrapperManager.getArchitektData(anID);
 }
+QStringList Kernel::getPracowniaData(const QString & anID)
+{
+     return m_DataWrapperManager.getPracowniaData(anID);
+}
 
 QStringList Kernel::getWnioskiList(const QString &anProjectId)
 {
@@ -318,6 +355,8 @@ QString Kernel::createUpdateData(const QVariantMap  &aData)
 
     QStringList tokens;
     QMapIterator<QString, QVariant> it(aData);
+    bool isOdpowiedz = aData["odpowiedzType"].toBool();
+
     while(it.hasNext())
     {
         auto mapData = it.next();
@@ -348,24 +387,43 @@ QString Kernel::createUpdateData(const QVariantMap  &aData)
             if(mapData.key() == "urzad_nazwa")
             {
                 QString val = mapData.value().toString();
-                QStringList urzadData = m_DataWrapperManager.getUrzadData(val);
+                QString uData;
 
-                QString adresCaly = urzadData[8] + " "+ urzadData[9];
+                if(isOdpowiedz)
+                {
+                uData = QString::fromUtf8(rawToken).arg(val , "Urzad_Nazwa");
+                }
+                else
+                {
+                    QStringList urzadData = m_DataWrapperManager.getUrzadData(val);
+                    QString adresCaly = urzadData[8] + " " + urzadData[9];
+                    QString data = QString("%1\n%2\n%3 %4").arg(urzadData[4], adresCaly, urzadData[6], urzadData[7]);
+                    uData = QString::fromUtf8(rawToken).arg(data,"Urzad_Nazwa");
+                }
+                tokens.append(uData);
+            }
+            if(mapData.key() == "pracownia")
+            {
+                qDebug() <<mapData.value();
+                auto pracowniaId= mapData.value().toString();
+                QStringList pracowniaData = m_DataWrapperManager.getPracowniaData(pracowniaId);
 
-                QString nazwa = QString::fromUtf8(rawToken).arg(urzadData[4],"Urzad_Nazwa");
-                QString adres = QString::fromUtf8(rawToken).arg(adresCaly,  "Urzad_Adres");
-                QString kod = QString::fromUtf8(rawToken).arg(urzadData[6], "Urzad_Kod");
-                QString miasto = QString::fromUtf8(rawToken).arg(urzadData[7], "Urzad_Miasto");
+                QString id = pracowniaData[0];
+                QString adres = pracowniaData[1];
+                QString kod = pracowniaData[2];
+                QString miejscowosc = pracowniaData[3];
+                QString telefon = pracowniaData[4];
+                QString nip = pracowniaData[5];
 
-                tokens.append(nazwa);
-                tokens.append(adres);
-                tokens.append(kod);
-                tokens.append(miasto);
+                QString data = QString("%1, %2, &3 %4, tel %5, NIP %6").arg(id, adres, kod, miejscowosc, telefon, nip);
+
+                QString prac = QString::fromUtf8(rawToken).arg(data, "Pracownia");
+                tokens.append(prac);
             }
         }
     }
 
-    QString tokenData = QString::fromUtf8(rawToken).arg(QDate::currentDate().toString(), "DATA");
+    QString tokenData = QString::fromUtf8(rawToken).arg(QDate::currentDate().toString("dd.MM.yyyy"), "DATA");
     tokens.append(tokenData);
 
     updateData.append(tokens.join(","));
