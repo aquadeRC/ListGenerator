@@ -291,7 +291,7 @@ Rectangle {
                 buttonName: qsTr("Generuj")
                 iconPath: "icons/ustawienia.svg"
                 onClicked: {
-                    let urzadData = root.generujOdpowiedz ? urzadLoader.item.fieldtext : urzadLoader.item.currentUrzad;
+                    let urzadData = root.generujOdpowiedz ? urzadLoader.item.fieldtext : leftPanel.currentUrzad;
                     let sprawa = root.generujOdpowiedz ? sprawaF.backendProp : "tmp";
 
                     console.log(leftPanel.currentUrzad);
