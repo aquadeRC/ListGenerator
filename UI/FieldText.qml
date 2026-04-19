@@ -35,7 +35,7 @@ Item {
             }
             ToolButton {
                 id: showLargeBox
-                icon.source: Qt.resolvedUrl("icons/ustawienia.svg")
+                icon.source: Qt.resolvedUrl("icons/more.svg")
                 ToolTip.visible: enabled && hovered
                 ToolTip.delay: 2000
                 ToolTip.text: "Pokaż wiecej..."
