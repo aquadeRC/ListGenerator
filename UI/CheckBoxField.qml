@@ -11,15 +11,16 @@ CheckBox {
         x: control.leftPadding
         y: parent.height / 2 - height / 2
         radius: 3
-        border.color: control.down ? mainTheme.text_color : Qt.lighter(mainTheme.text_color)
+        border.color: mainTheme.field_bacground_color
 
+        color: mainTheme.field_bacground_color
         Rectangle {
             width: 14
             height: 14
             x: 6
             y: 6
             radius: 2
-            color: control.down ? mainTheme.text_color : Qt.lighter(mainTheme.text_color)
+            color: control.down ? mainTheme.button_color_down : mainTheme.button_color
             visible: control.checked
         }
     }

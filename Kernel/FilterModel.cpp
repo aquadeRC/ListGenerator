@@ -43,7 +43,7 @@ bool FilterModel::filterAcceptsRow(int source_row, const QModelIndex &source_par
 
     bool templateEmpty = m_template.isEmpty();
     if(templateEmpty)
-        return false;
+        return true;
 
     if(m_template.length()<3)
         return true;

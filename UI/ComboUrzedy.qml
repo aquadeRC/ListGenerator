@@ -101,7 +101,7 @@ ComboBox {
             anchors.fill: parent
 
             implicitWidth: control.width
-            implicitHeight: 23 + popUpView.implicitHeight
+            implicitHeight: filterConditionText.height + 200
 
             border {
                 color: mainTheme.field_border_color
@@ -128,12 +128,22 @@ ComboBox {
                     wrapMode: TextEdit.WrapAnywhere
                     placeholderText: qsTr("Filter")
                     background: null
+                    color: mainTheme.text_color
 
                     onTextEdited: {
                         if (filterConditionText.text.length >= 3) {
-                            console.log(filterConditionText.text);
                             control.model.templatePattern = filterConditionText.text;
                         }
+                    }
+
+                    Rectangle {
+                        anchors.bottom: filterConditionText.bottom
+                        anchors.left: filterConditionText.left
+                        anchors.right: filterConditionText.right
+
+                        // anchors.bottomMargin: 12
+                        height: 1
+                        color: filterConditionText.selectionColor
                     }
                 }
 

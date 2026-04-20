@@ -66,7 +66,7 @@ ComboBox {
 
         text: control.displayText
         font: control.font
-        color: mainTheme.text_color
+        color: control.higlight === false ? mainTheme.text_color : Qt.lighter(mainTheme.text_color)
         verticalAlignment: Text.AlignVCenter
         elide: Text.ElideRight
     }
