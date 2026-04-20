@@ -42,7 +42,7 @@ public:
         return m_isAuthenticated;
     }
 
-    Q_INVOKABLE AbstractAppModel* getModelUrzedy();
+    Q_INVOKABLE FilterModel* getModelUrzedy();
     Q_INVOKABLE AbstractAppModel* getModelInwestycje();
     Q_INVOKABLE AbstractAppModel* getModelArchitekci();
     Q_INVOKABLE AbstractAppModel* getModelInwestor();

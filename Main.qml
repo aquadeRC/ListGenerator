@@ -17,7 +17,7 @@ ApplicationWindow {
 
     required property Kernel backEnd
     property AbstractItemModel archModel: backEnd.getModelArchitekci()
-    property AbstractItemModel urzadModel: backEnd.getModelUrzedy()
+    property FilterModel urzadModel: backEnd.getModelUrzedy()
     property AbstractItemModel projektyModel: backEnd.getModelProjekt()
     property AbstractItemModel pracowniaModel: backEnd.getModelPracownia()
 

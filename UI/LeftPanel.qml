@@ -25,7 +25,7 @@ Rectangle {
 
         ScrollView {
             id: scroll
-            contentHeight: 820
+            contentHeight: 1000
 
             contentWidth: leftPanel.width
             Layout.fillWidth: true
@@ -373,7 +373,7 @@ Rectangle {
 
     Component {
         id: urzadCBComponent
-        ComboField {
+        ComboUrzedyField {
             id: urzadCB
             fieldText: "Urząd"
             width: 253

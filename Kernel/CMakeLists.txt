@@ -37,6 +37,7 @@ qt_add_qml_module(${PROJECT_NAME}
 		SOURCES Ustawienia.h Ustawienia.cpp
 		SOURCES
 		SOURCES ModeleDanych/PracowniaModel.h ModeleDanych/PracowniaModel.cpp
+		SOURCES FilterModel.cpp FilterModel.h
 
 )
 qt_add_resources(${PROJECT_NAME} "data"

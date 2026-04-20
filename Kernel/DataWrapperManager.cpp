@@ -11,6 +11,7 @@
 
 #include "DataWrappers/UrzadDataWrapper.h"
 
+
 #include "ModeleDanych/ArchitektDataModel.h"
 #include "ModeleDanych/UrzadDataModel.h"
 #include "ModeleDanych/InwestorzyModel.h"
@@ -22,25 +23,35 @@
 
 struct DataWraperManager::DataWraperManagerImpl
 {
-    DataWraperManagerImpl()
+    DataWraperManagerImpl(QObject *parent)
     {
+        m_filter.reset(new FilterModel(parent));
     }
 
     QMap<DATA_TYPES, std::shared_ptr<AbstractAppModel>> m_dataModels;
     std::shared_ptr<DecyzjeModel> m_wnioski;
+    std::shared_ptr<FilterModel> m_filter;
 };
 
 DataWraperManager::DataWraperManager(QObject *parent)
     : QObject{parent}
 {
-    m_Impl.reset(new DataWraperManagerImpl());
+    m_Impl.reset(new DataWraperManagerImpl(parent));
 }
+
+
+FilterModel* DataWraperManager::getFilteredUrzedyModel()
+{
+    return m_Impl->m_filter.get();
+}
+
 
 AbstractAppModel* DataWraperManager::getModel(DATA_TYPES aType)
 {
     if(m_Impl->m_dataModels.contains(aType))
     {
-        return m_Impl->m_dataModels[aType].get();
+         return m_Impl->m_dataModels[aType].get();
+
     }
     else
     {
@@ -56,6 +67,9 @@ void DataWraperManager::createDataModels()
 
     m_Impl->m_dataModels[urzadType]= std::make_shared<Modele_Danych::UrzadDataModel>(this);
     m_Impl->m_dataModels[urzadType]->initData(urzadData);
+
+    m_Impl->m_filter->setRoleToFilter(Modele_Danych::UrzadDataModel::Nazwa);
+    m_Impl->m_filter->setSourceModel(m_Impl->m_dataModels[DATA_TYPES::URZEDY_DATA].get());
 }
 
 void DataWraperManager::addSheetModel(DATA_TYPES aType, QList<QStringList> aData)

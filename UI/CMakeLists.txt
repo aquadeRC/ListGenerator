@@ -27,6 +27,8 @@ qt_add_qml_module(${PROJECT_NAME}
 	RESOURCES icons/green-light.png icons/red-light.png icons/yellow-light.png
 	QML_FILES CheckBoxField.qml
 	RESOURCES icons/more.svg
+	QML_FILES ComboUrzedyField.qml
+	QML_FILES ComboUrzedy.qml
 
 )
 

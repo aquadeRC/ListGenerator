@@ -6,6 +6,7 @@
 #include "KernelCommon.h"
 #include "ModeleDanych/AbstractAppModel.h"
 #include "DataWrappers/IDataWrapper.h"
+#include "FilterModel.h"
 #include <memory>
 
 
@@ -15,6 +16,7 @@ class DataWraperManager: public QObject
 public:  
 
     explicit DataWraperManager(QObject *parent = nullptr);
+    FilterModel* getFilteredUrzedyModel();
     AbstractAppModel* getModel(DATA_TYPES aType);
     void createDataModels();
     void addSheetModel(DATA_TYPES aType, QList<QStringList> aData);

@@ -65,6 +65,11 @@ Item {
         padding: 1
         closePolicy: Popup.CloseOnEscape | Popup.CloseOnPressOutsideParent
         focus: true
+
+        onAboutToHide: {
+            textInput.text = tArea.text;
+        }
+
         contentItem: Rectangle {
             id: popupRect
             radius: 5

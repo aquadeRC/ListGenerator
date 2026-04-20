@@ -44,9 +44,10 @@ AbstractAppModel* Kernel::getModelInwestycje()
    return m_DataWrapperManager.getModel(DATA_TYPES::INWESTYCJE_DATA);
 }
 
-AbstractAppModel* Kernel::getModelUrzedy()
+FilterModel* Kernel::getModelUrzedy()
 {
-    return m_DataWrapperManager.getModel(DATA_TYPES::URZEDY_DATA);
+   // return m_DataWrapperManager.getModel(DATA_TYPES::URZEDY_DATA);
+    return m_DataWrapperManager.getFilteredUrzedyModel();
 }
 
 AbstractAppModel* Kernel::getModelArchitekci()
