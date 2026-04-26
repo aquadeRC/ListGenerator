@@ -48,7 +48,7 @@ Rectangle {
                     implicitHeight: 58
                     width: 253
                     comboModel: leftPanel.projektyModel
-                    curentFieldValue: backend2.inwestycja
+                    //curentFieldValue: backend2.inwestycja
                     textRolenNme: "id"
                     valueRolenNme: "id"
                     higlight: true
@@ -89,7 +89,7 @@ Rectangle {
                     implicitHeight: 58
                     width: 253
                     comboModel: leftPanel.pracowniaModel
-                    curentFieldValue: backend2.pracownia
+                    //curentFieldValue: backend2.pracownia
                     textRolenNme: "id"
                     valueRolenNme: "id"
                     Layout.fillWidth: true
@@ -118,7 +118,7 @@ Rectangle {
                     width: 253
                     implicitHeight: 58
                     comboModel: leftPanel.architekciModel
-                    curentFieldValue: backend2.architekt
+                    //curentFieldValue: backend2.architekt
                     textRolenNme: "nazwa"
                     valueRolenNme: "achitektId"
                     Layout.fillWidth: true
@@ -184,7 +184,7 @@ Rectangle {
                         width: 253
                         implicitHeight: 58
                         higlight: true
-                        curentFieldValue: backend2.nr_sprawy
+                        //curentFieldValue: backend2.nr_sprawy
                         comboModel: []
 
                         Layout.fillHeight: true
@@ -409,7 +409,7 @@ Rectangle {
             width: 253
             implicitHeight: 58
             comboModel: leftPanel.urzedyModel
-            curentFieldValue: backend2.urzad
+            //curentFieldValue: backend2.urzad
             textRolenNme: "nazwa"
             valueRolenNme: "nazwa"
 

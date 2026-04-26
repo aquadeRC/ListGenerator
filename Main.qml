@@ -40,7 +40,7 @@ ApplicationWindow {
         anchors.centerIn: parent
     }
 
-    QtObject {
+    /* QtObject {
         id: backend2
         property string architekt
         property string urzad
@@ -48,7 +48,7 @@ ApplicationWindow {
         property string nr_sprawy
         property string inwestor
         property string pracownia
-    }
+    }*/
 
     header: AppToolBar {
         id: toolBar
