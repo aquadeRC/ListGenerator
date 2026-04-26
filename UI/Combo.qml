@@ -4,7 +4,7 @@ import QtQuick.Controls.Basic
 ComboBox {
     id: control
     required property AbstractItemModel comboModel
-    required property string backendProp
+    //required property string backendProp
     required property string textRolenNme
     required property string valueRolenNme
     property bool higlight: false
@@ -18,9 +18,9 @@ ComboBox {
     height: 35
 
     // Set currentValue to the value stored in the backend.
-    currentValue: backendProp
+    //currentValue: backendProp
     // When an item is selected, update the backend.
-    onActivated: backendProp = currentValue
+    //onActivated: backendProp = currentValue
 
     delegate: ItemDelegate {
         id: delegate

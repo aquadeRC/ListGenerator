@@ -6,7 +6,7 @@ Item {
     id: comboFieldN
 
     required property variant comboModel
-    required property string backendProp
+    //required property string backendProp
     required property string fieldText
     property bool higlight: false
 
@@ -35,11 +35,11 @@ Item {
             ComboN {
                 id: fieldComboN
                 comboModel: comboFieldN.comboModel
-                backendProp: comboFieldN.backendProp
+                //backendProp: comboFieldN.backendProp
                 higlight: comboFieldN.higlight
 
                 onActivated: {
-                    comboFieldChanged(fieldComboN.backendProp, fieldComboN.currentIndex);
+                    comboFieldChanged(fieldComboN.currentValue, fieldComboN.currentIndex);
                 }
             }
 

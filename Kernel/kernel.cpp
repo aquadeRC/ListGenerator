@@ -288,6 +288,7 @@ QUrl Kernel::getDocPdfPath(const QStringList &docIds )
 QString Kernel::generateDocument(const QString & anID, const QVariantMap  &aData)
 {
     auto data = createUpdateData(aData);
+    bool isOdpowiedz = aData["odpowiedzType"].toBool();
     std::optional<QString> out = m_googleWrapper.updateDocument(Ustawienia::getTemplateId(), anID, data);
 
     if(out.has_value())

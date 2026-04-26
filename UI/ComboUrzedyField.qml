@@ -6,7 +6,7 @@ Item {
     id: comboField
 
     required property AbstractItemModel comboModel
-    required property string backendProp
+    //required property string backendProp
     required property string fieldText
 
     required property string textRolenNme
@@ -36,13 +36,13 @@ Item {
         ComboUrzedy {
             id: fieldCombo
             comboModel: comboField.comboModel
-            backendProp: comboField.backendProp
+            //backendProp: comboField.backendProp
             textRolenNme: comboField.textRolenNme
             valueRolenNme: comboField.valueRolenNme
             higlight: comboField.higlight
 
             onActivated: {
-                comboFieldChanged(fieldCombo.backendProp, fieldCombo.currentIndex);
+                comboFieldChanged(fieldCombo.currentValue, fieldCombo.currentIndex);
             }
         }
     }

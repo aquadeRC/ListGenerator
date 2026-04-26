@@ -48,7 +48,7 @@ Rectangle {
                     implicitHeight: 58
                     width: 253
                     comboModel: leftPanel.projektyModel
-                    backendProp: backend2.inwestycja
+                    curentFieldValue: backend2.inwestycja
                     textRolenNme: "id"
                     valueRolenNme: "id"
                     higlight: true
@@ -72,7 +72,7 @@ Rectangle {
                         leftPanel.currentArchitekt = archData;
                         let archName = archData[0];
 
-                        architektCB.backendProp = archName;
+                        architektCB.curentFieldValue = archName;
                         inwestycjaF.fieldtext = inwestycja;
                         nrDzialka.fieldtext = dzialka;
                         ewidencjaF.fieldtext = ewidencja;
@@ -89,7 +89,7 @@ Rectangle {
                     implicitHeight: 58
                     width: 253
                     comboModel: leftPanel.pracowniaModel
-                    backendProp: backend2.pracownia
+                    curentFieldValue: backend2.pracownia
                     textRolenNme: "id"
                     valueRolenNme: "id"
                     Layout.fillWidth: true
@@ -118,7 +118,7 @@ Rectangle {
                     width: 253
                     implicitHeight: 58
                     comboModel: leftPanel.architekciModel
-                    backendProp: backend2.architekt
+                    curentFieldValue: backend2.architekt
                     textRolenNme: "nazwa"
                     valueRolenNme: "achitektId"
                     Layout.fillWidth: true
@@ -154,7 +154,7 @@ Rectangle {
 
                     onControlChecked: check => {
                         root.generujOdpowiedz = check;
-                        sprawaF.backendProp = "";
+                        sprawaF.curentFieldIndex = -1;
                         inwestycjaF.fieldtext = "";
                         odpowiedzTresc.fieldtext = "";
                         zalaczniki.fieldtext = "";
@@ -183,14 +183,14 @@ Rectangle {
                         width: 253
                         implicitHeight: 58
                         higlight: true
-                        backendProp: backend2.nr_sprawy
+                        curentFieldValue: backend2.nr_sprawy
                         comboModel: []
 
                         Layout.fillHeight: true
                         Layout.alignment: Qt.AlignVCenter
 
                         onComboFieldChanged: (ewidencjaNr, index) => {
-                            sprawaF.backendProp = ewidencjaNr;
+                            sprawaF.curentFieldValue = ewidencjaNr;
                             let data = backEnd.getWniosekData(leftPanel.currentProjekt, ewidencjaNr);
                             let urzadD = data[1];
 
@@ -318,7 +318,7 @@ Rectangle {
                 iconPath: "icons/ustawienia.svg"
                 onClicked: {
                     let urzadData = root.generujOdpowiedz ? urzadLoader.item.fieldtext : leftPanel.currentUrzad;
-                    let sprawa = root.generujOdpowiedz ? sprawaF.backendProp : "tmp";
+                    let sprawa = root.generujOdpowiedz ? sprawaF.curentFieldValue : "tmp";
 
                     /*
                     console.log(leftPanel.currentUrzad);
@@ -371,7 +371,7 @@ Rectangle {
                             "obreb": obrebF.fieldtext,
                             "ewidencja": ewidencjaF.fieldtext,
                             "inwestor": inwestorF.fieldtext,
-                            "sprawa": sprawaF.backendProp,
+                            "sprawa": sprawaF.curentFieldValue,
                             "tesc": odpowiedzTresc.fieldtext,
                             "zalaczniki": zalaczniki.fieldtext,
                             "architekt": leftPanel.currentArchitekt,
@@ -380,12 +380,12 @@ Rectangle {
                             "pracownia": leftPanel.currentPracownia
                         };
 
-                        console.log(data);
-                        //let fileId = backEnd.generateDocument(wynikNazwa, data);
-                        // let newPdf = backEnd.getDocPdfPath([fileId, wynikNazwa]);
+                        // console.log(data);
+                        let fileId = backEnd.generateDocument(wynikNazwa, data);
+                        let newPdf = backEnd.getDocPdfPath([fileId, wynikNazwa]);
 
-                        //root.curentDoc = newPdf;
-                        // innerDoc.source = root.curentDoc;
+                        root.curentDoc = newPdf;
+                        innerDoc.source = root.curentDoc;
                     } else {
                         message_Dialog.text = "Wypełnij wszystkie pola!";
                         message_Dialog.open();
@@ -409,7 +409,7 @@ Rectangle {
             width: 253
             implicitHeight: 58
             comboModel: leftPanel.urzedyModel
-            backendProp: backend2.urzad
+            curentFieldValue: backend2.urzad
             textRolenNme: "nazwa"
             valueRolenNme: "nazwa"
 
