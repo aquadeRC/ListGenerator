@@ -487,3 +487,8 @@ void  Kernel::addLog(const QString & aMessage, LogLewels alevel)
     logFile.close();
 }
 
+
+void Kernel::updateWnioski()
+{
+    getWnioski();
+}

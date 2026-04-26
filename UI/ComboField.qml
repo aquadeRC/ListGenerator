@@ -8,10 +8,11 @@ Item {
     required property AbstractItemModel comboModel
     required property string backendProp
     required property string fieldText
-
-    required property string textRolenNme
     required property string valueRolenNme
+    required property string textRolenNme
     property bool higlight: false
+    property alias curentFieldValue: fieldCombo.currentValue
+    property alias curentFieldIndex: fieldCombo.currentIndex
 
     signal comboFieldChanged(aName: string, index: int)
 

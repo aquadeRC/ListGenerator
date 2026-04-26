@@ -102,7 +102,7 @@ Item {
                     }
                     RoundedButton {
                         id: closPopup
-                        buttonName: "Zamknij"
+                        text: "Zamknij"
                         onClicked: {
                             textInput.text = tArea.text;
                             editorPopup.close();

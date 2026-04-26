@@ -11,6 +11,8 @@ Item {
 
     required property string textRolenNme
     required property string valueRolenNme
+    property alias curentFieldValue: fieldCombo.currentValue
+    property alias curentFieldIndex: fieldCombo.currentIndex
     property bool higlight: false
 
     signal comboFieldChanged(aName: string, index: int)

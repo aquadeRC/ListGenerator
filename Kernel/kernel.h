@@ -62,7 +62,7 @@ public:
 
     Q_INVOKABLE QUrl getDocPdfPath(const QStringList &docId = QStringList());
     Q_INVOKABLE QString getDocId();
-
+    Q_INVOKABLE void updateWnioski();
 
 public slots:
     void slotCurrentProjektChanged(const QString & aProjektName, int index);

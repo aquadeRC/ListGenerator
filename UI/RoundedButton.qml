@@ -4,12 +4,12 @@ import QtQuick.Layouts
 
 RoundButton {
     id: controll
-    required property string buttonName
+    //required property string buttonName
 
     Layout.preferredWidth: 112
     Layout.preferredHeight: 30
 
-    text: buttonName
+   // text: buttonName
     antialiasing: true
     font.bold: true
     flat: false

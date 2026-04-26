@@ -39,7 +39,7 @@ Item {
         }
 
         RoundedButton {
-            buttonName: "Wybierz plik..."
+            text: "Wybierz plik..."
             onClicked: fileDialog.open()
             height: 35
         }
