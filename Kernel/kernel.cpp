@@ -352,6 +352,7 @@ QString Kernel::createUpdateData(const QVariantMap  &aData)
     string rawStartToken = R"({"requests":[)";
     string rawEndToken = R"(]})";
     string rawToken = R"({"replaceAllText":{"replaceText":"%1","containsText":{"text":"{{%2}}","matchCase":false}}})";
+    string rawTokenRemove = R"({"replaceAllText":{"replaceText":"%1","containsText":{"text":"%2","matchCase":false}}})";
 
     QString updateData = QString::fromUtf8(rawStartToken);
 
@@ -365,11 +366,25 @@ QString Kernel::createUpdateData(const QVariantMap  &aData)
 
         if(m_updateTokensMap.contains(mapData.key()))
         {
-            QString tokenName = m_updateTokensMap[mapData.key()];
-            QString value = mapData.value().toString();
+            if(mapData.key() == "sprawa" && isOdpowiedz == false)
+            {
+                QString tokenName = m_updateTokensMap[mapData.key()];
+                QString value = " ";
+                QString tokenData = QString::fromUtf8(rawToken).arg(value, tokenName);
+                tokens.append(tokenData);
 
-            QString tokenData = QString::fromUtf8(rawToken).arg(value, tokenName);
-            tokens.append(tokenData);
+                tokenName = "Sprawa znak:";
+                value = " ";
+                tokenData = QString::fromUtf8(rawTokenRemove).arg(value, tokenName);
+                tokens.append(tokenData);
+            }
+            else
+            {
+                QString tokenName = m_updateTokensMap[mapData.key()];
+                QString value = mapData.value().toString();
+                QString tokenData = QString::fromUtf8(rawToken).arg(value, tokenName);
+                tokens.append(tokenData);
+            }
         }
         else
         {

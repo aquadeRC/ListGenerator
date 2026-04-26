@@ -73,7 +73,7 @@ Rectangle {
                         let archName = archData[0];
 
                         architektCB.curentFieldValue = archName;
-                        inwestycjaF.fieldtext = inwestycja;
+                        //inwestycjaF.fieldtext = inwestycja;
                         nrDzialka.fieldtext = dzialka;
                         ewidencjaF.fieldtext = ewidencja;
                         obrebF.fieldtext = obreb;
@@ -100,7 +100,7 @@ Rectangle {
                 }
                 FieldText {
                     id: nazwaProjekt
-                    fieldLabel: "Nazwa"
+                    fieldLabel: "Nazwa inwestycji"
                     width: 253
                     implicitHeight: 58
                     Layout.fillWidth: true
@@ -155,7 +155,8 @@ Rectangle {
                     onControlChecked: check => {
                         root.generujOdpowiedz = check;
                         sprawaF.curentFieldIndex = -1;
-                        inwestycjaF.fieldtext = "";
+                        //inwestycjaF.fieldtext = "";
+                        nazwaProjekt.fieldtext = "";
                         odpowiedzTresc.fieldtext = "";
                         zalaczniki.fieldtext = "";
 
@@ -198,7 +199,7 @@ Rectangle {
                                 urzadLoader.item.fieldtext = urzadD;
                             }
 
-                            inwestycjaF.fieldtext = data[2];
+                            //inwestycjaF.fieldtext = data[2];
                             odpowiedzTresc.fieldtext = data[4];
                             zalaczniki.fieldtext = data[5];
                         }
@@ -225,13 +226,13 @@ Rectangle {
                     implicitHeight: 58
                     Layout.fillWidth: true
                 }
-                FieldText {
+                /*FieldText {
                     id: inwestycjaF
                     fieldLabel: "Inwestycja"
                     width: 253
                     implicitHeight: 58
                     Layout.fillWidth: true
-                }
+                }*/
                 FieldText {
                     id: odpowiedzTresc
                     fieldLabel: "Treść odpowiedzi"
@@ -298,12 +299,11 @@ Rectangle {
                     pracowniaCB.curentFieldIndex = -1;
 
                     nazwaProjekt.fieldtext = "";
-                    nazwaProjekt.fieldtext = "";
                     nrDzialka.fieldtext = "";
                     ewidencjaF.fieldtext = "";
                     obrebF.fieldtext = "";
                     inwestorF.fieldtext = "";
-                    inwestycjaF.fieldtext = "";
+                    //inwestycjaF.fieldtext = "";
                     odpowiedzTresc.fieldtext = "";
                     zalaczniki.fieldtext = "";
                     nazwaPisma.fieldtext = "";
@@ -335,7 +335,7 @@ Rectangle {
                     console.log("nazwaPisma.fieldtext.length > 0", nazwaPisma.fieldtext.length > 0);
                     */
 
-                    if (urzadData.length > 0 && inwestycjaF.fieldtext.length > 0 && nrDzialka.fieldtext.length > 0 && obrebF.fieldtext.length > 0 && ewidencjaF.fieldtext.length > 0 && inwestorF.fieldtext.length > 0 && sprawa.length > 0 && odpowiedzTresc.fieldtext.length > 0 && zalaczniki.fieldtext.length > 0 && leftPanel.currentArchitekt.length > 0 && nazwaPisma.fieldtext.length > 0 && leftPanel.currentPracownia.length > 0) {
+                    if (urzadData.length > 0 && nazwaProjekt.fieldtext.length > 0 && nrDzialka.fieldtext.length > 0 && obrebF.fieldtext.length > 0 && ewidencjaF.fieldtext.length > 0 && inwestorF.fieldtext.length > 0 && sprawa.length > 0 && odpowiedzTresc.fieldtext.length > 0 && zalaczniki.fieldtext.length > 0 && leftPanel.currentArchitekt.length > 0 && nazwaPisma.fieldtext.length > 0 && leftPanel.currentPracownia.length > 0) {
                         innerDoc.source = "file:///pusty.pdf";
 
                         let uData;
@@ -366,7 +366,7 @@ Rectangle {
 
                         let data = {
                             "urzad_nazwa": urzadData,
-                            "inwestcja_nazwa": inwestycjaF.fieldtext,
+                            "inwestcja_nazwa": nazwaProjekt.fieldtext,
                             "dzialka": nrDzialka.fieldtext,
                             "obreb": obrebF.fieldtext,
                             "ewidencja": ewidencjaF.fieldtext,

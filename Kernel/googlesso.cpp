@@ -240,6 +240,8 @@ std::optional<QString> GoogleSSO::updateDocument(const QString & anId,
            if(updateResult.has_value())
            {
                QJsonObject result =  updateResult.value();
+
+               qDebug() << result;
              //  if (result.contains("replaceAllText") == false)
              //  {
               //     slotSetErrorMessage("GoogleSSO::updateDocument result did not contain the replaceAllText string.");
