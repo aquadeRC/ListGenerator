@@ -607,7 +607,7 @@ bool GoogleSSO::readCredentials()
         QString message = QString("Nie mogę otworzyć pliku %1").arg(info.absoluteFilePath() );
         emit signalError(message);
 
-        qWarning(message.toStdString().c_str());
+        qWarning("%s", message.toStdString().c_str());
 
         return false;
     }
@@ -619,7 +619,7 @@ bool GoogleSSO::readCredentials()
     QJsonDocument loadDoc(QJsonDocument::fromJson(loadData, &perror));
     if(perror.error != QJsonParseError::NoError)
     {
-        qWarning(perror.errorString().toStdString().c_str());
+        qWarning("%s", perror.errorString().toStdString().c_str());
         emit signalError(perror.errorString());
 
         return false;
@@ -665,7 +665,7 @@ bool GoogleSSO::checkTokenFile()
     QJsonDocument loadDoc(QJsonDocument::fromJson(loadData, &perror));
     if(perror.error != QJsonParseError::NoError)
     {
-        qWarning(perror.errorString().toStdString().c_str());
+        qWarning("%s", perror.errorString().toStdString().c_str());
         emit signalError(perror.errorString());
 
         return false;

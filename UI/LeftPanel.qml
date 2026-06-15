@@ -320,20 +320,19 @@ Rectangle {
                     let urzadData = root.generujOdpowiedz ? urzadLoader.item.fieldtext : leftPanel.currentUrzad;
                     let sprawa = root.generujOdpowiedz ? sprawaF.curentFieldValue : "tmp";
 
-                    /*
                     console.log(leftPanel.currentUrzad);
                     console.log("urzadData.length > 0", urzadData.length > 0);
-                    console.log("inwestycjaF.fieldtext.length > 0", inwestycjaF.fieldtext.length > 0);
+                    console.log("nazwaProjekt.fieldtext.length > 0", nazwaProjekt.fieldtext.length > 0);
                     console.log("nrDzialka.fieldtext.length > 0", nrDzialka.fieldtext.length > 0);
                     console.log("obrebF.fieldtext.length > 0", obrebF.fieldtext.length > 0);
                     console.log("ewidencja.length > 0", ewidencjaF.fieldtext.length > 0);
-                    console.log("inwestorF.fieldtext.length > 0", inwestorCB.fieldtext.length > 0);
+                    console.log("inwestorF.length > 0", inwestorF.fieldtext.length > 0);
                     console.log("sprawaF.backendProp.length > 0", sprawa.length > 0);
                     console.log("odpowiedzTresc.fieldtext.length > 0 ", odpowiedzTresc.fieldtext.length > 0);
                     console.log("zalaczniki.fieldtext.length > 0", zalaczniki.fieldtext.length > 0);
                     console.log("leftPanel.currentArchitekt.length > 0 ", leftPanel.currentArchitekt.length > 0);
+                    console.log("leftPanel.currentPracownia.length > 0 ", leftPanel.currentPracownia.length > 0);
                     console.log("nazwaPisma.fieldtext.length > 0", nazwaPisma.fieldtext.length > 0);
-                    */
 
                     if (urzadData.length > 0 && nazwaProjekt.fieldtext.length > 0 && nrDzialka.fieldtext.length > 0 && obrebF.fieldtext.length > 0 && ewidencjaF.fieldtext.length > 0 && inwestorF.fieldtext.length > 0 && sprawa.length > 0 && odpowiedzTresc.fieldtext.length > 0 && zalaczniki.fieldtext.length > 0 && leftPanel.currentArchitekt.length > 0 && nazwaPisma.fieldtext.length > 0 && leftPanel.currentPracownia.length > 0) {
                         innerDoc.source = "file:///pusty.pdf";
@@ -398,6 +397,9 @@ Rectangle {
     Component.onCompleted: {
         sprawaF.enabled = true;
 
+        pracowniaCB.curentFieldIndex = 0;
+        leftPanel.currentPracownia = pracowniaCB.curentFieldValue;
+
         urzadLoader.sourceComponent = urzadFieldComponent;
     }
 
@@ -409,7 +411,6 @@ Rectangle {
             width: 253
             implicitHeight: 58
             comboModel: leftPanel.urzedyModel
-            //curentFieldValue: backend2.urzad
             textRolenNme: "nazwa"
             valueRolenNme: "nazwa"
 
