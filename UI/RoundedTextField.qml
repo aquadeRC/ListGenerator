@@ -4,6 +4,8 @@ import QtQuick.Layouts
 
 TextField {
     id: roundedTextField
+    property color backgrounRectColor: mainTheme.field_border_color
+
     width: 428
     height: 35
     Layout.fillWidth: true
@@ -15,7 +17,7 @@ TextField {
         implicitWidth: roundedTextField.width
         implicitHeight: roundedTextField.height
         border {
-            color: mainTheme.field_border_color
+            color: roundedTextField.backgrounRectColor
             width: roundedTextField.visualFocus ? 2 : 1
         }
         radius: 10

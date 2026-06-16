@@ -8,6 +8,7 @@ ComboBox {
     required property string textRolenNme
     required property string valueRolenNme
     property bool higlight: false
+    property color backgrounRectColor: mainTheme.field_border_color
 
     model: comboModel
     font: mainTheme.font
@@ -77,10 +78,11 @@ ComboBox {
     }
 
     background: Rectangle {
+        id: backRect
         implicitWidth: control.width
         implicitHeight: control.height
         border {
-            color: mainTheme.field_border_color
+            color: backgrounRectColor
             width: control.visualFocus ? 2 : 1
         }
         radius: 10

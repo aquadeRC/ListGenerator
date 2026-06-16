@@ -112,4 +112,33 @@ Item {
             }
         }
     }
+
+    states: [
+        State {
+            name: "default"
+            PropertyChanges {
+                textInput {
+                    backgrounRectColor: mainTheme.field_border_color
+                }
+            }
+        },
+        State {
+            name: "error"
+            PropertyChanges {
+                textInput {
+                    backgrounRectColor: "red"
+                }
+            }
+        }
+    ]
+
+    transitions: [
+        Transition {
+            to: "*"
+            ColorAnimation {
+                target: textInput
+                duration: 100
+            }
+        }
+    ]
 }

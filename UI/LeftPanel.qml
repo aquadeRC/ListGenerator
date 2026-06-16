@@ -13,6 +13,7 @@ Rectangle {
 
     property variant wnioskiModel
     property variant currentArchitekt
+    property string currentArchitektName
     property string currentPracownia
     property string currentProjekt
     property string currentUrzad
@@ -71,6 +72,7 @@ Rectangle {
 
                         leftPanel.currentArchitekt = archData;
                         let archName = archData[0];
+                        leftPanel.currentArchitektName = archName;
 
                         architektCB.curentFieldValue = archName;
                         //inwestycjaF.fieldtext = inwestycja;
@@ -285,6 +287,7 @@ Rectangle {
                     leftPanel.currentPracownia = "";
                     leftPanel.currentProjekt = "";
                     leftPanel.currentUrzad = "";
+                    leftPanel.currentArchitektName = "";
 
                     projektF.curentFieldIndex = -1;
                     sprawaF.curentFieldIndex = -1;
@@ -307,6 +310,20 @@ Rectangle {
                     odpowiedzTresc.fieldtext = "";
                     zalaczniki.fieldtext = "";
                     nazwaPisma.fieldtext = "";
+
+                    pracowniaCB.state = "default";
+                    nazwaProjekt.state = "default";
+                    nrDzialka.state = "default";
+                    obrebF.state = "default";
+                    ewidencjaF.state = "default";
+                    inwestorF.state = "default";
+                    odpowiedzTresc.state = "default";
+                    zalaczniki.state = "default";
+                    nazwaPisma.state = "default";
+                    architektCB.state = "default";
+                    urzadLoader.item.state = "default";
+                    sprawaF.state = "default";
+                    projektF.state = "default";
                 }
             }
 
@@ -318,7 +335,11 @@ Rectangle {
                 iconPath: "icons/ustawienia.svg"
                 onClicked: {
                     let urzadData = root.generujOdpowiedz ? urzadLoader.item.fieldtext : leftPanel.currentUrzad;
+                    urzadData = String(urzadData);
+
                     let sprawa = root.generujOdpowiedz ? sprawaF.curentFieldValue : "tmp";
+                    console.log("urzad" + urzadData);
+                    sprawa = String(sprawa);
 
                     console.log(leftPanel.currentUrzad);
                     console.log("urzadData.length > 0", urzadData.length > 0);
@@ -327,14 +348,28 @@ Rectangle {
                     console.log("obrebF.fieldtext.length > 0", obrebF.fieldtext.length > 0);
                     console.log("ewidencja.length > 0", ewidencjaF.fieldtext.length > 0);
                     console.log("inwestorF.length > 0", inwestorF.fieldtext.length > 0);
-                    console.log("sprawaF.backendProp.length > 0", sprawa.length > 0);
+                    console.log("sprawaF.length > 0", sprawa !== undefined && sprawa.length > 0);
                     console.log("odpowiedzTresc.fieldtext.length > 0 ", odpowiedzTresc.fieldtext.length > 0);
                     console.log("zalaczniki.fieldtext.length > 0", zalaczniki.fieldtext.length > 0);
-                    console.log("leftPanel.currentArchitekt.length > 0 ", leftPanel.currentArchitekt.length > 0);
+                    console.log("leftPanel.currentArchitekt.length > 0 ", leftPanel.currentArchitektName.length > 0);
                     console.log("leftPanel.currentPracownia.length > 0 ", leftPanel.currentPracownia.length > 0);
                     console.log("nazwaPisma.fieldtext.length > 0", nazwaPisma.fieldtext.length > 0);
 
-                    if (urzadData.length > 0 && nazwaProjekt.fieldtext.length > 0 && nrDzialka.fieldtext.length > 0 && obrebF.fieldtext.length > 0 && ewidencjaF.fieldtext.length > 0 && inwestorF.fieldtext.length > 0 && sprawa.length > 0 && odpowiedzTresc.fieldtext.length > 0 && zalaczniki.fieldtext.length > 0 && leftPanel.currentArchitekt.length > 0 && nazwaPisma.fieldtext.length > 0 && leftPanel.currentPracownia.length > 0) {
+                    if (urzadData.length > 0 && nazwaProjekt.fieldtext.length > 0 && nrDzialka.fieldtext.length > 0 && obrebF.fieldtext.length > 0 && ewidencjaF.fieldtext.length > 0 && inwestorF.fieldtext.length > 0 && sprawa.length > 0 && odpowiedzTresc.fieldtext.length > 0 && zalaczniki.fieldtext.length > 0 && leftPanel.currentArchitektName.length > 0 && nazwaPisma.fieldtext.length > 0 && leftPanel.currentPracownia.length > 0) {
+                        pracowniaCB.state = "default";
+                        nazwaProjekt.state = "default";
+                        nrDzialka.state = "default";
+                        obrebF.state = "default";
+                        ewidencjaF.state = "default";
+                        inwestorF.state = "default";
+                        odpowiedzTresc.state = "default";
+                        zalaczniki.state = "default";
+                        nazwaPisma.state = "default";
+                        architektCB.state = "default";
+                        urzadLoader.item.state = "default";
+                        sprawaF.state = "default";
+                        projektF.state = "default";
+
                         innerDoc.source = "file:///pusty.pdf";
 
                         let uData;
@@ -386,6 +421,82 @@ Rectangle {
                         root.curentDoc = newPdf;
                         innerDoc.source = root.curentDoc;
                     } else {
+                        if (leftPanel.currentPracownia.length == 0) {
+                            pracowniaCB.state = "error";
+                        } else {
+                            pracowniaCB.state = "default";
+                        }
+                        if (leftPanel.currentArchitektName.length == 0) {
+                            architektCB.state = "error";
+                        } else {
+                            architektCB.state = "default";
+                        }
+                        if (urzadData.length == 0) {
+                            urzadLoader.item.state = "error";
+                        } else {
+                            urzadLoader.item.state = "default";
+                        }
+                        if (root.generujOdpowiedz === true) {
+                            if (sprawaF.curentFieldIndex === -1) {
+                                sprawaF.state = "error";
+                            } else {
+                                sprawaF.state = "default";
+                            }
+                        } else {
+                            sprawaF.state = "default";
+                        }
+
+                        if (leftPanel.currentProjekt.length == 0) {
+                            projektF.state = "error";
+                        } else {
+                            projektF.state = "default";
+                        }
+
+                        if (nazwaProjekt.fieldtext.length === 0) {
+                            nazwaProjekt.state = "error";
+                        } else {
+                            nazwaProjekt.state = "default";
+                        }
+
+                        if (nrDzialka.fieldtext.length === 0) {
+                            nrDzialka.state = "error";
+                        } else {
+                            nrDzialka.state = "default";
+                        }
+
+                        if (obrebF.fieldtext.length === 0) {
+                            obrebF.state = "error";
+                        } else {
+                            obrebF.state = "default";
+                        }
+                        if (ewidencjaF.fieldtext.length === 0) {
+                            ewidencjaF.state = "error";
+                        } else {
+                            ewidencjaF.state = "default";
+                        }
+
+                        if (inwestorF.fieldtext.length === 0) {
+                            inwestorF.state = "error";
+                        } else {
+                            inwestorF.state = "default";
+                        }
+                        if (odpowiedzTresc.fieldtext.length === 0) {
+                            odpowiedzTresc.state = "error";
+                        } else {
+                            odpowiedzTresc.state = "default";
+                        }
+                        if (zalaczniki.fieldtext.length === 0) {
+                            zalaczniki.state = "error";
+                        } else {
+                            zalaczniki.state = "default";
+                        }
+
+                        if (nazwaPisma.fieldtext.length === 0) {
+                            nazwaPisma.state = "error";
+                        } else {
+                            nazwaPisma.state = "default";
+                        }
+
                         message_Dialog.text = "Wypełnij wszystkie pola!";
                         message_Dialog.open();
                     }
@@ -397,8 +508,8 @@ Rectangle {
     Component.onCompleted: {
         sprawaF.enabled = true;
 
-        pracowniaCB.curentFieldIndex = 0;
-        leftPanel.currentPracownia = pracowniaCB.curentFieldValue;
+        // pracowniaCB.curentFieldIndex = 0;
+        // leftPanel.currentPracownia = pracowniaCB.curentFieldValue;
 
         urzadLoader.sourceComponent = urzadFieldComponent;
     }

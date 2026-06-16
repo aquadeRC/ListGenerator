@@ -66,4 +66,33 @@ Item {
             }
         }
     }
+
+    states: [
+        State {
+            name: "default"
+            PropertyChanges {
+                fieldComboN {
+                    backgrounRectColor: mainTheme.field_border_color
+                }
+            }
+        },
+        State {
+            name: "error"
+            PropertyChanges {
+                fieldComboN {
+                    backgrounRectColor: "red"
+                }
+            }
+        }
+    ]
+
+    transitions: [
+        Transition {
+            to: "*"
+            ColorAnimation {
+                target: fieldComboN
+                duration: 100
+            }
+        }
+    ]
 }
